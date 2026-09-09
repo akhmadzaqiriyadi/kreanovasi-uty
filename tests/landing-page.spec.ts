@@ -2,51 +2,32 @@ import { expect, test } from "@playwright/test";
 
 test.describe("Landing Page E2E Tests", () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the local home page before each test
     await page.goto("/");
   });
 
-  test("should display main heading logo", async ({ page }) => {
-    // Check main logo text
-    const logoText = page.locator("header span:has-text('UCH')");
+  test("should display main heading logo and branding", async ({ page }) => {
+    // Check main logo text in header
+    const logoText = page.locator("header").locator("text=CREATIVE");
     await expect(logoText).toBeVisible();
-  });
 
-  test("should verify anchor link scrolling targets exist", async ({
-    page,
-  }) => {
-    // Check that sections with matching IDs exist in DOM
-    await expect(page.locator("section#features")).toBeVisible();
-    await expect(page.locator("section#dx")).toBeVisible();
-    await expect(page.locator("section#feedback")).toBeVisible();
-  });
-
-  test("should trigger form validation errors on invalid inputs", async ({
-    page,
-  }) => {
-    const feedbackSection = page.locator("section#feedback");
-    await feedbackSection.scrollIntoViewIfNeeded();
-
-    const nameInput = feedbackSection.locator("input#name");
-    const emailInput = feedbackSection.locator("input#email");
-    const submitBtn = feedbackSection.locator("button[type='submit']");
-
-    // 1. Submit empty form
-    await submitBtn.click();
+    // Check UCH and UTY Creative Hub in hero section
     await expect(
-      feedbackSection.locator("text=Name must be at least"),
+      page.locator("text=Innovate. Collaborate. Create."),
     ).toBeVisible();
     await expect(
-      feedbackSection.locator("text=Email is required"),
+      page.getByRole("heading", { name: "UTY Creative Hub" }),
     ).toBeVisible();
+  });
 
-    // 2. Fill invalid email format
-    await nameInput.fill("Jekz Developer");
-    await emailInput.fill("invalid-email-format");
-    await submitBtn.click();
-
+  test("should display primary action buttons in hero", async ({ page }) => {
     await expect(
-      feedbackSection.locator("text=Invalid email address format"),
+      page.getByRole("link", { name: "Jelajahi Program" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Cek Jadwal" }).first(),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Book Now" }).first(),
     ).toBeVisible();
   });
 
