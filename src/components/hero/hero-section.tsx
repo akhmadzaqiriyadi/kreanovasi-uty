@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import { useEffect, useRef } from "react";
 import { HeroActions } from "./hero-actions";
-import { HeroContent } from "./hero-content";
+import { HeroDescription, HeroTitle } from "./hero-content";
 import { HeroHighlights } from "./hero-highlights";
 import { HeroMorphIllustration } from "./hero-morph-illustration";
 import { HeroTicker } from "./hero-ticker";
@@ -16,6 +16,7 @@ export function HeroSection() {
   const actionsRef = useRef<HTMLDivElement>(null);
   const highlightsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const mobileImageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -42,6 +43,35 @@ export function HeroSection() {
           },
           "-=0.4",
         );
+      }
+
+      const illustrations = [imageRef.current, mobileImageRef.current].filter(
+        Boolean,
+      ) as HTMLDivElement[];
+
+      if (illustrations.length > 0) {
+        tl.fromTo(
+          illustrations,
+          { scale: 0.95, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out",
+            clearProps: "opacity,transform,scale",
+          },
+          "-=0.5",
+        );
+
+        // Subtle continuous floating effect for hero illustrations
+        gsap.to(illustrations, {
+          y: -8,
+          duration: 3.5,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          delay: 1,
+        });
       }
 
       if (descRef.current) {
@@ -82,31 +112,6 @@ export function HeroSection() {
           "-=0.3",
         );
       }
-
-      if (imageRef.current) {
-        tl.fromTo(
-          imageRef.current,
-          { scale: 0.95, opacity: 0 },
-          {
-            scale: 1,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out",
-            clearProps: "opacity,transform,scale",
-          },
-          "-=0.7",
-        );
-
-        // Subtle continuous floating effect for hero illustration
-        gsap.to(imageRef.current, {
-          y: -8,
-          duration: 3.5,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-          delay: 1,
-        });
-      }
     }, heroRef);
 
     return () => ctx.revert();
@@ -134,18 +139,33 @@ export function HeroSection() {
 
       {/* Main Container */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Headlines & Call to Actions */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+          {/* Left Column (Mobile: Full Sequence with Illustration under Title) */}
           <div className="lg:col-span-7 text-center lg:text-left space-y-6">
             <HeroTicker badgeRef={badgeRef} />
-            <HeroContent titleRef={titleRef} descRef={descRef} />
+            <HeroTitle titleRef={titleRef} />
+
+            {/* Mobile Hero Illustration: Placed directly beneath UTY Creative Hub */}
+            <div className="lg:hidden flex justify-center py-2">
+              <HeroMorphIllustration
+                imageRef={mobileImageRef}
+                className="max-w-[280px] sm:max-w-[340px]"
+                maxHeight="max-h-[340px] sm:max-h-[400px]"
+              />
+            </div>
+
+            <HeroDescription descRef={descRef} />
             <HeroActions actionsRef={actionsRef} />
             <HeroHighlights highlightsRef={highlightsRef} />
           </div>
 
-          {/* Right Column: Interactive Morphing Hero Illustration */}
-          <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
-            <HeroMorphIllustration imageRef={imageRef} />
+          {/* Right Column: Desktop Hero Illustration */}
+          <div className="hidden lg:flex lg:col-span-5 justify-end relative">
+            <HeroMorphIllustration
+              imageRef={imageRef}
+              className="max-w-[440px] lg:max-w-[480px]"
+              maxHeight="max-h-[520px]"
+            />
           </div>
         </div>
       </div>
