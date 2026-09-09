@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Calendar,
-  ChevronDown,
-  ExternalLink,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  User,
-} from "lucide-react";
+import { Calendar, ChevronDown, ExternalLink, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,13 +20,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { navItems, programItems } from "@/config/navigation";
-import { useAuth } from "@/features/auth";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Navbar() {
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [mobileProgramOpen, setMobileProgramOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -180,21 +170,6 @@ export function Navbar() {
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* Dashboard Link for Logged In Users */}
-            {isAuthenticated && (
-              <Link
-                href="/dashboard"
-                className={cn(
-                  "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap transition-colors py-1 px-2.5 rounded-lg",
-                  pathname.startsWith("/dashboard")
-                    ? "text-primary font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
-                )}
-              >
-                Dashboard
-              </Link>
-            )}
           </nav>
 
           {/* Desktop Right Action Buttons */}
@@ -213,47 +188,18 @@ export function Navbar() {
               Cek Jadwal
             </Link>
 
-            {/* Authenticated State vs Book Now / Login */}
-            {isAuthenticated ? (
-              <div className="flex items-center gap-2.5 border border-border/50 bg-accent/40 rounded-full pl-2.5 pr-1.5 py-1">
-                <Link
-                  href="/dashboard"
-                  className="flex items-center gap-2 text-right hover:opacity-80 transition-opacity"
-                >
-                  <div className="h-7 w-7 rounded-full bg-primary/15 flex items-center justify-center text-primary text-xs font-bold border border-primary/25">
-                    <User className="h-3.5 w-3.5" />
-                  </div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-xs font-semibold text-foreground leading-tight">
-                      {user?.name}
-                    </span>
-                    <span className="text-[10px] text-muted-foreground capitalize">
-                      {user?.role}
-                    </span>
-                  </div>
-                </Link>
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="p-1.5 hover:text-destructive text-muted-foreground rounded-full transition-colors cursor-pointer"
-                  title="Keluar"
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </div>
-            ) : (
-              <Link
-                href="/login"
-                className={cn(
-                  buttonVariants({ size: "sm" }),
-                  "bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md shadow-primary/20 hover:shadow-lg rounded-xl text-xs md:text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
-                  scrolled ? "h-9 px-3.5" : "h-10 px-4",
-                )}
-              >
-                <Calendar className="h-4 w-4" />
-                <span>Book Now</span>
-              </Link>
-            )}
+            {/* Book Now Button */}
+            <Link
+              href="/booking"
+              className={cn(
+                buttonVariants({ size: "sm" }),
+                "bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md shadow-primary/20 hover:shadow-lg rounded-xl text-xs md:text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
+                scrolled ? "h-9 px-3.5" : "h-10 px-4",
+              )}
+            >
+              <Calendar className="h-4 w-4" />
+              <span>Book Now</span>
+            </Link>
           </div>
 
           {/* Mobile Right Bar: Theme Toggle + Drawer Trigger */}
@@ -375,81 +321,32 @@ export function Navbar() {
                         </div>
                       )}
                     </div>
-
-                    {/* Mobile Dashboard Link */}
-                    {isAuthenticated && (
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          "text-sm font-medium py-2.5 px-3 rounded-xl transition-colors flex items-center gap-2",
-                          pathname.startsWith("/dashboard")
-                            ? "bg-primary/10 text-primary font-semibold border-l-4 border-primary"
-                            : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
-                        )}
-                      >
-                        <LayoutDashboard className="h-4 w-4" />
-                        <span>Dashboard</span>
-                      </Link>
-                    )}
                   </nav>
                 </div>
 
                 {/* Mobile Drawer Bottom Actions */}
-                <div className="p-4 border-t border-border/40 space-y-2.5 bg-background/40">
-                  {isAuthenticated ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 px-1">
-                        <div className="h-9 w-9 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center text-primary text-sm font-bold">
-                          <User className="h-4.5 w-4.5" />
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-semibold text-foreground truncate">
-                            {user?.name}
-                          </span>
-                          <span className="text-xs text-muted-foreground capitalize">
-                            {user?.role}
-                          </span>
-                        </div>
-                      </div>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => {
-                          setOpen(false);
-                          logout();
-                        }}
-                        className="w-full rounded-xl flex items-center justify-center gap-2"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span>Keluar</span>
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-2">
-                      <Link
-                        href="/schedule"
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          buttonVariants({ variant: "outline" }),
-                          "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-medium",
-                        )}
-                      >
-                        Cek Jadwal
-                      </Link>
-                      <Link
-                        href="/login"
-                        onClick={() => setOpen(false)}
-                        className={cn(
-                          buttonVariants({ size: "default" }),
-                          "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium flex items-center justify-center gap-1.5 shadow-md",
-                        )}
-                      >
-                        <Calendar className="h-4 w-4" />
-                        <span>Book Now</span>
-                      </Link>
-                    </div>
-                  )}
+                <div className="p-4 border-t border-border/40 space-y-2 bg-background/40">
+                  <Link
+                    href="/schedule"
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      buttonVariants({ variant: "outline" }),
+                      "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-medium",
+                    )}
+                  >
+                    Cek Jadwal
+                  </Link>
+                  <Link
+                    href="/booking"
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      buttonVariants({ size: "default" }),
+                      "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium flex items-center justify-center gap-1.5 shadow-md",
+                    )}
+                  >
+                    <Calendar className="h-4 w-4" />
+                    <span>Book Now</span>
+                  </Link>
                 </div>
               </SheetContent>
             </Sheet>
