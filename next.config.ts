@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  allowedDevOrigins: [
+    "*.ngrok-free.dev",
+    "*.ngrok.app",
+    "*.ngrok.io",
+    "localhost:3000",
+    "127.0.0.1:3000",
+  ],
   async rewrites() {
     return [
       {
