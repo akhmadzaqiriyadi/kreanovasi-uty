@@ -46,14 +46,16 @@ export function Navbar() {
     return pathname === "/fastlab" || pathname.startsWith("/programs");
   };
 
-  // Scroll listener with hysteresis
+  // 120fps Scroll listener using requestAnimationFrame
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const currentScroll = window.scrollY;
-      if (currentScroll > 20) {
-        setScrolled(true);
-      } else if (currentScroll < 10) {
-        setScrolled(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 25);
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -111,30 +113,28 @@ export function Navbar() {
   }, []);
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+    <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none flex justify-center">
       <div
         className={cn(
-          "w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-auto",
+          "w-full transition-[max-width,padding,margin] duration-300 ease-out pointer-events-auto",
           scrolled
-            ? "container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl mt-3"
-            : "w-full max-w-full px-0 mt-0",
+            ? "max-w-7xl px-4 sm:px-6 lg:px-8 mt-3"
+            : "max-w-full px-0 mt-0",
         )}
       >
         <header
           ref={headerRef}
           className={cn(
-            "w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu",
+            "w-full transition-[height,background-color,border-color,border-radius,box-shadow,padding] duration-300 ease-out transform-gpu",
             scrolled
-              ? "rounded-full bg-background/85 dark:bg-background/85 backdrop-blur-xl border border-border/80 shadow-lg shadow-black/5 dark:shadow-black/25 px-4 sm:px-6 h-14 flex items-center justify-between"
-              : "rounded-none bg-background/95 border-b border-border/40 shadow-xs h-20",
+              ? "h-14 rounded-full bg-background/85 dark:bg-background/85 backdrop-blur-xl border border-border/80 shadow-md px-4 sm:px-6 flex items-center justify-between"
+              : "h-20 rounded-none bg-background/95 border-b border-border/40 shadow-none px-4 sm:px-6 lg:px-8 flex items-center justify-between",
           )}
         >
           <div
             className={cn(
-              "flex items-center justify-between w-full transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              scrolled
-                ? ""
-                : "container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl h-full",
+              "flex items-center justify-between w-full mx-auto",
+              scrolled ? "" : "max-w-7xl",
             )}
           >
             {/* Brand Logo */}
@@ -149,7 +149,7 @@ export function Navbar() {
                 width={44}
                 height={44}
                 className={cn(
-                  "object-contain shrink-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  "object-contain shrink-0 transition-[height,width] duration-300 ease-out",
                   scrolled ? "h-9 w-9" : "h-10 w-10 sm:h-11 sm:w-11",
                 )}
                 priority
