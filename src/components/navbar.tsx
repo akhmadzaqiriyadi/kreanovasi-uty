@@ -128,25 +128,23 @@ export function Navbar() {
 
             {/* Program Dropdown Menu */}
             <DropdownMenu>
-              <DropdownMenuTrigger
-                render={
-                  <button
-                    type="button"
-                    className={cn(
-                      "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap flex items-center gap-1 py-1 px-2.5 rounded-lg transition-colors cursor-pointer",
-                      isProgramActive()
-                        ? "text-primary font-semibold"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
-                    )}
-                  >
-                    <span>Program</span>
-                    <ChevronDown className="h-4 w-4 transition-transform duration-200" />
-                    {isProgramActive() && (
-                      <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
-                    )}
-                  </button>
-                }
-              />
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className={cn(
+                    "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap flex items-center gap-1 py-1 px-2.5 rounded-lg transition-colors cursor-pointer",
+                    isProgramActive()
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                  )}
+                >
+                  <span>Program</span>
+                  <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+                  {isProgramActive() && (
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
+                  )}
+                </button>
+              </DropdownMenuTrigger>
               <DropdownMenuContent
                 align="start"
                 className="w-64 glass-panel border-border/50 p-1.5 space-y-1"
@@ -165,23 +163,18 @@ export function Navbar() {
                   }
 
                   return (
-                    <DropdownMenuItem
-                      key={item.label}
-                      render={
-                        <Link
-                          href={item.href}
-                          target={item.external ? "_blank" : undefined}
-                          rel={
-                            item.external ? "noopener noreferrer" : undefined
-                          }
-                          className="flex items-center justify-between w-full px-3 py-2 text-xs md:text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
-                        />
-                      }
-                    >
-                      <span>{item.label}</span>
-                      {item.external && (
-                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
-                      )}
+                    <DropdownMenuItem asChild key={item.label}>
+                      <Link
+                        href={item.href}
+                        target={item.external ? "_blank" : undefined}
+                        rel={item.external ? "noopener noreferrer" : undefined}
+                        className="flex items-center justify-between w-full px-3 py-2 text-xs md:text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                      >
+                        <span>{item.label}</span>
+                        {item.external && (
+                          <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+                        )}
+                      </Link>
                     </DropdownMenuItem>
                   );
                 })}
@@ -268,17 +261,15 @@ export function Navbar() {
             <ThemeToggle />
 
             <Sheet open={open} onOpenChange={setOpen}>
-              <SheetTrigger
-                render={
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-9 w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-xl"
-                  />
-                }
-              >
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Buka menu navigasi</span>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-xl"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Buka menu navigasi</span>
+                </Button>
               </SheetTrigger>
 
               <SheetContent
@@ -298,10 +289,10 @@ export function Navbar() {
                         />
                       </div>
                       <div className="flex flex-col text-left font-bold text-xs leading-tight">
-                        <span className="text-[#2E417A] dark:text-blue-400">
-                          UTY
+                        <span className="text-primary">UTY</span>
+                        <span className="text-secondary font-extrabold">
+                          CREATIVE
                         </span>
-                        <span className="text-primary">CREATIVE</span>
                         <span className="text-foreground">HUB</span>
                       </div>
                     </SheetTitle>
