@@ -96,10 +96,10 @@ export function Navbar() {
                 priority
               />
             </div>
-            <div className="flex flex-col text-left font-bold text-[11px] leading-[13px] tracking-tight text-foreground select-none">
-              <span className="text-primary">UTY</span>
-              <span className="text-secondary font-extrabold">CREATIVE</span>
-              <span className="text-foreground">HUB</span>
+            <div className="flex flex-col text-left font-bold text-xs leading-tight tracking-tight text-primary select-none">
+              <div>UTY</div>
+              <div>CREATIVE</div>
+              <div>HUB</div>
             </div>
           </Link>
 
@@ -112,10 +112,10 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap transition-colors py-1 px-2.5 rounded-lg",
+                    "relative text-xs md:text-sm lg:text-base font-semibold whitespace-nowrap transition-colors py-1 px-2.5 rounded-lg text-primary",
                     active
-                      ? "text-primary font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                      ? "text-primary font-bold bg-primary/10"
+                      : "text-primary/85 hover:text-primary hover:bg-primary/5",
                   )}
                 >
                   {item.label}
@@ -132,10 +132,10 @@ export function Navbar() {
                 <button
                   type="button"
                   className={cn(
-                    "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap flex items-center gap-1 py-1 px-2.5 rounded-lg transition-colors cursor-pointer",
+                    "relative text-xs md:text-sm lg:text-base font-semibold whitespace-nowrap flex items-center gap-1 py-1 px-2.5 rounded-lg transition-colors cursor-pointer text-primary",
                     isProgramActive()
-                      ? "text-primary font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                      ? "text-primary font-bold bg-primary/10"
+                      : "text-primary/85 hover:text-primary hover:bg-primary/5",
                   )}
                 >
                   <span>Program</span>
@@ -288,12 +288,10 @@ export function Navbar() {
                           className="object-contain"
                         />
                       </div>
-                      <div className="flex flex-col text-left font-bold text-xs leading-tight">
-                        <span className="text-primary">UTY</span>
-                        <span className="text-secondary font-extrabold">
-                          CREATIVE
-                        </span>
-                        <span className="text-foreground">HUB</span>
+                      <div className="flex flex-col text-left font-bold text-xs leading-tight text-primary">
+                        <div>UTY</div>
+                        <div>CREATIVE</div>
+                        <div>HUB</div>
                       </div>
                     </SheetTitle>
                   </SheetHeader>
@@ -308,10 +306,10 @@ export function Navbar() {
                           href={item.href}
                           onClick={() => setOpen(false)}
                           className={cn(
-                            "text-sm font-medium py-2.5 px-3 rounded-xl transition-colors",
+                            "text-sm font-semibold py-2.5 px-3 rounded-xl transition-colors text-primary",
                             active
-                              ? "bg-primary/10 text-primary font-semibold border-l-4 border-primary"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                              ? "bg-primary/15 text-primary font-bold border-l-4 border-primary"
+                              : "text-primary/85 hover:text-primary hover:bg-primary/10",
                           )}
                         >
                           {item.label}
@@ -325,10 +323,10 @@ export function Navbar() {
                         type="button"
                         onClick={() => setMobileProgramOpen(!mobileProgramOpen)}
                         className={cn(
-                          "w-full flex items-center justify-between text-sm font-medium py-2.5 px-3 rounded-xl transition-colors cursor-pointer",
+                          "w-full flex items-center justify-between text-sm font-semibold py-2.5 px-3 rounded-xl transition-colors cursor-pointer text-primary",
                           isProgramActive()
-                            ? "bg-primary/10 text-primary font-semibold"
-                            : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                            ? "bg-primary/15 text-primary font-bold"
+                            : "text-primary/85 hover:text-primary hover:bg-primary/10",
                         )}
                       >
                         <span>Program</span>
