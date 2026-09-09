@@ -76,7 +76,7 @@ export function GlobalLoadingBar() {
       }`}
     >
       <div
-        className="h-[3px] bg-gradient-to-r from-primary via-purple-500 to-pink-500 shadow-[0_1px_10px_oklch(0.585_0.233_277.117_/_0.5)] transition-all duration-300 ease-out"
+        className="h-[3px] bg-secondary shadow-xs transition-all duration-300 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

@@ -19,9 +19,6 @@ export function AdminStatsCard({ data }: AdminStatsCardProps) {
     chartType,
     chartColor,
   } = data;
-
-  const chartId = `gradient-${title.replace(/\s+/g, "").toLowerCase()}`;
-
   return (
     <Card className="glass-card overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
@@ -50,23 +47,13 @@ export function AdminStatsCard({ data }: AdminStatsCardProps) {
                 data={chartData}
                 margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
               >
-                <defs>
-                  <linearGradient id={chartId} x1="0" y1="0" x2="0" y2="1">
-                    <stop
-                      offset="5%"
-                      stopColor={chartColor}
-                      stopOpacity={0.3}
-                    />
-                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
-                  </linearGradient>
-                </defs>
                 <Area
                   type="monotone"
                   dataKey="value"
                   stroke={chartColor}
                   strokeWidth={2}
-                  fillOpacity={1}
-                  fill={`url(#${chartId})`}
+                  fillOpacity={0.15}
+                  fill={chartColor}
                 />
               </AreaChart>
             ) : (

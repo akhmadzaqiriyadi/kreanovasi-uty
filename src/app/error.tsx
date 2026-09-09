@@ -43,7 +43,7 @@ export default function AppError({
         <div className="pt-2">
           <Button
             onClick={() => reset()}
-            className="bg-gradient-to-r from-primary to-purple-600 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all duration-300 w-full inline-flex items-center justify-center gap-2 cursor-pointer"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md transition-all duration-300 w-full inline-flex items-center justify-center gap-2 cursor-pointer"
           >
             <RotateCcw className="h-4 w-4" />
             Coba Lagi

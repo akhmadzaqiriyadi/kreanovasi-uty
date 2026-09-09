@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 export function HeroSection() {
   return (
     <section className="relative min-h-[90vh] flex items-center pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
-      {/* Background Texture & Soft Gradients */}
+      {/* Background Texture & Ambient Lights */}
       <div className="absolute inset-0 pointer-events-none select-none z-0">
         <div
           className="absolute inset-0 opacity-20 dark:opacity-10"
@@ -39,7 +39,7 @@ export function HeroSection() {
                 UCH
               </div>
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-                UTY <span className="text-gradient-uch">Creative Hub</span>
+                UTY <span className="text-secondary">Creative Hub</span>
               </h1>
             </div>
 
@@ -118,7 +118,7 @@ export function HeroSection() {
           <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
             <div className="relative w-full max-w-[480px] lg:max-w-none">
               {/* Decorative Accent Ring */}
-              <div className="absolute -inset-2 bg-gradient-to-tr from-primary/20 via-secondary/20 to-transparent rounded-3xl blur-xl opacity-60" />
+              <div className="absolute -inset-2 bg-secondary/15 rounded-3xl blur-xl opacity-60" />
 
               <div className="relative rounded-2xl overflow-hidden p-2">
                 <Image

@@ -16,7 +16,7 @@ export function LoginForm() {
       <div className="absolute top-[-50px] left-[-50px] h-[150px] w-[150px] rounded-full bg-primary/10 blur-[40px] pointer-events-none" />
 
       <div className="text-center mb-8 space-y-2">
-        <h1 className="text-2xl font-extrabold tracking-tight text-gradient-primary">
+        <h1 className="text-2xl font-extrabold tracking-tight text-primary">
           Selamat Datang Kembali
         </h1>
         <p className="text-muted-foreground text-sm">
@@ -75,7 +75,7 @@ export function LoginForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-gradient-to-r from-primary to-purple-600 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all duration-300 gap-2 cursor-pointer mt-2"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md transition-all duration-300 gap-2 cursor-pointer mt-2"
         >
           {isSubmitting ? (
             <Loader2 className="h-4 w-4 animate-spin" />

@@ -60,7 +60,7 @@ export function AdminSettingsPanel({
 
       <Button
         onClick={onSave}
-        className="w-full bg-gradient-to-r from-primary to-purple-600 hover:shadow-primary/30"
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
       >
         Simpan Perubahan
       </Button>

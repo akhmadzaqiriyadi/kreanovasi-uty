@@ -29,7 +29,7 @@ export function UserDashboard({ user }: UserDashboardProps) {
             <LayoutDashboard className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-gradient-primary">
+            <h1 className="text-3xl font-extrabold tracking-tight text-primary">
               User Dashboard
             </h1>
             <p className="text-muted-foreground text-sm">

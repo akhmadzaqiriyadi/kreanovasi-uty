@@ -19,7 +19,7 @@ export function Footer() {
               href="/"
               className="flex items-center gap-2 font-bold text-lg tracking-tight"
             >
-              <div className="flex h-7 w-7 items-center justify-between rounded-md bg-gradient-to-tr from-primary to-purple-500 p-1.5 text-primary-foreground shadow-sm">
+              <div className="flex h-7 w-7 items-center justify-between rounded-md bg-primary p-1.5 text-primary-foreground shadow-xs">
                 <Zap className="h-4 w-4 fill-current" />
               </div>
               <span>

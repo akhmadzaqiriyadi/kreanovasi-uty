@@ -14,7 +14,7 @@ export default function NotFound() {
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-extrabold tracking-tight text-gradient-primary">
+          <h1 className="text-3xl font-extrabold tracking-tight text-primary">
             404
           </h1>
           <h2 className="text-xl font-bold text-foreground">
@@ -29,7 +29,7 @@ export default function NotFound() {
         <div className="pt-2">
           <Link
             href="/"
-            className={`${buttonVariants({ size: "lg" })} bg-gradient-to-r from-primary to-purple-600 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all duration-300 glow-hover w-full inline-flex items-center justify-center gap-2`}
+            className={`${buttonVariants({ size: "lg" })} bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-md transition-all duration-300 w-full inline-flex items-center justify-center gap-2`}
           >
             <Home className="h-4 w-4" />
             Kembali ke Beranda

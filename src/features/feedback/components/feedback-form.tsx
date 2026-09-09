@@ -21,8 +21,6 @@ export function FeedbackForm() {
 
   return (
     <Card className="glass-card border-border/40 overflow-hidden relative group">
-      {/* Visual Accent Layer */}
-      <div className="absolute top-0 right-0 h-32 w-32 bg-gradient-to-bl from-primary/5 to-transparent pointer-events-none" />
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
           <div className="space-y-1">

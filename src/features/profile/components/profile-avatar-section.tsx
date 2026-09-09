@@ -15,16 +15,6 @@ export function ProfileAvatarSection() {
         .toUpperCase()
     : "U";
 
-  const getGradientColor = (char: string) => {
-    const code = char.charCodeAt(0) || 0;
-    const hue = (code * 17) % 360;
-    return `from-[oklch(0.7_0.15_${hue})] to-[oklch(0.5_0.15_${(hue + 60) % 360})]`;
-  };
-
-  const gradient = user?.name
-    ? getGradientColor(user.name[0])
-    : "from-primary/70 to-purple-500/70";
-
   const handleUploadMock = () => {
     toast.info("Fitur Upload Foto", {
       description: "Fitur simulasi upload file media akan segera hadir.",
@@ -38,9 +28,7 @@ export function ProfileAvatarSection() {
         type="button"
         className="relative h-24 w-24 rounded-full border-2 border-border/50 overflow-hidden group shadow-lg cursor-pointer hover:border-primary/50 transition-colors"
       >
-        <div
-          className={`absolute inset-0 bg-gradient-to-tr ${gradient} flex items-center justify-center text-white text-3xl font-black tracking-wider`}
-        >
+        <div className="absolute inset-0 bg-primary flex items-center justify-center text-primary-foreground text-3xl font-black tracking-wider">
           {initials}
         </div>
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
