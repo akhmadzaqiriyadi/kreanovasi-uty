@@ -75,7 +75,7 @@ export default function RootLayout({
         {/* Background glow effects */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 select-none">
           <div className="absolute top-[-100px] left-[-100px] h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-primary/5 dark:bg-primary/10 blur-[80px] sm:blur-[120px] animate-pulse-slow" />
-          <div className="absolute bottom-[-100px] right-[-100px] h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-purple-500/5 dark:bg-purple-500/10 blur-[80px] sm:blur-[120px] animate-pulse-slow" />
+          <div className="absolute bottom-[-100px] right-[-100px] h-[300px] w-[300px] sm:h-[500px] sm:w-[500px] rounded-full bg-secondary/5 dark:bg-secondary/10 blur-[80px] sm:blur-[120px] animate-pulse-slow" />
         </div>
 
         <ThemeProvider

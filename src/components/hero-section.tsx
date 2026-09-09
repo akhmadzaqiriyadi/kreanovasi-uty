@@ -18,8 +18,8 @@ export function HeroSection() {
             backgroundPosition: "center",
           }}
         />
-        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-[#2E417A]/10 dark:bg-[#2E417A]/20 blur-3xl" />
-        <div className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-[#FDC700]/10 dark:bg-[#FDC700]/15 blur-3xl" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/20 blur-3xl" />
+        <div className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-secondary/10 dark:bg-secondary/15 blur-3xl" />
       </div>
 
       {/* Main Container */}
@@ -28,21 +28,18 @@ export function HeroSection() {
           {/* Left Column: Headlines & Call to Actions */}
           <div className="lg:col-span-7 text-center lg:text-left space-y-6">
             {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#2E417A]/10 dark:bg-[#2E417A]/30 border border-[#2E417A]/25 dark:border-[#87A5EA]/30 text-[#2E417A] dark:text-[#87A5EA] text-xs sm:text-sm font-semibold shadow-xs">
-              <span className="flex h-2 w-2 rounded-full bg-[#FDC700] animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs sm:text-sm font-semibold shadow-xs">
+              <span className="flex h-2 w-2 rounded-full bg-secondary animate-pulse" />
               <span>🚀 Innovate. Collaborate. Create.</span>
             </div>
 
             {/* Display Title */}
             <div className="space-y-1">
-              <div className="text-5xl sm:text-7xl font-black tracking-tight text-[#2E417A] dark:text-[#87A5EA] leading-none">
+              <div className="text-5xl sm:text-7xl font-black tracking-tight text-primary leading-none">
                 UCH
               </div>
               <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-                UTY{" "}
-                <span className="bg-gradient-to-r from-[#2E417A] via-[#3B559E] to-[#FDC700] dark:from-[#87A5EA] dark:via-[#B8CDFA] dark:to-[#FDC700] bg-clip-text text-transparent">
-                  Creative Hub
-                </span>
+                UTY <span className="text-gradient-uch">Creative Hub</span>
               </h1>
             </div>
 
@@ -59,7 +56,7 @@ export function HeroSection() {
                 href="/programs"
                 className={cn(
                   buttonVariants({ size: "lg" }),
-                  "h-12 px-7 bg-[#2E417A] hover:bg-[#1E2E5B] text-white font-semibold rounded-xl shadow-lg shadow-[#2E417A]/25 hover:shadow-xl hover:shadow-[#2E417A]/35 transition-all duration-300 flex items-center gap-2 group",
+                  "h-12 px-7 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-lg shadow-primary/25 hover:shadow-xl transition-all duration-300 flex items-center gap-2 group",
                 )}
               >
                 <span>Jelajahi Program</span>
@@ -70,7 +67,7 @@ export function HeroSection() {
                 href="/schedule"
                 className={cn(
                   buttonVariants({ variant: "outline", size: "lg" }),
-                  "h-12 px-6 border-2 border-[#2E417A]/30 dark:border-border text-[#2E417A] dark:text-foreground hover:bg-accent hover:border-[#FDC700] font-semibold rounded-xl transition-all duration-300",
+                  "h-12 px-6 border-2 border-primary/30 text-primary hover:bg-accent hover:border-secondary font-semibold rounded-xl transition-all duration-300",
                 )}
               >
                 <span>Cek Jadwal</span>
@@ -80,7 +77,7 @@ export function HeroSection() {
                 href="/booking"
                 className={cn(
                   buttonVariants({ size: "lg" }),
-                  "h-12 px-6 bg-[#FDC700] hover:bg-[#E5B500] text-zinc-900 font-semibold rounded-xl shadow-md shadow-[#FDC700]/25 transition-all duration-300 flex items-center gap-2",
+                  "h-12 px-6 bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl shadow-md shadow-secondary/25 transition-all duration-300 flex items-center gap-2",
                 )}
               >
                 <Calendar className="h-4 w-4" />
@@ -91,7 +88,7 @@ export function HeroSection() {
             {/* Highlights Bar */}
             <div className="pt-6 border-t border-border/50 grid grid-cols-3 gap-4 max-w-lg mx-auto lg:mx-0 text-center lg:text-left">
               <div>
-                <div className="text-xl sm:text-2xl font-bold text-[#2E417A] dark:text-[#87A5EA]">
+                <div className="text-xl sm:text-2xl font-bold text-primary">
                   100+
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -99,7 +96,7 @@ export function HeroSection() {
                 </div>
               </div>
               <div>
-                <div className="text-xl sm:text-2xl font-bold text-[#2E417A] dark:text-[#87A5EA]">
+                <div className="text-xl sm:text-2xl font-bold text-primary">
                   4 Lab
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -107,7 +104,7 @@ export function HeroSection() {
                 </div>
               </div>
               <div>
-                <div className="text-xl sm:text-2xl font-bold text-[#FDC700] dark:text-[#FDC700]">
+                <div className="text-xl sm:text-2xl font-bold text-secondary">
                   Active
                 </div>
                 <div className="text-xs text-muted-foreground">
@@ -121,7 +118,7 @@ export function HeroSection() {
           <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
             <div className="relative w-full max-w-[480px] lg:max-w-none">
               {/* Decorative Accent Ring */}
-              <div className="absolute -inset-2 bg-gradient-to-tr from-[#2E417A]/20 via-[#FDC700]/20 to-transparent rounded-3xl blur-xl opacity-60" />
+              <div className="absolute -inset-2 bg-gradient-to-tr from-primary/20 via-secondary/20 to-transparent rounded-3xl blur-xl opacity-60" />
 
               <div className="relative rounded-2xl overflow-hidden p-2">
                 <Image

@@ -97,8 +97,8 @@ export function Navbar() {
               />
             </div>
             <div className="flex flex-col text-left font-bold text-[11px] leading-[13px] tracking-tight text-foreground select-none">
-              <span className="text-[#2E417A] dark:text-blue-400">UTY</span>
-              <span className="text-primary">CREATIVE</span>
+              <span className="text-primary">UTY</span>
+              <span className="text-secondary font-extrabold">CREATIVE</span>
               <span className="text-foreground">HUB</span>
             </div>
           </Link>
@@ -213,7 +213,7 @@ export function Navbar() {
               href="/schedule"
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
-                "border-[#2E417A]/40 dark:border-blue-400/40 text-[#2E417A] dark:text-blue-400 hover:bg-blue-50/80 dark:hover:bg-blue-950/40 font-medium rounded-xl text-xs md:text-sm whitespace-nowrap",
+                "border-primary/40 text-primary hover:bg-primary/10 font-medium rounded-xl text-xs md:text-sm whitespace-nowrap",
                 scrolled ? "h-9 px-3.5" : "h-10 px-4",
               )}
             >
@@ -253,7 +253,7 @@ export function Navbar() {
                 href="/login"
                 className={cn(
                   buttonVariants({ size: "sm" }),
-                  "bg-[#2E417A] hover:bg-[#1E2E5B] text-white font-medium shadow-md shadow-[#2E417A]/20 hover:shadow-lg rounded-xl text-xs md:text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
+                  "bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md shadow-primary/20 hover:shadow-lg rounded-xl text-xs md:text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
                   scrolled ? "h-9 px-3.5" : "h-10 px-4",
                 )}
               >
@@ -443,7 +443,7 @@ export function Navbar() {
                         onClick={() => setOpen(false)}
                         className={cn(
                           buttonVariants({ variant: "outline" }),
-                          "w-full rounded-xl border-[#2E417A]/40 text-[#2E417A] dark:text-blue-400 font-medium",
+                          "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-medium",
                         )}
                       >
                         Cek Jadwal
@@ -453,7 +453,7 @@ export function Navbar() {
                         onClick={() => setOpen(false)}
                         className={cn(
                           buttonVariants({ size: "default" }),
-                          "w-full bg-[#2E417A] hover:bg-[#1E2E5B] text-white rounded-xl font-medium flex items-center justify-center gap-1.5 shadow-md",
+                          "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium flex items-center justify-center gap-1.5 shadow-md",
                         )}
                       >
                         <Calendar className="h-4 w-4" />
