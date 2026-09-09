@@ -214,13 +214,48 @@ export function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Headlines & Call to Actions */}
           <div className="lg:col-span-7 text-center lg:text-left space-y-6">
-            {/* Clean Tagline Badge without emoji */}
+            {/* Clean Running Ticker Tagline Badge */}
             <div
               ref={badgeRef}
-              className="inline-flex items-center gap-2.5 px-3.5 py-1 rounded-md bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs"
+              className="inline-flex items-center gap-2.5 sm:gap-3 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs w-full max-w-[320px] sm:max-w-md md:max-w-lg overflow-hidden select-none"
             >
-              <span className="flex h-2 w-2 rounded-full bg-secondary" />
-              <span>Innovate. Collaborate. Create.</span>
+              <div className="flex items-center gap-1.5 shrink-0 bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-full border border-primary/20">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
+                </span>
+                <span className="text-[11px] uppercase tracking-wider font-bold text-primary">
+                  UCH
+                </span>
+              </div>
+
+              <div className="overflow-hidden whitespace-nowrap flex-1">
+                <div className="animate-marquee gap-6 font-medium text-xs sm:text-sm text-primary">
+                  <span className="flex items-center gap-6 shrink-0">
+                    <span>Innovate. Collaborate. Create.</span>
+                    <span className="text-secondary font-bold">•</span>
+                    <span>Pusat Kreativitas & Inovasi UTY</span>
+                    <span className="text-secondary font-bold">•</span>
+                    <span>Empower Ideas</span>
+                    <span className="text-secondary font-bold">•</span>
+                    <span>FastLab & Incubation</span>
+                    <span className="text-secondary font-bold">•</span>
+                  </span>
+                  <span
+                    className="flex items-center gap-6 shrink-0"
+                    aria-hidden="true"
+                  >
+                    <span>Innovate. Collaborate. Create.</span>
+                    <span className="text-secondary font-bold">•</span>
+                    <span>Pusat Kreativitas & Inovasi UTY</span>
+                    <span className="text-secondary font-bold">•</span>
+                    <span>Empower Ideas</span>
+                    <span className="text-secondary font-bold">•</span>
+                    <span>FastLab & Incubation</span>
+                    <span className="text-secondary font-bold">•</span>
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Display Title */}
