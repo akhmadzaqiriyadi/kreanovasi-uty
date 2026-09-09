@@ -49,10 +49,10 @@ export function MobileDrawer() {
 
         <SheetContent
           side="right"
-          className="glass-panel border-l-border/50 w-[290px] sm:w-[350px] p-0 flex flex-col justify-between"
+          className="bg-background text-foreground border-l border-border/80 w-[290px] sm:w-[350px] p-0 flex flex-col justify-between shadow-2xl"
         >
           <div>
-            <SheetHeader className="text-left border-b border-border/40 p-4">
+            <SheetHeader className="text-left border-b border-border/50 p-4 bg-background">
               <SheetTitle asChild>
                 <div className="flex items-center">
                   <BrandLogo onClick={() => setOpen(false)} />
@@ -63,7 +63,7 @@ export function MobileDrawer() {
             {/* Mobile Navigation Links */}
             <nav
               aria-label="Navigasi Menu Mobile"
-              className="p-4 overflow-y-auto max-h-[calc(100vh-220px)]"
+              className="p-4 overflow-y-auto max-h-[calc(100vh-220px)] bg-background"
             >
               <ul className="flex flex-col gap-1">
                 {navItems.map((item) => {
@@ -157,7 +157,7 @@ export function MobileDrawer() {
           {/* Mobile Drawer Bottom Actions */}
           <nav
             aria-label="Aksi Cepat Mobile"
-            className="p-4 border-t border-border/40 space-y-2 bg-background/40"
+            className="p-4 border-t border-border/50 space-y-2 bg-background"
           >
             <Link
               href="/schedule"
