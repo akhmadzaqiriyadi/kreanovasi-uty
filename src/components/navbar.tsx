@@ -63,38 +63,44 @@ export function Navbar() {
     };
   }, []);
 
-  // GSAP Entrance Animation
+  // GSAP Entrance Animation with strict-mode safe fromTo
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      tl.from(logoRef.current, {
-        x: -20,
-        opacity: 0,
-        duration: 0.6,
-      });
+      if (logoRef.current) {
+        tl.fromTo(
+          logoRef.current,
+          { x: -20, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.6, clearProps: "opacity,transform" },
+        );
+      }
 
-      if (navLinksRef.current) {
-        tl.from(
-          navLinksRef.current.children,
+      if (navLinksRef.current?.children) {
+        tl.fromTo(
+          Array.from(navLinksRef.current.children),
+          { y: -10, opacity: 0 },
           {
-            y: -10,
-            opacity: 0,
-            stagger: 0.06,
+            y: 0,
+            opacity: 1,
+            stagger: 0.05,
             duration: 0.5,
+            clearProps: "opacity,transform",
           },
           "-=0.4",
         );
       }
 
-      if (actionsRef.current) {
-        tl.from(
-          actionsRef.current.children,
+      if (actionsRef.current?.children) {
+        tl.fromTo(
+          Array.from(actionsRef.current.children),
+          { x: 15, opacity: 0 },
           {
-            x: 15,
-            opacity: 0,
-            stagger: 0.08,
+            x: 0,
+            opacity: 1,
+            stagger: 0.06,
             duration: 0.5,
+            clearProps: "opacity,transform",
           },
           "-=0.4",
         );

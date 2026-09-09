@@ -97,32 +97,42 @@ export function Footer() {
     gsap.registerPlugin(ScrollTrigger);
 
     const ctx = gsap.context(() => {
-      if (gridRef.current) {
-        gsap.from(gridRef.current.children, {
-          y: 25,
-          opacity: 0,
-          stagger: 0.1,
-          duration: 0.7,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top 90%",
+      if (gridRef.current?.children) {
+        gsap.fromTo(
+          Array.from(gridRef.current.children),
+          { y: 25, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            stagger: 0.1,
+            duration: 0.7,
+            ease: "power3.out",
+            clearProps: "opacity,transform",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top 90%",
+            },
           },
-        });
+        );
       }
 
       if (bottomBarRef.current) {
-        gsap.from(bottomBarRef.current, {
-          y: 15,
-          opacity: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          delay: 0.2,
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: "top 85%",
+        gsap.fromTo(
+          bottomBarRef.current,
+          { y: 15, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            delay: 0.2,
+            clearProps: "opacity,transform",
+            scrollTrigger: {
+              trigger: footerRef.current,
+              start: "top 85%",
+            },
           },
-        });
+        );
       }
     }, footerRef);
 

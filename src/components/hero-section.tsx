@@ -21,66 +21,82 @@ export function HeroSection() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      tl.from(badgeRef.current, {
-        y: -15,
-        opacity: 0,
-        duration: 0.6,
-      })
-        .from(
-          titleRef.current?.children
-            ? Array.from(titleRef.current.children)
-            : [],
+      if (badgeRef.current) {
+        tl.fromTo(
+          badgeRef.current,
+          { y: -15, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, clearProps: "opacity,transform" },
+        );
+      }
+
+      if (titleRef.current?.children) {
+        tl.fromTo(
+          Array.from(titleRef.current.children),
+          { y: 30, opacity: 0 },
           {
-            y: 30,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             stagger: 0.1,
             duration: 0.7,
+            clearProps: "opacity,transform",
           },
           "-=0.4",
-        )
-        .from(
+        );
+      }
+
+      if (descRef.current) {
+        tl.fromTo(
           descRef.current,
-          {
-            y: 20,
-            opacity: 0,
-            duration: 0.6,
-          },
+          { y: 20, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.6, clearProps: "opacity,transform" },
           "-=0.4",
-        )
-        .from(
-          actionsRef.current?.children
-            ? Array.from(actionsRef.current.children)
-            : [],
+        );
+      }
+
+      if (actionsRef.current?.children) {
+        tl.fromTo(
+          Array.from(actionsRef.current.children),
+          { y: 20, opacity: 0 },
           {
-            y: 20,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             stagger: 0.08,
             duration: 0.6,
+            clearProps: "opacity,transform",
           },
           "-=0.4",
-        )
-        .from(
-          highlightsRef.current?.children
-            ? Array.from(highlightsRef.current.children)
-            : [],
+        );
+      }
+
+      if (highlightsRef.current?.children) {
+        tl.fromTo(
+          Array.from(highlightsRef.current.children),
+          { y: 15, opacity: 0 },
           {
-            y: 15,
-            opacity: 0,
+            y: 0,
+            opacity: 1,
             stagger: 0.08,
             duration: 0.5,
+            clearProps: "opacity,transform",
           },
           "-=0.3",
-        )
-        .from(
+        );
+      }
+
+      if (imageRef.current) {
+        tl.fromTo(
           imageRef.current,
+          { scale: 0.95, opacity: 0 },
           {
-            scale: 0.95,
-            opacity: 0,
+            scale: 1,
+            opacity: 1,
             duration: 0.8,
             ease: "power2.out",
+            clearProps: "opacity,transform,scale",
           },
           "-=0.7",
         );
+      }
 
       // Subtle continuous floating effect for hero illustration
       if (imageRef.current) {
