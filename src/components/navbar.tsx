@@ -1,11 +1,25 @@
 "use client";
 
-import { LogIn, LogOut, Menu, User, Zap } from "lucide-react";
+import {
+  Calendar,
+  ChevronDown,
+  ExternalLink,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  User,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetContent,
@@ -13,262 +27,446 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { navItems } from "@/config/navigation";
+import { navItems, programItems } from "@/config/navigation";
 import { useAuth } from "@/features/auth";
+import { cn } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
-
-function useActiveSection(ids: string[]): string {
-  const [active, setActive] = useState("");
-
-  useEffect(() => {
-    const observers: IntersectionObserver[] = [];
-
-    for (const id of ids) {
-      const el = document.getElementById(id);
-      if (!el) continue;
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActive(id);
-        },
-        { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
-      );
-      observer.observe(el);
-      observers.push(observer);
-    }
-
-    return () => {
-      for (const obs of observers) obs.disconnect();
-    };
-  }, [ids]);
-
-  return active;
-}
 
 export function Navbar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
   const [open, setOpen] = useState(false);
-  const activeSection = useActiveSection(["features", "dx", "feedback"]);
+  const [mobileProgramOpen, setMobileProgramOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Check if current path matches
+  const isActivePath = (href: string) => {
+    if (href === "/") return pathname === "/";
+    return pathname.startsWith(href);
+  };
+
+  // Check if Program menu is active
+  const isProgramActive = () => {
+    return pathname === "/fastlab" || pathname.startsWith("/programs");
+  };
+
+  // Scroll listener for floating navbar effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [scrolled]);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/60 backdrop-blur-xl transition-all duration-300">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl">
-        {/* Logo & Badges */}
-        <div className="flex items-center gap-2.5">
+    <div className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 pointer-events-none">
+      <header
+        className={cn(
+          "transition-all duration-300 pointer-events-auto",
+          scrolled
+            ? "bg-background/80 dark:bg-background/85 backdrop-blur-xl border border-border/60 mx-3 sm:mx-6 md:mx-10 lg:mx-16 mt-2.5 rounded-2xl md:rounded-full shadow-lg shadow-black/5 dark:shadow-black/20"
+            : "bg-background/95 border-b border-border/40 shadow-xs",
+        )}
+      >
+        <div
+          className={cn(
+            "container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl transition-all duration-300",
+            scrolled ? "h-16" : "h-20",
+          )}
+        >
+          {/* Brand Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-bold text-xl tracking-tight hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2.5 hover:opacity-90 transition-opacity shrink-0"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-purple-500 text-primary-foreground shadow-md shadow-primary/20">
-              <Zap className="h-5 w-5 fill-current" />
+            <div className="relative h-10 w-10 sm:h-11 sm:w-11 shrink-0">
+              <Image
+                src="/images/uch.png"
+                alt="UTY Creative Hub Logo"
+                fill
+                sizes="44px"
+                className="object-contain"
+                priority
+              />
             </div>
-            <span className="bg-gradient-to-r from-foreground via-foreground/90 to-muted-foreground bg-clip-text text-transparent">
-              UCH<span className="text-primary">WebApp</span>
-            </span>
+            <div className="flex flex-col text-left font-bold text-[11px] leading-[13px] tracking-tight text-foreground select-none">
+              <span className="text-[#2E417A] dark:text-blue-400">UTY</span>
+              <span className="text-primary">CREATIVE</span>
+              <span className="text-foreground">HUB</span>
+            </div>
           </Link>
-          <Badge
-            variant="outline"
-            className="border-primary/25 bg-primary/5 text-primary text-[10px] leading-[10px] px-2 font-mono rounded-full hidden xs:inline-flex"
-          >
-            v0.1.0
-          </Badge>
-        </div>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => {
-            const sectionId = item.href.replace("/#", "");
-            const isActive = pathname === "/" && activeSection === sectionId;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative text-sm font-medium transition-colors py-1 px-2 rounded-md ${
-                  isActive
-                    ? "text-foreground font-semibold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 xl:space-x-4">
+            {navItems.map((item) => {
+              const active = isActivePath(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap transition-colors py-1 px-2.5 rounded-lg",
+                    active
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                  )}
+                >
+                  {item.label}
+                  {active && (
+                    <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
+                  )}
+                </Link>
+              );
+            })}
+
+            {/* Program Dropdown Menu */}
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                render={
+                  <button
+                    type="button"
+                    className={cn(
+                      "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap flex items-center gap-1 py-1 px-2.5 rounded-lg transition-colors cursor-pointer",
+                      isProgramActive()
+                        ? "text-primary font-semibold"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                    )}
+                  >
+                    <span>Program</span>
+                    <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+                    {isProgramActive() && (
+                      <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
+                    )}
+                  </button>
+                }
+              />
+              <DropdownMenuContent
+                align="start"
+                className="w-64 glass-panel border-border/50 p-1.5 space-y-1"
               >
-                {item.label}
-                {isActive && (
-                  <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
+                {programItems.map((item) => {
+                  if (item.disabled) {
+                    return (
+                      <DropdownMenuItem
+                        key={item.label}
+                        disabled
+                        className="text-xs text-muted-foreground/60 cursor-not-allowed px-3 py-2"
+                      >
+                        {item.label}
+                      </DropdownMenuItem>
+                    );
+                  }
+
+                  return (
+                    <DropdownMenuItem
+                      key={item.label}
+                      render={
+                        <Link
+                          href={item.href}
+                          target={item.external ? "_blank" : undefined}
+                          rel={
+                            item.external ? "noopener noreferrer" : undefined
+                          }
+                          className="flex items-center justify-between w-full px-3 py-2 text-xs md:text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                        />
+                      }
+                    >
+                      <span>{item.label}</span>
+                      {item.external && (
+                        <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+                      )}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Dashboard Link for Logged In Users */}
+            {isAuthenticated && (
+              <Link
+                href="/dashboard"
+                className={cn(
+                  "relative text-xs md:text-sm lg:text-base font-medium whitespace-nowrap transition-colors py-1 px-2.5 rounded-lg",
+                  pathname.startsWith("/dashboard")
+                    ? "text-primary font-semibold"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
                 )}
+              >
+                Dashboard
               </Link>
-            );
-          })}
-          {isAuthenticated && (
+            )}
+          </nav>
+
+          {/* Desktop Right Action Buttons */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-3">
+            <ThemeToggle />
+
+            {/* Cek Jadwal Button */}
             <Link
-              href="/dashboard"
-              className={`relative text-sm font-medium transition-colors hover:text-foreground py-1 px-2 rounded-md ${
-                pathname === "/dashboard"
-                  ? "text-foreground font-semibold"
-                  : "text-muted-foreground"
-              }`}
+              href="/schedule"
+              className={cn(
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "border-[#2E417A]/40 dark:border-blue-400/40 text-[#2E417A] dark:text-blue-400 hover:bg-blue-50/80 dark:hover:bg-blue-950/40 font-medium rounded-xl text-xs md:text-sm whitespace-nowrap",
+                scrolled ? "h-9 px-3.5" : "h-10 px-4",
+              )}
             >
-              Dashboard
+              Cek Jadwal
             </Link>
-          )}
-        </nav>
 
-        {/* Right side items */}
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-
-          {isAuthenticated ? (
-            // Authenticated Desktop User Section
-            <div className="hidden md:flex items-center gap-3">
-              <div className="flex flex-col text-right">
-                <span className="text-xs font-semibold text-foreground">
-                  {user?.name}
-                </span>
-                <span className="text-[10px] text-muted-foreground capitalize">
-                  {user?.role}
-                </span>
-              </div>
-              <div className="flex items-center gap-2 border border-border/40 bg-zinc-100/50 dark:bg-zinc-900/50 rounded-full pl-2 pr-1 py-1">
-                <div className="h-6 w-6 rounded-full bg-primary/15 flex items-center justify-center text-primary text-xs font-bold border border-primary/25">
-                  <User className="h-3 w-3" />
-                </div>
+            {/* Authenticated State vs Book Now / Login */}
+            {isAuthenticated ? (
+              <div className="flex items-center gap-2.5 border border-border/50 bg-accent/40 rounded-full pl-2.5 pr-1.5 py-1">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 text-right hover:opacity-80 transition-opacity"
+                >
+                  <div className="h-7 w-7 rounded-full bg-primary/15 flex items-center justify-center text-primary text-xs font-bold border border-primary/25">
+                    <User className="h-3.5 w-3.5" />
+                  </div>
+                  <div className="flex flex-col text-left">
+                    <span className="text-xs font-semibold text-foreground leading-tight">
+                      {user?.name}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground capitalize">
+                      {user?.role}
+                    </span>
+                  </div>
+                </Link>
                 <button
                   type="button"
                   onClick={logout}
-                  className="p-1 hover:text-destructive rounded-full transition-colors cursor-pointer"
+                  className="p-1.5 hover:text-destructive text-muted-foreground rounded-full transition-colors cursor-pointer"
                   title="Keluar"
                 >
                   <LogOut className="h-4 w-4" />
                 </button>
               </div>
-            </div>
-          ) : (
-            // Unauthenticated Desktop Navigation Buttons
-            <div className="hidden sm:flex items-center gap-2">
+            ) : (
               <Link
                 href="/login"
-                className={`${buttonVariants({
-                  variant: "ghost",
-                  size: "sm",
-                })} flex items-center gap-1.5`}
-              >
-                <LogIn className="h-3.5 w-3.5" />
-                <span>Masuk</span>
-              </Link>
-              <Link
-                href="/#feedback"
-                className={`${buttonVariants({
-                  size: "sm",
-                })} bg-gradient-to-r from-primary to-purple-600 text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/35 transition-all duration-300 glow-hover`}
-              >
-                Get Started
-              </Link>
-            </div>
-          )}
-
-          {/* Mobile Menu Burger Icon and Drawer */}
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger
-              render={
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="md:hidden h-9 w-9 border border-input bg-background/50 hover:bg-accent hover:text-accent-foreground backdrop-blur-sm"
-                />
-              }
-            >
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle navigation menu</span>
-            </SheetTrigger>
-            <SheetContent
-              side="right"
-              className="glass-panel border-l-border/50 w-[280px] sm:w-[350px]"
-            >
-              <SheetHeader className="text-left border-b border-border/40 pb-4 mb-4">
-                <SheetTitle className="flex items-center gap-2 font-bold text-xl tracking-tight">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-purple-500 text-primary-foreground">
-                    <Zap className="h-5 w-5 fill-current" />
-                  </div>
-                  <span>
-                    UCH<span className="text-primary">WebApp</span>
-                  </span>
-                </SheetTitle>
-              </SheetHeader>
-              <nav className="flex flex-col gap-4 mt-4 px-4">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setOpen(false)}
-                    className="text-base font-medium text-muted-foreground hover:text-foreground py-2 px-3 rounded-lg hover:bg-accent/40 transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-                {isAuthenticated && (
-                  <Link
-                    href="/dashboard"
-                    onClick={() => setOpen(false)}
-                    className="text-base font-medium text-muted-foreground hover:text-foreground py-2 px-3 rounded-lg hover:bg-accent/40 transition-colors"
-                  >
-                    Dashboard
-                  </Link>
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "bg-[#2E417A] hover:bg-[#1E2E5B] text-white font-medium shadow-md shadow-[#2E417A]/20 hover:shadow-lg rounded-xl text-xs md:text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
+                  scrolled ? "h-9 px-3.5" : "h-10 px-4",
                 )}
+              >
+                <Calendar className="h-4 w-4" />
+                <span>Book Now</span>
+              </Link>
+            )}
+          </div>
 
-                {/* Mobile Drawer Auth Actions */}
-                {isAuthenticated ? (
-                  <div className="border-t border-border/40 pt-4 mt-4 space-y-4">
-                    <div className="flex items-center gap-3 px-3">
-                      <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/25 flex items-center justify-center text-primary text-sm font-bold">
-                        <User className="h-4 w-4" />
+          {/* Mobile Right Bar: Theme Toggle + Drawer Trigger */}
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle />
+
+            <Sheet open={open} onOpenChange={setOpen}>
+              <SheetTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-9 w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-xl"
+                  />
+                }
+              >
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Buka menu navigasi</span>
+              </SheetTrigger>
+
+              <SheetContent
+                side="right"
+                className="glass-panel border-l-border/50 w-[290px] sm:w-[350px] p-0 flex flex-col justify-between"
+              >
+                <div>
+                  <SheetHeader className="text-left border-b border-border/40 p-4">
+                    <SheetTitle className="flex items-center gap-2.5">
+                      <div className="relative h-9 w-9 shrink-0">
+                        <Image
+                          src="/images/uch.png"
+                          alt="UTY Creative Hub Logo"
+                          fill
+                          sizes="36px"
+                          className="object-contain"
+                        />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-foreground leading-none">
-                          {user?.name}
+                      <div className="flex flex-col text-left font-bold text-xs leading-tight">
+                        <span className="text-[#2E417A] dark:text-blue-400">
+                          UTY
                         </span>
-                        <span className="text-xs text-muted-foreground capitalize mt-0.5">
-                          {user?.role}
-                        </span>
+                        <span className="text-primary">CREATIVE</span>
+                        <span className="text-foreground">HUB</span>
                       </div>
+                    </SheetTitle>
+                  </SheetHeader>
+
+                  {/* Mobile Navigation Links */}
+                  <nav className="flex flex-col gap-1 p-4 overflow-y-auto max-h-[calc(100vh-220px)]">
+                    {navItems.map((item) => {
+                      const active = isActivePath(item.href);
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "text-sm font-medium py-2.5 px-3 rounded-xl transition-colors",
+                            active
+                              ? "bg-primary/10 text-primary font-semibold border-l-4 border-primary"
+                              : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                          )}
+                        >
+                          {item.label}
+                        </Link>
+                      );
+                    })}
+
+                    {/* Mobile Program Accordion */}
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setMobileProgramOpen(!mobileProgramOpen)}
+                        className={cn(
+                          "w-full flex items-center justify-between text-sm font-medium py-2.5 px-3 rounded-xl transition-colors cursor-pointer",
+                          isProgramActive()
+                            ? "bg-primary/10 text-primary font-semibold"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                        )}
+                      >
+                        <span>Program</span>
+                        <ChevronDown
+                          className={cn(
+                            "h-4 w-4 transition-transform duration-200",
+                            mobileProgramOpen ? "rotate-180" : "",
+                          )}
+                        />
+                      </button>
+
+                      {mobileProgramOpen && (
+                        <div className="pl-4 pr-1 py-2 space-y-1.5 border-l border-border/50 ml-3 mt-1">
+                          {programItems.map((item) => {
+                            if (item.disabled) {
+                              return (
+                                <div
+                                  key={item.label}
+                                  className="text-xs text-muted-foreground/60 py-1.5 px-2"
+                                >
+                                  {item.label}
+                                </div>
+                              );
+                            }
+
+                            return (
+                              <Link
+                                key={item.label}
+                                href={item.href}
+                                target={item.external ? "_blank" : undefined}
+                                rel={
+                                  item.external
+                                    ? "noopener noreferrer"
+                                    : undefined
+                                }
+                                onClick={() => setOpen(false)}
+                                className="flex items-center justify-between text-xs font-medium text-muted-foreground hover:text-primary py-1.5 px-2 rounded-lg hover:bg-accent/40 transition-colors"
+                              >
+                                <span>{item.label}</span>
+                                {item.external && (
+                                  <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                )}
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setOpen(false);
-                        logout();
-                      }}
-                      className="w-full flex items-center gap-2 justify-center text-sm font-semibold py-2 px-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive hover:bg-destructive/20 transition-all duration-300"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>Keluar</span>
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2 mt-4">
-                    <Link
-                      href="/login"
-                      onClick={() => setOpen(false)}
-                      className={`${buttonVariants({
-                        variant: "outline",
-                      })} justify-center`}
-                    >
-                      <LogIn className="h-4 w-4 mr-2" />
-                      <span>Masuk</span>
-                    </Link>
-                    <Link
-                      href="/#feedback"
-                      onClick={() => setOpen(false)}
-                      className={`${buttonVariants({
-                        size: "lg",
-                      })} bg-gradient-to-r from-primary to-purple-600 text-primary-foreground font-semibold shadow-lg justify-center`}
-                    >
-                      Get Started
-                    </Link>
-                  </div>
-                )}
-              </nav>
-            </SheetContent>
-          </Sheet>
+
+                    {/* Mobile Dashboard Link */}
+                    {isAuthenticated && (
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          "text-sm font-medium py-2.5 px-3 rounded-xl transition-colors flex items-center gap-2",
+                          pathname.startsWith("/dashboard")
+                            ? "bg-primary/10 text-primary font-semibold border-l-4 border-primary"
+                            : "text-muted-foreground hover:text-foreground hover:bg-accent/40",
+                        )}
+                      >
+                        <LayoutDashboard className="h-4 w-4" />
+                        <span>Dashboard</span>
+                      </Link>
+                    )}
+                  </nav>
+                </div>
+
+                {/* Mobile Drawer Bottom Actions */}
+                <div className="p-4 border-t border-border/40 space-y-2.5 bg-background/40">
+                  {isAuthenticated ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3 px-1">
+                        <div className="h-9 w-9 rounded-full bg-primary/15 border border-primary/25 flex items-center justify-center text-primary text-sm font-bold">
+                          <User className="h-4.5 w-4.5" />
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-sm font-semibold text-foreground truncate">
+                            {user?.name}
+                          </span>
+                          <span className="text-xs text-muted-foreground capitalize">
+                            {user?.role}
+                          </span>
+                        </div>
+                      </div>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => {
+                          setOpen(false);
+                          logout();
+                        }}
+                        className="w-full rounded-xl flex items-center justify-center gap-2"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        <span>Keluar</span>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        href="/schedule"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          buttonVariants({ variant: "outline" }),
+                          "w-full rounded-xl border-[#2E417A]/40 text-[#2E417A] dark:text-blue-400 font-medium",
+                        )}
+                      >
+                        Cek Jadwal
+                      </Link>
+                      <Link
+                        href="/login"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          buttonVariants({ size: "default" }),
+                          "w-full bg-[#2E417A] hover:bg-[#1E2E5B] text-white rounded-xl font-medium flex items-center justify-center gap-1.5 shadow-md",
+                        )}
+                      >
+                        <Calendar className="h-4 w-4" />
+                        <span>Book Now</span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+    </div>
   );
 }
