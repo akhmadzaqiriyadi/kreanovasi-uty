@@ -342,7 +342,7 @@ export function HeroSection() {
                 {/* Alternate Morph Entity Illustration */}
                 <Image
                   ref={altImageRef}
-                  src="/images/hero-alt.webp"
+                  src="/images/hero-alt-v2.webp"
                   alt="UTY Creative Hub Innovation Alternate Entity"
                   width={1024}
                   height={1536}
