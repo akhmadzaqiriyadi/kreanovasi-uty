@@ -11,197 +11,50 @@ import {
   VolumeX,
 } from "lucide-react";
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { aboutConfig } from "@/config/about";
+import { useVideoPlayer } from "@/hooks/use-video-player";
 import { cn } from "@/lib/utils";
 
 interface AboutVideoProps {
   videoRef?: React.Ref<HTMLElement>;
 }
 
+function formatVideoTime(timeInSeconds: number): string {
+  if (Number.isNaN(timeInSeconds)) return "0:00";
+  const minutes = Math.floor(timeInSeconds / 60);
+  const seconds = Math.floor(timeInSeconds % 60);
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+}
+
 export function AboutVideo({ videoRef }: AboutVideoProps) {
-  const internalVideoRef = useRef<HTMLVideoElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.2); // Default volume level
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showControls, setShowControls] = useState(true);
-  const [hasLoaded, setHasLoaded] = useState(false);
-  const hideControlsTimer = useRef<NodeJS.Timeout | null>(null);
+  const { src, driveUrl, caption, defaultVolume } = aboutConfig.video;
 
-  // Initialize playback with smooth audio level
-  useEffect(() => {
-    const video = internalVideoRef.current;
-    if (!video) return;
-
-    video.volume = 0.2;
-    setVolume(0.2);
-
-    const tryPlayWithSound = async () => {
-      try {
-        video.muted = false;
-        video.volume = 0.2;
-        await video.play();
-        setIsPlaying(true);
-        setIsMuted(false);
-        setHasLoaded(true);
-      } catch {
-        // Fallback to muted autoplay if browser blocks audio autoplay on first visit
-        video.muted = true;
-        setIsMuted(true);
-        video
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-            setHasLoaded(true);
-          })
-          .catch(() => {
-            setIsPlaying(false);
-          });
-      }
-    };
-
-    tryPlayWithSound();
-
-    // IntersectionObserver to auto-play when in viewport and pause when scrolled away
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            video
-              .play()
-              .then(() => setIsPlaying(true))
-              .catch(() => {});
-          } else {
-            video.pause();
-            setIsPlaying(false);
-          }
-        }
-      },
-      { threshold: 0.3 },
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
-
-  const handleTimeUpdate = () => {
-    const video = internalVideoRef.current;
-    if (!video) return;
-    setCurrentTime(video.currentTime);
-  };
-
-  const handleLoadedMetadata = () => {
-    const video = internalVideoRef.current;
-    if (!video) return;
-    setDuration(video.duration);
-    setHasLoaded(true);
-  };
-
-  const togglePlay = () => {
-    const video = internalVideoRef.current;
-    if (!video) return;
-
-    if (video.paused) {
-      video
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch(() => {});
-    } else {
-      video.pause();
-      setIsPlaying(false);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = Number.parseFloat(e.target.value);
-    const video = internalVideoRef.current;
-    if (!video) return;
-
-    setVolume(newVolume);
-    video.volume = newVolume;
-
-    if (newVolume === 0) {
-      video.muted = true;
-      setIsMuted(true);
-    } else {
-      video.muted = false;
-      setIsMuted(false);
-    }
-  };
-
-  const toggleMute = () => {
-    const video = internalVideoRef.current;
-    if (!video) return;
-
-    if (isMuted || volume === 0) {
-      const restoreVol = volume > 0 ? volume : 0.2;
-      video.muted = false;
-      video.volume = restoreVol;
-      setVolume(restoreVol);
-      setIsMuted(false);
-    } else {
-      video.muted = true;
-      setIsMuted(true);
-    }
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const seekTime = Number.parseFloat(e.target.value);
-    const video = internalVideoRef.current;
-    if (!video) return;
-
-    video.currentTime = seekTime;
-    setCurrentTime(seekTime);
-  };
-
-  const toggleFullscreen = () => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    if (!document.fullscreenElement) {
-      container
-        .requestFullscreen?.()
-        .then(() => setIsFullscreen(true))
-        .catch(() => {});
-    } else {
-      document
-        .exitFullscreen?.()
-        .then(() => setIsFullscreen(false))
-        .catch(() => {});
-    }
-  };
-
-  const handleMouseMove = () => {
-    setShowControls(true);
-    if (hideControlsTimer.current) {
-      clearTimeout(hideControlsTimer.current);
-    }
-    hideControlsTimer.current = setTimeout(() => {
-      if (isPlaying) {
-        setShowControls(false);
-      }
-    }, 3000);
-  };
-
-  const formatTime = (timeInSeconds: number) => {
-    if (Number.isNaN(timeInSeconds)) return "0:00";
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  };
+  const {
+    videoRef: internalVideoRef,
+    containerRef,
+    isPlaying,
+    isMuted,
+    volume,
+    currentTime,
+    duration,
+    isFullscreen,
+    showControls,
+    hasLoaded,
+    togglePlay,
+    toggleMute,
+    handleVolumeChange,
+    seek,
+    toggleFullscreen,
+    handleMouseMove,
+    setShowControls,
+    onTimeUpdate,
+    onLoadedMetadata,
+  } = useVideoPlayer({ initialVolume: defaultVolume, autoPlay: true });
 
   return (
     <figure
       ref={videoRef}
-      aria-label="Video Dokumentasi UTY Creative Hub"
+      aria-label={caption}
       className="w-full max-w-4xl mx-auto m-0 space-y-3"
     >
       <div
@@ -213,13 +66,13 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
         {/* Native HTML5 Video */}
         <video
           ref={internalVideoRef}
-          src="/videos/uch-profile.mp4"
+          src={src}
           autoPlay
           loop
           playsInline
           preload="auto"
-          onTimeUpdate={handleTimeUpdate}
-          onLoadedMetadata={handleLoadedMetadata}
+          onTimeUpdate={onTimeUpdate}
+          onLoadedMetadata={onLoadedMetadata}
           onClick={togglePlay}
           className={cn(
             "w-full h-full object-cover transition-opacity duration-700 cursor-pointer",
@@ -229,7 +82,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
           Browser Anda tidak mendukung tag video.
         </video>
 
-        {/* Clean Floating Unmute Button (No awkward percentage text) */}
+        {/* Clean Floating Unmute Button */}
         {isMuted && isPlaying && (
           <button
             type="button"
@@ -259,7 +112,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
               max={duration || 100}
               step={0.1}
               value={currentTime}
-              onChange={handleSeek}
+              onChange={(e) => seek(Number.parseFloat(e.target.value))}
               aria-label="Progress Video"
               className="w-full h-1.5 bg-white/30 rounded-lg appearance-none cursor-pointer accent-secondary hover:h-2 transition-all"
             />
@@ -308,7 +161,9 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
                     max={1}
                     step={0.05}
                     value={isMuted ? 0 : volume}
-                    onChange={handleVolumeChange}
+                    onChange={(e) =>
+                      handleVolumeChange(Number.parseFloat(e.target.value))
+                    }
                     aria-label="Volume suara"
                     className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-secondary"
                   />
@@ -317,9 +172,9 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
 
               {/* Time Display */}
               <div className="text-[11px] sm:text-xs font-mono text-slate-300 pl-1 select-none">
-                <span>{formatTime(currentTime)}</span>
+                <span>{formatVideoTime(currentTime)}</span>
                 <span className="text-slate-500 mx-1">/</span>
-                <span>{formatTime(duration)}</span>
+                <span>{formatVideoTime(duration)}</span>
               </div>
             </div>
 
@@ -343,9 +198,9 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground font-medium px-1">
-        <figcaption>Video Dokumentasi Resmi UTY Creative Hub</figcaption>
+        <figcaption>{caption}</figcaption>
         <a
-          href="https://drive.google.com/file/d/16Ku7491nu4LqQccb5rvv6qx2VVESJpq0/view"
+          href={driveUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary hover:underline"

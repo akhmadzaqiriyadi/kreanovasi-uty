@@ -1,10 +1,13 @@
 import type React from "react";
+import { aboutConfig } from "@/config/about";
 
 interface AboutHeaderProps {
   headerRef?: React.Ref<HTMLElement>;
 }
 
 export function AboutHeader({ headerRef }: AboutHeaderProps) {
+  const { title, subtitle } = aboutConfig.header;
+
   return (
     <header
       ref={headerRef}
@@ -16,7 +19,7 @@ export function AboutHeader({ headerRef }: AboutHeaderProps) {
           id="about-heading"
           className="text-2xl xs:text-3xl sm:text-4xl font-extrabold tracking-tight text-primary dark:text-foreground leading-tight"
         >
-          About Us
+          {title}
         </h2>
         {/* Balanced Solid Gold Underline */}
         <div
@@ -27,8 +30,7 @@ export function AboutHeader({ headerRef }: AboutHeaderProps) {
 
       {/* Subtitle */}
       <p className="text-xs xs:text-sm sm:text-base text-muted-foreground font-medium max-w-lg mx-auto leading-relaxed">
-        Pusat Pengembangan Kreativitas, Inovasi, dan Ekosistem Kolaborasi Resmi
-        Universitas Teknologi Yogyakarta
+        {subtitle}
       </p>
     </header>
   );
