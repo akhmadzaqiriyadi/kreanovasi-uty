@@ -23,7 +23,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.2); // Default 20% volume
+  const [volume, setVolume] = useState(0.2); // Default volume level
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -31,7 +31,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
   const [hasLoaded, setHasLoaded] = useState(false);
   const hideControlsTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize playback with default 20% volume
+  // Initialize playback with smooth audio level
   useEffect(() => {
     const video = internalVideoRef.current;
     if (!video) return;
@@ -48,7 +48,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
         setIsMuted(false);
         setHasLoaded(true);
       } catch {
-        // Fallback to muted autoplay if browser blocks sound autoplay
+        // Fallback to muted autoplay if browser blocks audio autoplay on first visit
         video.muted = true;
         setIsMuted(true);
         video
@@ -92,7 +92,6 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     };
   }, []);
 
-  // Update time and duration
   const handleTimeUpdate = () => {
     const video = internalVideoRef.current;
     if (!video) return;
@@ -121,7 +120,6 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     }
   };
 
-  // Handle Volume Change with Slider
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = Number.parseFloat(e.target.value);
     const video = internalVideoRef.current;
@@ -139,7 +137,6 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     }
   };
 
-  // Toggle Mute button
   const toggleMute = () => {
     const video = internalVideoRef.current;
     if (!video) return;
@@ -156,7 +153,6 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     }
   };
 
-  // Handle Seek / Scrubber
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const seekTime = Number.parseFloat(e.target.value);
     const video = internalVideoRef.current;
@@ -166,7 +162,6 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     setCurrentTime(seekTime);
   };
 
-  // Fullscreen toggle
   const toggleFullscreen = () => {
     const container = containerRef.current;
     if (!container) return;
@@ -234,15 +229,16 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
           Browser Anda tidak mendukung tag video.
         </video>
 
-        {/* Floating Unmute Notice if Autoplayed Muted */}
+        {/* Clean Floating Unmute Button (No awkward percentage text) */}
         {isMuted && isPlaying && (
           <button
             type="button"
             onClick={toggleMute}
-            className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer animate-pulse"
+            aria-label="Aktifkan suara video"
+            className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer"
           >
             <VolumeX className="h-4 w-4" />
-            <span>Nyalakan Suara (20%)</span>
+            <span>Aktifkan Suara</span>
           </button>
         )}
 
@@ -292,7 +288,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
                 <button
                   type="button"
                   onClick={toggleMute}
-                  aria-label={isMuted ? "Aktifkan suara" : "Matikan suara"}
+                  aria-label={isMuted ? "Aktifkan suara" : "Bisukan suara"}
                   className="h-8 w-8 rounded-full hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
                 >
                   {isMuted || volume === 0 ? (
@@ -305,7 +301,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
                 </button>
 
                 {/* Interactive Volume Slider */}
-                <div className="flex items-center gap-1.5 w-16 sm:w-24">
+                <div className="flex items-center w-16 sm:w-20">
                   <input
                     type="range"
                     min={0}
@@ -313,12 +309,9 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
                     step={0.05}
                     value={isMuted ? 0 : volume}
                     onChange={handleVolumeChange}
-                    aria-label="Pengaturan Volume"
+                    aria-label="Volume suara"
                     className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer accent-secondary"
                   />
-                  <span className="text-[10px] font-mono text-slate-300 w-6 text-right select-none">
-                    {isMuted ? "0%" : `${Math.round(volume * 100)}%`}
-                  </span>
                 </div>
               </div>
 
@@ -350,9 +343,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
       </div>
 
       <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground font-medium px-1">
-        <figcaption>
-          Video Dokumentasi & Profil Kegiatan UTY Creative Hub
-        </figcaption>
+        <figcaption>Video Dokumentasi Resmi UTY Creative Hub</figcaption>
         <a
           href="https://drive.google.com/file/d/16Ku7491nu4LqQccb5rvv6qx2VVESJpq0/view"
           target="_blank"
