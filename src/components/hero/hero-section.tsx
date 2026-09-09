@@ -10,13 +10,13 @@ import { HeroTicker } from "./hero-ticker";
 
 export function HeroSection() {
   const heroRef = useRef<HTMLElement>(null);
-  const badgeRef = useRef<HTMLDivElement>(null);
+  const badgeRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  const highlightsRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
-  const mobileImageRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLElement>(null);
+  const highlightsRef = useRef<HTMLDListElement>(null);
+  const imageRef = useRef<HTMLElement>(null);
+  const mobileImageRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -47,7 +47,7 @@ export function HeroSection() {
 
       const illustrations = [imageRef.current, mobileImageRef.current].filter(
         Boolean,
-      ) as HTMLDivElement[];
+      ) as HTMLElement[];
 
       if (illustrations.length > 0) {
         tl.fromTo(
@@ -120,10 +120,14 @@ export function HeroSection() {
   return (
     <section
       ref={heroRef}
+      aria-label="Pengenalan UTY Creative Hub"
       className="relative w-full flex items-center pt-24 pb-10 sm:pt-28 sm:pb-12 md:pt-32 md:pb-16 lg:pt-36 lg:pb-16 overflow-hidden"
     >
       {/* Background Texture & Ambient Lights */}
-      <div className="absolute inset-0 pointer-events-none select-none z-0">
+      <div
+        className="absolute inset-0 pointer-events-none select-none z-0"
+        aria-hidden="true"
+      >
         <div
           className="absolute inset-0 opacity-20 dark:opacity-25 dark:invert"
           style={{
@@ -141,7 +145,7 @@ export function HeroSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
           {/* Left Column (Mobile & Tablet Sequence with Illustration under Title) */}
-          <div className="lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-5 md:space-y-6 max-w-2xl mx-auto lg:max-w-none">
+          <article className="lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-5 md:space-y-6 max-w-2xl mx-auto lg:max-w-none">
             <HeroTicker badgeRef={badgeRef} />
             <HeroTitle titleRef={titleRef} />
 
@@ -157,7 +161,7 @@ export function HeroSection() {
             <HeroDescription descRef={descRef} />
             <HeroActions actionsRef={actionsRef} />
             <HeroHighlights highlightsRef={highlightsRef} />
-          </div>
+          </article>
 
           {/* Right Column: Desktop Hero Illustration */}
           <div className="hidden lg:flex lg:col-span-5 justify-end relative">

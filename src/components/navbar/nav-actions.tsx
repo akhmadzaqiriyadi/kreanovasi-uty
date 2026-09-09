@@ -6,12 +6,16 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface NavActionsProps {
-  ref?: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLElement>;
 }
 
 export function NavActions({ ref }: NavActionsProps) {
   return (
-    <div ref={ref} className="hidden md:flex items-center gap-2 lg:gap-2.5">
+    <nav
+      ref={ref}
+      aria-label="Aksi Cepat"
+      className="hidden md:flex items-center gap-2 lg:gap-2.5"
+    >
       <ThemeToggle className="h-9 w-9 rounded-full" />
 
       {/* Cek Jadwal Button */}
@@ -33,9 +37,9 @@ export function NavActions({ ref }: NavActionsProps) {
           "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-xs rounded-full whitespace-nowrap transition-all duration-300 flex items-center gap-1.5 h-9 px-4 text-xs sm:text-sm",
         )}
       >
-        <Calendar className="h-4 w-4" />
+        <Calendar className="h-4 w-4" aria-hidden="true" />
         <span>Book Now</span>
       </Link>
-    </div>
+    </nav>
   );
 }

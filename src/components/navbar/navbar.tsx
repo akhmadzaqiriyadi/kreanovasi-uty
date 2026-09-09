@@ -15,7 +15,7 @@ export function Navbar() {
   const headerRef = useRef<HTMLElement>(null);
   const logoRef = useRef<HTMLAnchorElement>(null);
   const navLinksRef = useRef<HTMLElement>(null);
-  const actionsRef = useRef<HTMLDivElement>(null);
+  const actionsRef = useRef<HTMLElement>(null);
 
   // GSAP Entrance Animation with strict-mode safe fromTo
   useEffect(() => {

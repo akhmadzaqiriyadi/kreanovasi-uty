@@ -7,7 +7,7 @@ import { useHeroMorph } from "@/hooks/use-hero-morph";
 import { cn } from "@/lib/utils";
 
 interface HeroMorphIllustrationProps {
-  imageRef?: React.Ref<HTMLDivElement>;
+  imageRef?: React.Ref<HTMLElement>;
   className?: string;
   maxHeight?: string;
 }
@@ -28,18 +28,20 @@ export function HeroMorphIllustration({
   });
 
   return (
-    <div
+    <figure
       ref={imageRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      aria-label="Ilustrasi Karakter Inovasi UTY Creative Hub"
       className={cn(
-        "relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center cursor-pointer group select-none",
+        "relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center cursor-pointer group select-none m-0",
         className,
       )}
     >
       {/* Soft Golden Accent Glow */}
       <div
         ref={glowRef}
+        aria-hidden="true"
         className="absolute inset-4 sm:inset-6 bg-secondary/20 dark:bg-secondary/25 rounded-3xl blur-2xl opacity-80 pointer-events-none transition-transform duration-700"
       />
 
@@ -77,6 +79,6 @@ export function HeroMorphIllustration({
           priority
         />
       </div>
-    </div>
+    </figure>
   );
 }

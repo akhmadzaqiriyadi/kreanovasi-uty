@@ -19,8 +19,14 @@ const programLinks = [
 
 export function FooterQuickLinks() {
   return (
-    <div className="space-y-3 sm:space-y-4">
-      <h3 className="text-sm sm:text-base font-bold text-primary tracking-tight">
+    <nav
+      aria-labelledby="footer-quicklinks-title"
+      className="space-y-3 sm:space-y-4"
+    >
+      <h3
+        id="footer-quicklinks-title"
+        className="text-sm sm:text-base font-bold text-primary tracking-tight"
+      >
         Quick Links
       </h3>
       <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm">
@@ -35,14 +41,20 @@ export function FooterQuickLinks() {
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 }
 
 export function FooterProgramLinks() {
   return (
-    <div className="space-y-3 sm:space-y-4">
-      <h3 className="text-sm sm:text-base font-bold text-primary tracking-tight">
+    <nav
+      aria-labelledby="footer-programs-title"
+      className="space-y-3 sm:space-y-4"
+    >
+      <h3
+        id="footer-programs-title"
+        className="text-sm sm:text-base font-bold text-primary tracking-tight"
+      >
         Our Programs
       </h3>
       <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm">
@@ -57,6 +69,6 @@ export function FooterProgramLinks() {
           </li>
         ))}
       </ul>
-    </div>
+    </nav>
   );
 }

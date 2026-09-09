@@ -1,40 +1,44 @@
 import type React from "react";
 
 interface HeroHighlightsProps {
-  highlightsRef?: React.Ref<HTMLDivElement>;
+  highlightsRef?: React.Ref<HTMLDListElement>;
 }
 
 export function HeroHighlights({ highlightsRef }: HeroHighlightsProps) {
   return (
-    <div
+    <dl
       ref={highlightsRef}
+      aria-label="Statistik dan Pencapaian UTY Creative Hub"
       className="pt-4 sm:pt-6 border-t border-border/50 grid grid-cols-3 gap-2 xs:gap-3 sm:gap-4 md:gap-6 max-w-lg mx-auto lg:mx-0 text-center lg:text-left"
     >
-      <div>
-        <div className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-primary tracking-tight">
+      <div className="flex flex-col">
+        <dd className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-primary tracking-tight order-1">
           100+
-        </div>
-        <div className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground font-medium">
+        </dd>
+        <dt className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground font-medium order-2">
           Ide & Inovasi
-        </div>
+        </dt>
       </div>
-      <div>
-        <div className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-primary tracking-tight">
+      <div className="flex flex-col">
+        <dd className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-primary tracking-tight order-1">
           4 Lab
-        </div>
-        <div className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground font-medium">
+        </dd>
+        <dt className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground font-medium order-2">
           Ruang Kreatif
-        </div>
+        </dt>
       </div>
-      <div>
-        <div className="flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5 text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-primary tracking-tight">
-          <span className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-secondary inline-block shrink-0 shadow-xs" />
+      <div className="flex flex-col">
+        <dd className="flex items-center justify-center lg:justify-start gap-1 sm:gap-1.5 text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-primary tracking-tight order-1">
+          <span
+            className="h-2 w-2 sm:h-2.5 sm:w-2.5 rounded-full bg-secondary inline-block shrink-0 shadow-xs"
+            aria-hidden="true"
+          />
           <span>Active</span>
-        </div>
-        <div className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground font-medium">
+        </dd>
+        <dt className="text-[10px] xs:text-xs sm:text-sm text-muted-foreground font-medium order-2">
           Komunitas UTY
-        </div>
+        </dt>
       </div>
-    </div>
+    </dl>
   );
 }

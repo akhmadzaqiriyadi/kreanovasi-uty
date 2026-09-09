@@ -5,7 +5,7 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 
 interface HeroTickerProps {
-  badgeRef?: React.Ref<HTMLDivElement>;
+  badgeRef?: React.Ref<HTMLElement>;
 }
 
 export function HeroTicker({ badgeRef }: HeroTickerProps) {
@@ -27,8 +27,9 @@ export function HeroTicker({ badgeRef }: HeroTickerProps) {
   }, []);
 
   return (
-    <div
+    <aside
       ref={badgeRef}
+      aria-label="Tagline UTY Creative Hub"
       className="inline-flex items-center px-3 py-1 sm:px-3.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-[11px] sm:text-xs font-semibold tracking-wide shadow-xs w-[200px] xs:w-[230px] sm:w-[260px] md:w-[280px] overflow-hidden select-none"
     >
       <div className="overflow-hidden whitespace-nowrap flex-1 h-4 sm:h-4.5 flex items-center relative [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
@@ -61,6 +62,6 @@ export function HeroTicker({ badgeRef }: HeroTickerProps) {
           </div>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }

@@ -94,7 +94,10 @@ const socialLinks = [
 
 export function FooterBrand() {
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <section
+      aria-label="Tentang UTY Creative Hub"
+      className="space-y-3 sm:space-y-4"
+    >
       <div className="flex items-center gap-2.5 sm:gap-3">
         <Image
           src="/images/uch.png"
@@ -114,23 +117,29 @@ export function FooterBrand() {
       </p>
 
       {/* Social Media Links */}
-      <div className="flex items-center gap-2 sm:gap-2.5 pt-1 sm:pt-2">
-        {socialLinks.map((social) => {
-          const IconComponent = social.icon;
-          return (
-            <a
-              key={social.label}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={social.label}
-              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-white dark:bg-zinc-900 border border-border/80 text-primary flex items-center justify-center shadow-xs hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors duration-200"
-            >
-              <IconComponent className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-            </a>
-          );
-        })}
-      </div>
-    </div>
+      <nav aria-label="Media Sosial Resmi">
+        <ul className="flex items-center gap-2 sm:gap-2.5 pt-1 sm:pt-2">
+          {socialLinks.map((social) => {
+            const IconComponent = social.icon;
+            return (
+              <li key={social.label}>
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-white dark:bg-zinc-900 border border-border/80 text-primary flex items-center justify-center shadow-xs hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors duration-200"
+                >
+                  <IconComponent
+                    className="h-3.5 w-3.5 sm:h-4 sm:w-4"
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
+    </section>
   );
 }

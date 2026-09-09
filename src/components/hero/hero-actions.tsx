@@ -5,13 +5,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface HeroActionsProps {
-  actionsRef?: React.Ref<HTMLDivElement>;
+  actionsRef?: React.Ref<HTMLElement>;
 }
 
 export function HeroActions({ actionsRef }: HeroActionsProps) {
   return (
-    <div
+    <nav
       ref={actionsRef}
+      aria-label="Aksi Utama"
       className="flex flex-col gap-2.5 sm:gap-3 pt-1 sm:pt-2 max-w-md mx-auto lg:mx-0 w-full"
     >
       {/* Top Row: 2 side-by-side buttons */}
@@ -49,6 +50,6 @@ export function HeroActions({ actionsRef }: HeroActionsProps) {
         <span>Jelajahi Program</span>
         <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform" />
       </Link>
-    </div>
+    </nav>
   );
 }
