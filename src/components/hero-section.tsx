@@ -242,18 +242,18 @@ export function HeroSection() {
           <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
             <div
               ref={imageRef}
-              className="relative w-full max-w-[480px] lg:max-w-none"
+              className="relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center"
             >
               {/* Decorative Accent Ring */}
               <div className="absolute -inset-2 bg-secondary/15 rounded-3xl blur-xl opacity-60" />
 
               <div className="relative rounded-2xl overflow-hidden p-2">
                 <Image
-                  src="/images/hero.svg"
+                  src="/images/hero.webp"
                   alt="UTY Creative Hub Innovation"
-                  width={795}
-                  height={653}
-                  className="w-full h-auto object-contain drop-shadow-xl"
+                  width={1024}
+                  height={1536}
+                  className="w-full max-h-[520px] object-contain drop-shadow-2xl"
                   priority
                 />
               </div>
