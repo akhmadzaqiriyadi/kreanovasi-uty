@@ -16,6 +16,81 @@ export function HeroSection() {
   const actionsRef = useRef<HTMLDivElement>(null);
   const highlightsRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const primaryImageRef = useRef<HTMLImageElement>(null);
+  const altImageRef = useRef<HTMLImageElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
+
+  // Artistic Morph Painting Hover Handlers with GSAP
+  const handleMouseEnter = () => {
+    if (!primaryImageRef.current || !altImageRef.current) return;
+
+    // Cross-fade out primary with gentle artistic dissolve & brush scale
+    gsap.to(primaryImageRef.current, {
+      opacity: 0,
+      scale: 0.97,
+      filter: "blur(4px)",
+      duration: 0.65,
+      ease: "power2.inOut",
+      overwrite: "auto",
+    });
+
+    // Cross-fade in alternate entity illustration with reveal
+    gsap.fromTo(
+      altImageRef.current,
+      { opacity: 0, scale: 1.04, filter: "blur(5px)" },
+      {
+        opacity: 1,
+        scale: 1,
+        filter: "blur(0px)",
+        duration: 0.65,
+        ease: "power2.inOut",
+        overwrite: "auto",
+      },
+    );
+
+    if (glowRef.current) {
+      gsap.to(glowRef.current, {
+        scale: 1.15,
+        opacity: 0.95,
+        duration: 0.65,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!primaryImageRef.current || !altImageRef.current) return;
+
+    // Revert back to primary character smoothly
+    gsap.to(primaryImageRef.current, {
+      opacity: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      duration: 0.65,
+      ease: "power2.inOut",
+      overwrite: "auto",
+    });
+
+    gsap.to(altImageRef.current, {
+      opacity: 0,
+      scale: 1.04,
+      filter: "blur(5px)",
+      duration: 0.65,
+      ease: "power2.inOut",
+      overwrite: "auto",
+    });
+
+    if (glowRef.current) {
+      gsap.to(glowRef.current, {
+        scale: 1,
+        opacity: 0.8,
+        duration: 0.65,
+        ease: "power2.out",
+        overwrite: "auto",
+      });
+    }
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -238,22 +313,40 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Right Column: Hero Illustration */}
+          {/* Right Column: Interactive Morphing Hero Illustration */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end relative">
             <div
               ref={imageRef}
-              className="relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+              className="relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center cursor-pointer group select-none"
             >
               {/* Soft Golden Accent Glow */}
-              <div className="absolute inset-6 bg-secondary/20 dark:bg-secondary/25 rounded-3xl blur-2xl opacity-80 pointer-events-none" />
+              <div
+                ref={glowRef}
+                className="absolute inset-6 bg-secondary/20 dark:bg-secondary/25 rounded-3xl blur-2xl opacity-80 pointer-events-none transition-transform duration-700"
+              />
 
-              <div className="relative rounded-2xl overflow-hidden p-1 z-10">
+              <div className="relative w-full max-h-[520px] rounded-2xl overflow-hidden p-1 z-10 flex items-center justify-center">
+                {/* Primary Entity Illustration */}
                 <Image
+                  ref={primaryImageRef}
                   src="/images/hero.webp"
                   alt="UTY Creative Hub Innovation"
                   width={1024}
                   height={1536}
-                  className="w-full max-h-[520px] object-contain drop-shadow-xl"
+                  className="w-full max-h-[520px] object-contain drop-shadow-xl will-change-[opacity,transform,filter]"
+                  priority
+                />
+
+                {/* Alternate Morph Entity Illustration */}
+                <Image
+                  ref={altImageRef}
+                  src="/images/hero-alt.webp"
+                  alt="UTY Creative Hub Innovation Alternate Entity"
+                  width={1024}
+                  height={1536}
+                  className="w-full max-h-[520px] object-contain drop-shadow-xl absolute inset-0 m-auto opacity-0 will-change-[opacity,transform,filter]"
                   priority
                 />
               </div>
