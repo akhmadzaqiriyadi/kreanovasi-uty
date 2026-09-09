@@ -1,10 +1,11 @@
 "use client";
 
+import gsap from "gsap";
 import { Calendar, ChevronDown, ExternalLink, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,6 +30,9 @@ export function Navbar() {
   const [mobileProgramOpen, setMobileProgramOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
+  const headerRef = useRef<HTMLElement>(null);
+  const navLinksRef = useRef<HTMLElement>(null);
+
   // Check if current path matches
   const isActivePath = (href: string) => {
     if (href === "/") return pathname === "/";
@@ -43,7 +47,7 @@ export function Navbar() {
   // Scroll listener for floating navbar effect
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
+      const isScrolled = window.scrollY > 15;
       if (isScrolled !== scrolled) {
         setScrolled(isScrolled);
       }
@@ -55,11 +59,60 @@ export function Navbar() {
     };
   }, [scrolled]);
 
+  // GSAP Smooth Animation on Scroll Transition
+  useEffect(() => {
+    if (!headerRef.current) return;
+
+    if (scrolled) {
+      gsap.fromTo(
+        headerRef.current,
+        { y: -12, opacity: 0.85, scale: 0.98 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.4,
+          ease: "power3.out",
+        },
+      );
+    } else {
+      gsap.fromTo(
+        headerRef.current,
+        { y: -6, opacity: 0.9 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.35,
+          ease: "power2.out",
+        },
+      );
+    }
+  }, [scrolled]);
+
+  // Initial load stagger animation for nav links
+  useEffect(() => {
+    if (!navLinksRef.current) return;
+
+    gsap.fromTo(
+      navLinksRef.current.children,
+      { opacity: 0, y: -8 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.05,
+        duration: 0.4,
+        ease: "power2.out",
+        delay: 0.1,
+      },
+    );
+  }, []);
+
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 pointer-events-none">
+    <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
       <header
+        ref={headerRef}
         className={cn(
-          "transition-all duration-300 pointer-events-auto",
+          "transition-all duration-300 ease-out pointer-events-auto",
           scrolled
             ? "bg-background/90 dark:bg-background/90 backdrop-blur-xl border border-border/70 mx-3 sm:mx-6 md:mx-auto max-w-6xl mt-2.5 rounded-full shadow-lg shadow-black/5 dark:shadow-black/20 px-3 sm:px-6"
             : "bg-background/95 border-b border-border/40 shadow-xs px-0",
@@ -67,7 +120,7 @@ export function Navbar() {
       >
         <div
           className={cn(
-            "container mx-auto flex items-center justify-between transition-all duration-300",
+            "container mx-auto flex items-center justify-between transition-all duration-300 ease-out",
             scrolled ? "h-14 sm:h-15" : "h-20 px-4 sm:px-6 lg:px-8 max-w-7xl",
           )}
         >
@@ -76,12 +129,19 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2.5 hover:opacity-90 transition-opacity shrink-0"
           >
-            <div className="relative h-9 w-9 sm:h-10 sm:w-10 shrink-0">
+            <div
+              className={cn(
+                "relative shrink-0 transition-all duration-300 ease-out",
+                scrolled
+                  ? "h-8 w-8 sm:h-9 sm:w-9"
+                  : "h-10 w-10 sm:h-11 sm:w-11",
+              )}
+            >
               <Image
                 src="/images/uch.png"
                 alt="UTY Creative Hub Logo"
                 fill
-                sizes="40px"
+                sizes="44px"
                 className="object-contain"
                 priority
               />
@@ -94,7 +154,10 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 xl:space-x-3">
+          <nav
+            ref={navLinksRef}
+            className="hidden md:flex items-center space-x-1 lg:space-x-2 xl:space-x-3"
+          >
             {navItems.map((item) => {
               const active = isActivePath(item.href);
               return (
@@ -129,7 +192,7 @@ export function Navbar() {
                   )}
                 >
                   <span>Program</span>
-                  <ChevronDown className="h-4 w-4 transition-transform duration-200" />
+                  <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200" />
                   {isProgramActive() && !scrolled && (
                     <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
                   )}
