@@ -94,6 +94,8 @@ export function Footer() {
   }, []);
 
   React.useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+
     const ctx = gsap.context(() => {
       if (gridRef.current) {
         gsap.from(gridRef.current.children, {
