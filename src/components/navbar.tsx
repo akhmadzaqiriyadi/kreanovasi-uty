@@ -61,48 +61,32 @@ export function Navbar() {
         className={cn(
           "transition-all duration-300 pointer-events-auto",
           scrolled
-            ? "bg-background/90 dark:bg-background/90 backdrop-blur-xl border border-border/70 mx-3 sm:mx-6 md:mx-auto max-w-5xl lg:max-w-6xl mt-2 rounded-full shadow-md py-0.5 px-3 sm:px-4"
-            : "bg-background/95 border-b border-border/40 shadow-xs py-0",
+            ? "bg-background/90 dark:bg-background/90 backdrop-blur-xl border border-border/70 mx-3 sm:mx-6 md:mx-auto max-w-6xl mt-2.5 rounded-full shadow-lg shadow-black/5 dark:shadow-black/20 px-3 sm:px-6"
+            : "bg-background/95 border-b border-border/40 shadow-xs px-0",
         )}
       >
         <div
           className={cn(
             "container mx-auto flex items-center justify-between transition-all duration-300",
-            scrolled
-              ? "h-11 sm:h-12 px-1 sm:px-2"
-              : "h-20 px-4 sm:px-6 lg:px-8 max-w-7xl",
+            scrolled ? "h-14 sm:h-15" : "h-20 px-4 sm:px-6 lg:px-8 max-w-7xl",
           )}
         >
           {/* Brand Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 sm:gap-2.5 hover:opacity-90 transition-opacity shrink-0"
+            className="flex items-center gap-2.5 hover:opacity-90 transition-opacity shrink-0"
           >
-            <div
-              className={cn(
-                "relative shrink-0 transition-all duration-300",
-                scrolled
-                  ? "h-7 w-7 sm:h-8 sm:w-8"
-                  : "h-10 w-10 sm:h-11 sm:w-11",
-              )}
-            >
+            <div className="relative h-9 w-9 sm:h-10 sm:w-10 shrink-0">
               <Image
                 src="/images/uch.png"
                 alt="UTY Creative Hub Logo"
                 fill
-                sizes="44px"
+                sizes="40px"
                 className="object-contain"
                 priority
               />
             </div>
-            <div
-              className={cn(
-                "flex flex-col text-left font-bold tracking-tight text-primary select-none transition-all duration-300",
-                scrolled
-                  ? "text-[10px] leading-[11px]"
-                  : "text-xs leading-tight",
-              )}
-            >
+            <div className="flex flex-col text-left font-bold text-xs leading-tight tracking-tight text-primary select-none">
               <div>UTY</div>
               <div>CREATIVE</div>
               <div>HUB</div>
@@ -110,14 +94,7 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav
-            className={cn(
-              "hidden md:flex items-center transition-all duration-300",
-              scrolled
-                ? "space-x-0.5 lg:space-x-1"
-                : "space-x-1 lg:space-x-2 xl:space-x-4",
-            )}
-          >
+          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 xl:space-x-3">
             {navItems.map((item) => {
               const active = isActivePath(item.href);
               return (
@@ -125,10 +102,7 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative font-semibold whitespace-nowrap transition-all duration-200 text-primary",
-                    scrolled
-                      ? "text-xs md:text-sm py-1 px-2 lg:px-2.5 rounded-full"
-                      : "text-xs md:text-sm lg:text-base py-1.5 px-2.5 lg:px-3 rounded-lg",
+                    "relative text-sm font-semibold whitespace-nowrap transition-all duration-200 py-1.5 px-3 rounded-full text-primary",
                     active
                       ? "text-primary font-bold bg-primary/10"
                       : "text-primary/85 hover:text-primary hover:bg-primary/5",
@@ -148,17 +122,14 @@ export function Navbar() {
                 <button
                   type="button"
                   className={cn(
-                    "relative font-semibold whitespace-nowrap flex items-center gap-1 transition-all duration-200 cursor-pointer text-primary",
-                    scrolled
-                      ? "text-xs md:text-sm py-1 px-2 lg:px-2.5 rounded-full"
-                      : "text-xs md:text-sm lg:text-base py-1.5 px-2.5 lg:px-3 rounded-lg",
+                    "relative text-sm font-semibold whitespace-nowrap flex items-center gap-1 py-1.5 px-3 rounded-full transition-all duration-200 cursor-pointer text-primary",
                     isProgramActive()
                       ? "text-primary font-bold bg-primary/10"
                       : "text-primary/85 hover:text-primary hover:bg-primary/5",
                   )}
                 >
                   <span>Program</span>
-                  <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200" />
+                  <ChevronDown className="h-4 w-4 transition-transform duration-200" />
                   {isProgramActive() && !scrolled && (
                     <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
                   )}
@@ -202,27 +173,15 @@ export function Navbar() {
           </nav>
 
           {/* Desktop Right Action Buttons */}
-          <div
-            className={cn(
-              "hidden md:flex items-center transition-all duration-300",
-              scrolled ? "gap-1.5" : "gap-2 lg:gap-3",
-            )}
-          >
-            <ThemeToggle
-              className={
-                scrolled ? "h-8 w-8 rounded-full" : "h-9 w-9 rounded-xl"
-              }
-            />
+          <div className="hidden md:flex items-center gap-2 lg:gap-2.5">
+            <ThemeToggle className="h-9 w-9 rounded-full" />
 
             {/* Cek Jadwal Button */}
             <Link
               href="/schedule"
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
-                "border-primary/40 text-primary hover:bg-primary/10 font-medium whitespace-nowrap transition-all duration-200",
-                scrolled
-                  ? "h-8 px-3 text-xs rounded-full"
-                  : "h-10 px-4 text-sm rounded-xl",
+                "border-primary/40 text-primary hover:bg-primary/10 font-semibold rounded-full whitespace-nowrap transition-all duration-200 h-9 px-4 text-xs sm:text-sm",
               )}
             >
               Cek Jadwal
@@ -233,36 +192,26 @@ export function Navbar() {
               href="/booking"
               className={cn(
                 buttonVariants({ size: "sm" }),
-                "bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-xs whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
-                scrolled
-                  ? "h-8 px-3 text-xs rounded-full"
-                  : "h-10 px-4 text-sm rounded-xl",
+                "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-xs rounded-full whitespace-nowrap transition-all duration-200 flex items-center gap-1.5 h-9 px-4 text-xs sm:text-sm",
               )}
             >
-              <Calendar className={scrolled ? "h-3.5 w-3.5" : "h-4 w-4"} />
+              <Calendar className="h-4 w-4" />
               <span>Book Now</span>
             </Link>
           </div>
 
           {/* Mobile Right Bar: Theme Toggle + Drawer Trigger */}
-          <div className="flex items-center gap-1.5 sm:gap-2 md:hidden">
-            <ThemeToggle
-              className={
-                scrolled ? "h-8 w-8 rounded-full" : "h-9 w-9 rounded-xl"
-              }
-            />
+          <div className="flex items-center gap-2 md:hidden">
+            <ThemeToggle className="h-9 w-9 rounded-full" />
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className={cn(
-                    "border border-input bg-background/50 hover:bg-accent backdrop-blur-sm transition-all duration-200",
-                    scrolled ? "h-8 w-8 rounded-full" : "h-9 w-9 rounded-xl",
-                  )}
+                  className="h-9 w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-full"
                 >
-                  <Menu className={scrolled ? "h-4 w-4" : "h-5 w-5"} />
+                  <Menu className="h-5 w-5" />
                   <span className="sr-only">Buka menu navigasi</span>
                 </Button>
               </SheetTrigger>
@@ -380,7 +329,7 @@ export function Navbar() {
                     onClick={() => setOpen(false)}
                     className={cn(
                       buttonVariants({ variant: "outline" }),
-                      "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-medium",
+                      "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-semibold",
                     )}
                   >
                     Cek Jadwal
@@ -390,7 +339,7 @@ export function Navbar() {
                     onClick={() => setOpen(false)}
                     className={cn(
                       buttonVariants({ size: "default" }),
-                      "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-medium flex items-center justify-center gap-1.5 shadow-md",
+                      "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold flex items-center justify-center gap-1.5 shadow-md",
                     )}
                   >
                     <Calendar className="h-4 w-4" />
