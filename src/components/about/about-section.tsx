@@ -84,18 +84,18 @@ export function AboutSection() {
       id="about"
       ref={sectionRef}
       aria-labelledby="about-heading"
-      className="w-full py-16 sm:py-20 lg:py-24 bg-slate-50/70 dark:bg-zinc-950/70 border-t border-border/50 relative overflow-hidden"
+      className="w-full py-12 sm:py-16 lg:py-20 bg-slate-50/70 dark:bg-zinc-950/70 border-t border-border/50 relative overflow-hidden"
     >
       {/* Ambient background decoration */}
       <div
         className="absolute inset-0 pointer-events-none select-none z-0"
         aria-hidden="true"
       >
-        <div className="absolute top-1/2 left-0 w-80 h-80 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl" />
-        <div className="absolute bottom-10 right-0 w-80 h-80 rounded-full bg-secondary/10 dark:bg-secondary/15 blur-3xl" />
+        <div className="absolute top-1/2 left-0 w-72 h-72 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl" />
+        <div className="absolute bottom-10 right-0 w-72 h-72 rounded-full bg-secondary/10 dark:bg-secondary/15 blur-3xl" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10 space-y-12 sm:space-y-16">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10 space-y-8 sm:space-y-12">
         <AboutHeader headerRef={headerRef} />
         <AboutStory storyRef={storyRef} />
         <AboutPillars pillarsRef={pillarsRef} />
