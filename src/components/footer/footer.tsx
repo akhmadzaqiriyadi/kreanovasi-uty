@@ -68,7 +68,7 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="w-full bg-slate-50 dark:bg-zinc-950 border-t border-border/60 pt-16 pb-8 relative overflow-hidden"
+      className="w-full bg-slate-50 dark:bg-zinc-950 border-t border-border/60 pt-12 sm:pt-16 pb-6 sm:pb-8 relative overflow-hidden"
     >
       {/* Background Texture Pattern */}
       <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.18] dark:invert pointer-events-none select-none">
@@ -83,7 +83,7 @@ export function Footer() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-8 sm:pb-12"
         >
           {/* Column 1: About UTY Creative Hub & Social Media */}
           <FooterBrand />
@@ -99,7 +99,7 @@ export function Footer() {
         </div>
 
         {/* Separator Line */}
-        <div className="border-t border-border/70 my-6" />
+        <div className="border-t border-border/70 my-4 sm:my-6" />
 
         {/* Bottom Bar: Copyright & Policy Links */}
         <FooterBottom bottomBarRef={bottomBarRef} />

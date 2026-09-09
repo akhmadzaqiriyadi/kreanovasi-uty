@@ -120,7 +120,7 @@ export function HeroSection() {
   return (
     <section
       ref={heroRef}
-      className="relative w-full flex items-center pt-28 pb-12 lg:pt-36 lg:pb-16 overflow-hidden"
+      className="relative w-full flex items-center pt-24 pb-10 sm:pt-28 sm:pb-12 md:pt-32 md:pb-16 lg:pt-36 lg:pb-16 overflow-hidden"
     >
       {/* Background Texture & Ambient Lights */}
       <div className="absolute inset-0 pointer-events-none select-none z-0">
@@ -133,24 +133,24 @@ export function HeroSection() {
             backgroundPosition: "center",
           }}
         />
-        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />
-        <div className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-secondary/15 dark:bg-secondary/20 blur-3xl" />
+        <div className="absolute top-1/4 -left-20 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />
+        <div className="absolute top-1/3 right-0 w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-secondary/15 dark:bg-secondary/20 blur-3xl" />
       </div>
 
       {/* Main Container */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-          {/* Left Column (Mobile: Full Sequence with Illustration under Title) */}
-          <div className="lg:col-span-7 text-center lg:text-left space-y-6">
+          {/* Left Column (Mobile & Tablet Sequence with Illustration under Title) */}
+          <div className="lg:col-span-7 text-center lg:text-left space-y-4 sm:space-y-5 md:space-y-6 max-w-2xl mx-auto lg:max-w-none">
             <HeroTicker badgeRef={badgeRef} />
             <HeroTitle titleRef={titleRef} />
 
-            {/* Mobile Hero Illustration: Placed directly beneath UTY Creative Hub */}
-            <div className="lg:hidden flex justify-center py-2">
+            {/* Mobile / Tablet Hero Illustration: Placed directly beneath UTY Creative Hub */}
+            <div className="lg:hidden flex justify-center py-1 sm:py-2">
               <HeroMorphIllustration
                 imageRef={mobileImageRef}
-                className="max-w-[280px] sm:max-w-[340px]"
-                maxHeight="max-h-[340px] sm:max-h-[400px]"
+                className="max-w-[260px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[420px]"
+                maxHeight="max-h-[300px] xs:max-h-[360px] sm:max-h-[420px] md:max-h-[460px]"
               />
             </div>
 

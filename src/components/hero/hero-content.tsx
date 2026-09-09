@@ -6,11 +6,11 @@ interface HeroTitleProps {
 
 export function HeroTitle({ titleRef }: HeroTitleProps) {
   return (
-    <div ref={titleRef} className="space-y-1">
-      <div className="text-5xl sm:text-7xl font-black tracking-tight text-primary leading-none">
+    <div ref={titleRef} className="space-y-0.5 sm:space-y-1">
+      <div className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-black tracking-tight text-primary leading-none">
         UCH
       </div>
-      <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
+      <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.18] sm:leading-[1.15]">
         <span className="text-primary dark:text-blue-100">UTY</span>{" "}
         <span className="text-secondary">Creative Hub</span>
       </h1>
@@ -26,7 +26,7 @@ export function HeroDescription({ descRef }: HeroDescriptionProps) {
   return (
     <p
       ref={descRef}
-      className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+      className="text-xs xs:text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed"
     >
       Pusat kreativitas dan inovasi resmi Universitas Teknologi Yogyakarta.
       Wadah bagi mahasiswa dan komunitas untuk mengembangkan ide-ide brilian di

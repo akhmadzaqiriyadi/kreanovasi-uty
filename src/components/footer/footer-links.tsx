@@ -19,11 +19,11 @@ const programLinks = [
 
 export function FooterQuickLinks() {
   return (
-    <div className="space-y-4">
-      <h3 className="text-base font-bold text-primary tracking-tight">
+    <div className="space-y-3 sm:space-y-4">
+      <h3 className="text-sm sm:text-base font-bold text-primary tracking-tight">
         Quick Links
       </h3>
-      <ul className="space-y-2.5 text-sm">
+      <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm">
         {quickLinks.map((link) => (
           <li key={link.label}>
             <Link
@@ -41,11 +41,11 @@ export function FooterQuickLinks() {
 
 export function FooterProgramLinks() {
   return (
-    <div className="space-y-4">
-      <h3 className="text-base font-bold text-primary tracking-tight">
+    <div className="space-y-3 sm:space-y-4">
+      <h3 className="text-sm sm:text-base font-bold text-primary tracking-tight">
         Our Programs
       </h3>
-      <ul className="space-y-2.5 text-sm">
+      <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm">
         {programLinks.map((program) => (
           <li key={program.label}>
             <Link

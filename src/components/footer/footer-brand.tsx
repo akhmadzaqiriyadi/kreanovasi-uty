@@ -94,27 +94,27 @@ const socialLinks = [
 
 export function FooterBrand() {
   return (
-    <div className="space-y-4">
-      <div className="flex items-center gap-3">
+    <div className="space-y-3 sm:space-y-4">
+      <div className="flex items-center gap-2.5 sm:gap-3">
         <Image
           src="/images/uch.png"
           alt="UTY Creative Hub Logo"
           width={48}
           height={48}
-          className="h-12 w-auto object-contain"
+          className="h-10 sm:h-12 w-auto object-contain"
         />
-        <div className="text-primary font-bold text-xs tracking-wider leading-tight">
+        <div className="text-primary font-bold text-[11px] sm:text-xs tracking-wider leading-tight">
           <div>UTY</div>
           <div>CREATIVE</div>
           <div>HUB</div>
         </div>
       </div>
-      <p className="text-sm text-muted-foreground leading-relaxed">
+      <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
         {siteConfig.description}
       </p>
 
       {/* Social Media Links */}
-      <div className="flex items-center gap-2.5 pt-2">
+      <div className="flex items-center gap-2 sm:gap-2.5 pt-1 sm:pt-2">
         {socialLinks.map((social) => {
           const IconComponent = social.icon;
           return (
@@ -124,9 +124,9 @@ export function FooterBrand() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={social.label}
-              className="h-9 w-9 rounded-full bg-white dark:bg-zinc-900 border border-border/80 text-primary flex items-center justify-center shadow-xs hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors duration-200"
+              className="h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-white dark:bg-zinc-900 border border-border/80 text-primary flex items-center justify-center shadow-xs hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors duration-200"
             >
-              <IconComponent className="h-4 w-4" />
+              <IconComponent className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </a>
           );
         })}
