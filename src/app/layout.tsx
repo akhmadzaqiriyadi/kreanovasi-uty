@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { GlobalLoadingBar } from "@/components/global-loading-bar";
+import { JsonLd } from "@/components/seo/json-ld";
 import { Toaster } from "@/components/ui/sonner";
+import { siteConfig } from "@/config/site";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -18,41 +20,52 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://uch.uty.ac.id",
-  ),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "UTY Creative Hub - Inovasi, Kolaborasi & Kreativitas",
-    template: "%s | UTY Creative Hub",
+    default: `${siteConfig.name} - Inovasi, Kolaborasi & Kreativitas`,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Pusat kreativitas dan inovasi resmi Universitas Teknologi Yogyakarta. Wadah bagi mahasiswa dan komunitas untuk mengembangkan ide-ide brilian di bidang kreativitas, inovasi, dan teknologi.",
-  keywords: [
-    "UTY Creative Hub",
-    "Universitas Teknologi Yogyakarta",
-    "Inovasi",
-    "Kreativitas",
-    "Startup Incubation",
-    "Fastlab",
-    "Co-working Space",
-  ],
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
   authors: [{ name: "UTY Creative Hub Team" }],
-  creator: "Universitas Teknologi Yogyakarta",
+  creator: siteConfig.organization.name,
+  publisher: siteConfig.organization.name,
+  alternates: {
+    canonical: siteConfig.url,
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://uch.uty.ac.id",
-    siteName: "UTY Creative Hub",
-    title: "UTY Creative Hub - Inovasi, Kolaborasi & Kreativitas",
-    description:
-      "Pusat kreativitas dan inovasi resmi Universitas Teknologi Yogyakarta. Wadah bagi mahasiswa dan komunitas untuk mengembangkan ide-ide brilian.",
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: `${siteConfig.name} - Inovasi, Kolaborasi & Kreativitas`,
+    description: siteConfig.description,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UTY Creative Hub - Inovasi, Kolaborasi & Kreativitas",
-    description:
-      "Pusat kreativitas dan inovasi resmi Universitas Teknologi Yogyakarta.",
+    title: `${siteConfig.name} - Inovasi, Kolaborasi & Kreativitas`,
+    description: siteConfig.description,
     creator: "@utycreativehub",
+    images: [siteConfig.ogImage],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
 };
 
@@ -68,6 +81,9 @@ export default function RootLayout({
       className={`${plusJakarta.variable} ${geistMono.variable} h-full antialiased overflow-x-hidden`}
       suppressHydrationWarning
     >
+      <head>
+        <JsonLd />
+      </head>
       <body
         className="min-h-full flex flex-col bg-background text-foreground font-sans relative overflow-x-hidden"
         suppressHydrationWarning
