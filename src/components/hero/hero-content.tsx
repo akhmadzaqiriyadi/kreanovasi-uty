@@ -26,7 +26,7 @@ export function HeroDescription({ descRef }: HeroDescriptionProps) {
   return (
     <p
       ref={descRef}
-      className="text-xs xs:text-sm sm:text-base md:text-lg text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed"
+      className="text-xs xs:text-sm sm:text-base md:text-lg font-medium text-foreground/80 dark:text-foreground/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed sm:leading-relaxed"
     >
       Pusat kreativitas dan inovasi resmi Universitas Teknologi Yogyakarta.
       Wadah bagi mahasiswa dan komunitas untuk mengembangkan ide-ide brilian di
