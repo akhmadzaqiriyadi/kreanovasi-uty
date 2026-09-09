@@ -1,0 +1,42 @@
+# Cursor Rules for NextBoi Project
+
+Please follow these strict guidelines when writing code for this project.
+
+## Tech Stack & Core Tools
+- **Runtime & Manager**: Bun (use `bun run` for scripts, `bun test` for tests)
+- **Framework**: Next.js 16 (App Router)
+- **React version**: React 19 (Canary/Stable)
+- **Compiler**: React Compiler (automatic memoization, do not write manual useMemo/useCallback unless necessary)
+- **Styling**: Tailwind CSS v4 (CSS-first config inside globals.css)
+- **Components**: shadcn/ui and @base-ui/react primitives
+- **Linting & Formatting**: Biome (ensure `bun run check` has zero warnings)
+
+## Code Standards & TypeScript
+- Use strict TypeScript. Avoid `any`. Type all parameters and function return values explicitly.
+- Declare explicit interfaces for states, components, and API responses.
+- Implement server-client boundaries correctly. Default to Server Components. Use Client Components strictly at leaf components.
+- Use modular structure under `src/features/[feature_name]/` for feature-specific hooks, services, and components.
+- **Logic & UI Separation**: Extract all form state, mutations, and complex hooks into a dedicated custom logic hook (e.g. `use[Component]Logic`), leaving visual TSX files representational.
+- **DOM Node Efficiency**: Minimize tag nesting. Avoid redundant wrapper `div` layers; use CSS flex, grid gap spacing, or semantic HTML tags directly.
+
+## Tailwind CSS v4 & Styling Guidelines
+- Config variables are inside `@theme inline` in `src/app/globals.css`.
+- Rely on oklch format color palettes.
+- Apply preset design utility classes:
+  - `glass-panel` - frosted container backgrounds.
+  - `glass-card` - frosted container backgrounds with smooth hover scaling/border highlights.
+  - `bg-grid-mesh` - mesh background grids.
+
+## Biome Formatting & Verification
+- Prioritize running `bun run check` after changing files.
+- Ensure all imports are sorted automatically by Biome.
+- Group imports: React first, libraries second, local components third, styles last.
+
+## Playwright E2E Testing
+- All E2E test files reside under `./tests/` and use the `.spec.ts` suffix.
+- Prioritize running `bun run test:e2e` to verify E2E journeys.
+- Avoid locating text elements strictly if they appear multiple times; scope locators to parent containers.
+
+## Card Spacings & Border styling
+- Never mix outline rings (`ring-*`) and borders (`border-*`) on the same container (prevents overlapping concentric curves at rounded corners).
+- Keep card containers clean, delegating spacing/paddings to children components using standard padding (`p-6`).
