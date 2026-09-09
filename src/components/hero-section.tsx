@@ -19,6 +19,7 @@ export function HeroSection() {
   const primaryImageRef = useRef<HTMLImageElement>(null);
   const altImageRef = useRef<HTMLImageElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
+  const tickerRef = useRef<HTMLDivElement>(null);
 
   // Artistic Morph Painting Hover Handlers with GSAP
   const handleMouseEnter = () => {
@@ -173,6 +174,16 @@ export function HeroSection() {
         );
       }
 
+      // GSAP Infinite Smooth Running Text Ticker Loop
+      if (tickerRef.current) {
+        gsap.to(tickerRef.current, {
+          xPercent: -50,
+          repeat: -1,
+          duration: 16,
+          ease: "none",
+        });
+      }
+
       // Subtle continuous floating effect for hero illustration
       if (imageRef.current) {
         gsap.to(imageRef.current, {
@@ -217,9 +228,9 @@ export function HeroSection() {
             {/* Clean Running Ticker Tagline Badge */}
             <div
               ref={badgeRef}
-              className="inline-flex items-center gap-2.5 sm:gap-3 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs w-full max-w-[320px] sm:max-w-md md:max-w-lg overflow-hidden select-none"
+              className="inline-flex items-center gap-2.5 sm:gap-3 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs w-full max-w-[340px] sm:max-w-md md:max-w-lg overflow-hidden select-none"
             >
-              <div className="flex items-center gap-1.5 shrink-0 bg-primary/10 dark:bg-primary/20 px-2 py-0.5 rounded-full border border-primary/20">
+              <div className="flex items-center gap-1.5 shrink-0 bg-primary/15 dark:bg-primary/25 px-2.5 py-0.5 rounded-full border border-primary/20 z-10">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
@@ -229,9 +240,12 @@ export function HeroSection() {
                 </span>
               </div>
 
-              <div className="overflow-hidden whitespace-nowrap flex-1">
-                <div className="animate-marquee gap-6 font-medium text-xs sm:text-sm text-primary">
-                  <span className="flex items-center gap-6 shrink-0">
+              <div className="overflow-hidden whitespace-nowrap flex-1 h-5 flex items-center relative">
+                <div
+                  ref={tickerRef}
+                  className="flex items-center gap-6 whitespace-nowrap shrink-0 will-change-transform"
+                >
+                  <div className="flex items-center gap-6 shrink-0 text-xs sm:text-sm font-medium text-primary">
                     <span>Innovate. Collaborate. Create.</span>
                     <span className="text-secondary font-bold">•</span>
                     <span>Pusat Kreativitas & Inovasi UTY</span>
@@ -240,9 +254,9 @@ export function HeroSection() {
                     <span className="text-secondary font-bold">•</span>
                     <span>FastLab & Incubation</span>
                     <span className="text-secondary font-bold">•</span>
-                  </span>
-                  <span
-                    className="flex items-center gap-6 shrink-0"
+                  </div>
+                  <div
+                    className="flex items-center gap-6 shrink-0 text-xs sm:text-sm font-medium text-primary"
                     aria-hidden="true"
                   >
                     <span>Innovate. Collaborate. Create.</span>
@@ -253,7 +267,7 @@ export function HeroSection() {
                     <span className="text-secondary font-bold">•</span>
                     <span>FastLab & Incubation</span>
                     <span className="text-secondary font-bold">•</span>
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
