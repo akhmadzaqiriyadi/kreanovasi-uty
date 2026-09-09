@@ -228,14 +228,14 @@ export function HeroSection() {
             {/* Clean Running Ticker Tagline Badge */}
             <div
               ref={badgeRef}
-              className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs w-full max-w-[320px] sm:max-w-md md:max-w-lg overflow-hidden select-none"
+              className="inline-flex items-center px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold tracking-wide shadow-xs w-[220px] sm:w-[250px] overflow-hidden select-none"
             >
-              <div className="overflow-hidden whitespace-nowrap flex-1 h-5 flex items-center relative">
+              <div className="overflow-hidden whitespace-nowrap flex-1 h-4.5 flex items-center relative [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
                 <div
                   ref={tickerRef}
-                  className="flex items-center gap-6 whitespace-nowrap shrink-0 will-change-transform"
+                  className="flex items-center gap-5 whitespace-nowrap shrink-0 will-change-transform"
                 >
-                  <div className="flex items-center gap-6 shrink-0 text-xs sm:text-sm font-medium text-primary">
+                  <div className="flex items-center gap-5 shrink-0 text-xs font-medium text-primary">
                     <span>Innovate. Collaborate. Create.</span>
                     <span className="text-secondary font-bold">•</span>
                     <span>Pusat Kreativitas & Inovasi UTY</span>
@@ -246,7 +246,7 @@ export function HeroSection() {
                     <span className="text-secondary font-bold">•</span>
                   </div>
                   <div
-                    className="flex items-center gap-6 shrink-0 text-xs sm:text-sm font-medium text-primary"
+                    className="flex items-center gap-5 shrink-0 text-xs font-medium text-primary"
                     aria-hidden="true"
                   >
                     <span>Innovate. Collaborate. Create.</span>
