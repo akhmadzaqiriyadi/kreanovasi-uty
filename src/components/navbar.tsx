@@ -121,21 +121,17 @@ export function Navbar() {
           href="/"
           className="flex items-center gap-2.5 hover:opacity-90 transition-opacity shrink-0"
         >
-          <div
+          <Image
+            src="/images/uch.png"
+            alt="UTY Creative Hub Logo"
+            width={44}
+            height={44}
             className={cn(
-              "relative shrink-0 transition-all duration-300",
+              "object-contain shrink-0 transition-all duration-300",
               scrolled ? "h-9 w-9" : "h-10 w-10 sm:h-11 sm:w-11",
             )}
-          >
-            <Image
-              src="/images/uch.png"
-              alt="UTY Creative Hub Logo"
-              fill
-              sizes="44px"
-              className="object-contain"
-              priority
-            />
-          </div>
+            priority
+          />
           <div className="flex flex-col text-left font-bold text-xs leading-tight tracking-tight text-primary select-none">
             <div>UTY</div>
             <div>CREATIVE</div>
@@ -279,15 +275,13 @@ export function Navbar() {
               <div>
                 <SheetHeader className="text-left border-b border-border/40 p-4">
                   <SheetTitle className="flex items-center gap-2.5">
-                    <div className="relative h-9 w-9 shrink-0">
-                      <Image
-                        src="/images/uch.png"
-                        alt="UTY Creative Hub Logo"
-                        fill
-                        sizes="36px"
-                        className="object-contain"
-                      />
-                    </div>
+                    <Image
+                      src="/images/uch.png"
+                      alt="UTY Creative Hub Logo"
+                      width={36}
+                      height={36}
+                      className="h-9 w-9 object-contain shrink-0"
+                    />
                     <div className="flex flex-col text-left font-bold text-xs leading-tight text-primary">
                       <div>UTY</div>
                       <div>CREATIVE</div>
