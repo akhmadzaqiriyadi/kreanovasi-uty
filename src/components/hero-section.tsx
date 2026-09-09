@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex items-center pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden">
+    <section className="relative w-full flex items-center pt-28 pb-12 lg:pt-36 lg:pb-16 overflow-hidden">
       {/* Background Texture & Ambient Lights */}
       <div className="absolute inset-0 pointer-events-none select-none z-0">
         <div
