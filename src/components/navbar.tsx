@@ -61,22 +61,31 @@ export function Navbar() {
         className={cn(
           "transition-all duration-300 pointer-events-auto",
           scrolled
-            ? "bg-background/80 dark:bg-background/85 backdrop-blur-xl border border-border/60 mx-3 sm:mx-6 md:mx-10 lg:mx-16 mt-2.5 rounded-2xl md:rounded-full shadow-lg shadow-black/5 dark:shadow-black/20"
-            : "bg-background/95 border-b border-border/40 shadow-xs",
+            ? "bg-background/90 dark:bg-background/90 backdrop-blur-xl border border-border/70 mx-3 sm:mx-6 md:mx-auto max-w-5xl lg:max-w-6xl mt-2 rounded-full shadow-md py-0.5 px-3 sm:px-4"
+            : "bg-background/95 border-b border-border/40 shadow-xs py-0",
         )}
       >
         <div
           className={cn(
-            "container mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl transition-all duration-300",
-            scrolled ? "h-16" : "h-20",
+            "container mx-auto flex items-center justify-between transition-all duration-300",
+            scrolled
+              ? "h-11 sm:h-12 px-1 sm:px-2"
+              : "h-20 px-4 sm:px-6 lg:px-8 max-w-7xl",
           )}
         >
           {/* Brand Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 hover:opacity-90 transition-opacity shrink-0"
+            className="flex items-center gap-2 sm:gap-2.5 hover:opacity-90 transition-opacity shrink-0"
           >
-            <div className="relative h-10 w-10 sm:h-11 sm:w-11 shrink-0">
+            <div
+              className={cn(
+                "relative shrink-0 transition-all duration-300",
+                scrolled
+                  ? "h-7 w-7 sm:h-8 sm:w-8"
+                  : "h-10 w-10 sm:h-11 sm:w-11",
+              )}
+            >
               <Image
                 src="/images/uch.png"
                 alt="UTY Creative Hub Logo"
@@ -86,7 +95,14 @@ export function Navbar() {
                 priority
               />
             </div>
-            <div className="flex flex-col text-left font-bold text-xs leading-tight tracking-tight text-primary select-none">
+            <div
+              className={cn(
+                "flex flex-col text-left font-bold tracking-tight text-primary select-none transition-all duration-300",
+                scrolled
+                  ? "text-[10px] leading-[11px]"
+                  : "text-xs leading-tight",
+              )}
+            >
               <div>UTY</div>
               <div>CREATIVE</div>
               <div>HUB</div>
@@ -94,7 +110,14 @@ export function Navbar() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 xl:space-x-4">
+          <nav
+            className={cn(
+              "hidden md:flex items-center transition-all duration-300",
+              scrolled
+                ? "space-x-0.5 lg:space-x-1"
+                : "space-x-1 lg:space-x-2 xl:space-x-4",
+            )}
+          >
             {navItems.map((item) => {
               const active = isActivePath(item.href);
               return (
@@ -102,14 +125,17 @@ export function Navbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "relative text-xs md:text-sm lg:text-base font-semibold whitespace-nowrap transition-colors py-1 px-2.5 rounded-lg text-primary",
+                    "relative font-semibold whitespace-nowrap transition-all duration-200 text-primary",
+                    scrolled
+                      ? "text-xs md:text-sm py-1 px-2 lg:px-2.5 rounded-full"
+                      : "text-xs md:text-sm lg:text-base py-1.5 px-2.5 lg:px-3 rounded-lg",
                     active
                       ? "text-primary font-bold bg-primary/10"
                       : "text-primary/85 hover:text-primary hover:bg-primary/5",
                   )}
                 >
                   {item.label}
-                  {active && (
+                  {active && !scrolled && (
                     <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
                   )}
                 </Link>
@@ -122,15 +148,18 @@ export function Navbar() {
                 <button
                   type="button"
                   className={cn(
-                    "relative text-xs md:text-sm lg:text-base font-semibold whitespace-nowrap flex items-center gap-1 py-1 px-2.5 rounded-lg transition-colors cursor-pointer text-primary",
+                    "relative font-semibold whitespace-nowrap flex items-center gap-1 transition-all duration-200 cursor-pointer text-primary",
+                    scrolled
+                      ? "text-xs md:text-sm py-1 px-2 lg:px-2.5 rounded-full"
+                      : "text-xs md:text-sm lg:text-base py-1.5 px-2.5 lg:px-3 rounded-lg",
                     isProgramActive()
                       ? "text-primary font-bold bg-primary/10"
                       : "text-primary/85 hover:text-primary hover:bg-primary/5",
                   )}
                 >
                   <span>Program</span>
-                  <ChevronDown className="h-4 w-4 transition-transform duration-200" />
-                  {isProgramActive() && (
+                  <ChevronDown className="h-3.5 w-3.5 transition-transform duration-200" />
+                  {isProgramActive() && !scrolled && (
                     <span className="absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-primary" />
                   )}
                 </button>
@@ -173,16 +202,27 @@ export function Navbar() {
           </nav>
 
           {/* Desktop Right Action Buttons */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-3">
-            <ThemeToggle />
+          <div
+            className={cn(
+              "hidden md:flex items-center transition-all duration-300",
+              scrolled ? "gap-1.5" : "gap-2 lg:gap-3",
+            )}
+          >
+            <ThemeToggle
+              className={
+                scrolled ? "h-8 w-8 rounded-full" : "h-9 w-9 rounded-xl"
+              }
+            />
 
             {/* Cek Jadwal Button */}
             <Link
               href="/schedule"
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
-                "border-primary/40 text-primary hover:bg-primary/10 font-medium rounded-xl text-xs md:text-sm whitespace-nowrap",
-                scrolled ? "h-9 px-3.5" : "h-10 px-4",
+                "border-primary/40 text-primary hover:bg-primary/10 font-medium whitespace-nowrap transition-all duration-200",
+                scrolled
+                  ? "h-8 px-3 text-xs rounded-full"
+                  : "h-10 px-4 text-sm rounded-xl",
               )}
             >
               Cek Jadwal
@@ -193,27 +233,36 @@ export function Navbar() {
               href="/booking"
               className={cn(
                 buttonVariants({ size: "sm" }),
-                "bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-md shadow-primary/20 hover:shadow-lg rounded-xl text-xs md:text-sm whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
-                scrolled ? "h-9 px-3.5" : "h-10 px-4",
+                "bg-primary hover:bg-primary/90 text-primary-foreground font-medium shadow-xs whitespace-nowrap transition-all duration-200 flex items-center gap-1.5",
+                scrolled
+                  ? "h-8 px-3 text-xs rounded-full"
+                  : "h-10 px-4 text-sm rounded-xl",
               )}
             >
-              <Calendar className="h-4 w-4" />
+              <Calendar className={scrolled ? "h-3.5 w-3.5" : "h-4 w-4"} />
               <span>Book Now</span>
             </Link>
           </div>
 
           {/* Mobile Right Bar: Theme Toggle + Drawer Trigger */}
-          <div className="flex items-center gap-2 md:hidden">
-            <ThemeToggle />
+          <div className="flex items-center gap-1.5 sm:gap-2 md:hidden">
+            <ThemeToggle
+              className={
+                scrolled ? "h-8 w-8 rounded-full" : "h-9 w-9 rounded-xl"
+              }
+            />
 
             <Sheet open={open} onOpenChange={setOpen}>
               <SheetTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-9 w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-xl"
+                  className={cn(
+                    "border border-input bg-background/50 hover:bg-accent backdrop-blur-sm transition-all duration-200",
+                    scrolled ? "h-8 w-8 rounded-full" : "h-9 w-9 rounded-xl",
+                  )}
                 >
-                  <Menu className="h-5 w-5" />
+                  <Menu className={scrolled ? "h-4 w-4" : "h-5 w-5"} />
                   <span className="sr-only">Buka menu navigasi</span>
                 </Button>
               </SheetTrigger>
