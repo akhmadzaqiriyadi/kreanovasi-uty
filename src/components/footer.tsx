@@ -1,9 +1,15 @@
 "use client";
 
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowUp, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -74,6 +80,9 @@ function YoutubeIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export function Footer() {
   const [showScrollTop, setShowScrollTop] = React.useState(false);
+  const footerRef = React.useRef<HTMLElement>(null);
+  const gridRef = React.useRef<HTMLDivElement>(null);
+  const bottomBarRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -82,6 +91,40 @@ export function Footer() {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  React.useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (gridRef.current) {
+        gsap.from(gridRef.current.children, {
+          y: 25,
+          opacity: 0,
+          stagger: 0.1,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 90%",
+          },
+        });
+      }
+
+      if (bottomBarRef.current) {
+        gsap.from(bottomBarRef.current, {
+          y: 15,
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          delay: 0.2,
+          scrollTrigger: {
+            trigger: footerRef.current,
+            start: "top 85%",
+          },
+        });
+      }
+    }, footerRef);
+
+    return () => ctx.revert();
   }, []);
 
   const scrollToTop = () => {
@@ -132,7 +175,10 @@ export function Footer() {
   ];
 
   return (
-    <footer className="w-full bg-slate-50 dark:bg-zinc-950 border-t border-border/60 pt-16 pb-8 relative overflow-hidden">
+    <footer
+      ref={footerRef}
+      className="w-full bg-slate-50 dark:bg-zinc-950 border-t border-border/60 pt-16 pb-8 relative overflow-hidden"
+    >
       {/* Background Texture Pattern */}
       <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.18] dark:invert pointer-events-none select-none">
         <Image
@@ -144,7 +190,10 @@ export function Footer() {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-12">
+        <div
+          ref={gridRef}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10 pb-12"
+        >
           {/* Column 1: About UTY Creative Hub */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -178,7 +227,7 @@ export function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="h-9 w-9 rounded-full bg-white dark:bg-zinc-900 border border-border/80 text-primary flex items-center justify-center shadow-xs hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 hover:-translate-y-0.5"
+                    className="h-9 w-9 rounded-full bg-white dark:bg-zinc-900 border border-border/80 text-primary flex items-center justify-center shadow-xs hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors duration-200"
                   >
                     <IconComponent className="h-4 w-4" />
                   </a>
@@ -254,7 +303,10 @@ export function Footer() {
         <div className="border-t border-border/70 my-6" />
 
         {/* Bottom Bar: Copyright & Policy Links */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+        <div
+          ref={bottomBarRef}
+          className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground"
+        >
           <p>
             © {new Date().getFullYear()} UTY Creative Hub. All rights reserved.
           </p>
