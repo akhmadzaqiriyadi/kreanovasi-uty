@@ -130,8 +130,8 @@ export function HeroSection() {
             backgroundPosition: "center",
           }}
         />
-        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-primary/5 dark:bg-primary/10 blur-3xl" />
-        <div className="absolute top-1/3 right-0 w-80 h-80 rounded-full bg-secondary/5 dark:bg-secondary/10 blur-3xl" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 rounded-full bg-primary/10 dark:bg-primary/15 blur-3xl" />
+        <div className="absolute top-1/3 right-0 w-96 h-96 rounded-full bg-secondary/15 dark:bg-secondary/20 blur-3xl" />
       </div>
 
       {/* Main Container */}
@@ -244,13 +244,16 @@ export function HeroSection() {
               ref={imageRef}
               className="relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center"
             >
-              <div className="relative rounded-2xl overflow-hidden p-1">
+              {/* Soft Golden Accent Glow */}
+              <div className="absolute inset-6 bg-secondary/20 dark:bg-secondary/25 rounded-3xl blur-2xl opacity-80 pointer-events-none" />
+
+              <div className="relative rounded-2xl overflow-hidden p-1 z-10">
                 <Image
                   src="/images/hero.webp"
                   alt="UTY Creative Hub Innovation"
                   width={1024}
                   height={1536}
-                  className="w-full max-h-[520px] object-contain drop-shadow-md"
+                  className="w-full max-h-[520px] object-contain drop-shadow-xl"
                   priority
                 />
               </div>
