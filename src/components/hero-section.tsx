@@ -228,18 +228,8 @@ export function HeroSection() {
             {/* Clean Running Ticker Tagline Badge */}
             <div
               ref={badgeRef}
-              className="inline-flex items-center gap-2.5 sm:gap-3 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs w-full max-w-[340px] sm:max-w-md md:max-w-lg overflow-hidden select-none"
+              className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs sm:text-sm font-semibold tracking-wide shadow-xs w-full max-w-[320px] sm:max-w-md md:max-w-lg overflow-hidden select-none"
             >
-              <div className="flex items-center gap-1.5 shrink-0 bg-primary/15 dark:bg-primary/25 px-2.5 py-0.5 rounded-full border border-primary/20 z-10">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
-                </span>
-                <span className="text-[11px] uppercase tracking-wider font-bold text-primary">
-                  UCH
-                </span>
-              </div>
-
               <div className="overflow-hidden whitespace-nowrap flex-1 h-5 flex items-center relative">
                 <div
                   ref={tickerRef}
