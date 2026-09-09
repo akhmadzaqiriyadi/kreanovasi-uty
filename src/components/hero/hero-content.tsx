@@ -13,8 +13,9 @@ export function HeroContent({ titleRef, descRef }: HeroContentProps) {
         <div className="text-5xl sm:text-7xl font-black tracking-tight text-primary leading-none">
           UCH
         </div>
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-          UTY <span className="text-secondary">Creative Hub</span>
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
+          <span className="text-primary dark:text-blue-100">UTY</span>{" "}
+          <span className="text-secondary">Creative Hub</span>
         </h1>
       </div>
 
