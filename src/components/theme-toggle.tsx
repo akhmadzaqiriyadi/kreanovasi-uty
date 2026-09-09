@@ -19,9 +19,33 @@ export function ThemeToggle({ className }: { className?: string }) {
       e.preventDefault();
       e.stopPropagation();
     }
-    const current = resolvedTheme || theme || "light";
-    const next = current === "dark" ? "light" : "dark";
-    setTheme(next);
+
+    // Check actual live DOM state as source of truth
+    const isCurrentlyDark =
+      document.documentElement.classList.contains("dark") ||
+      resolvedTheme === "dark" ||
+      theme === "dark";
+
+    const nextTheme = isCurrentlyDark ? "light" : "dark";
+
+    // 1. Direct synchronous DOM manipulation for instant feedback
+    if (nextTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
+    }
+
+    // 2. Sync with next-themes provider
+    setTheme(nextTheme);
+
+    // 3. Fallback localStorage write for sandboxed/ngrok webviews
+    try {
+      localStorage.setItem("theme", nextTheme);
+    } catch {
+      // ignore
+    }
   };
 
   return (
@@ -33,7 +57,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onTouchEnd={toggleTheme}
       aria-label="Toggle theme"
       className={cn(
-        "relative h-9 w-9 rounded-full border border-primary/30 bg-background/70 hover:bg-primary/10 text-primary backdrop-blur-sm cursor-pointer shrink-0 select-none transition-all duration-200 active:scale-95 touch-manipulation z-20",
+        "relative h-9 w-9 rounded-full border border-primary/30 bg-background/70 hover:bg-primary/10 text-primary backdrop-blur-sm cursor-pointer shrink-0 select-none transition-all duration-200 active:scale-95 touch-manipulation z-30",
         className,
       )}
     >
