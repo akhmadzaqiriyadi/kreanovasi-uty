@@ -134,7 +134,7 @@ export function Footer() {
   return (
     <footer className="w-full bg-slate-50 dark:bg-zinc-950 border-t border-border/60 pt-16 pb-8 relative overflow-hidden">
       {/* Background Texture Pattern */}
-      <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none select-none">
+      <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.18] dark:invert pointer-events-none select-none">
         <Image
           src="/images/pattern-bg.svg"
           alt="Background pattern"

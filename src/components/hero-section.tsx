@@ -10,7 +10,7 @@ export function HeroSection() {
       {/* Background Texture & Ambient Lights */}
       <div className="absolute inset-0 pointer-events-none select-none z-0">
         <div
-          className="absolute inset-0 opacity-20 dark:opacity-10"
+          className="absolute inset-0 opacity-20 dark:opacity-25 dark:invert"
           style={{
             backgroundImage: "url('/images/texture-herobg.svg')",
             backgroundRepeat: "no-repeat",
