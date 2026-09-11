@@ -21,7 +21,7 @@ export function HeroActions({ actionsRef }: HeroActionsProps) {
           href="/schedule"
           className={cn(
             buttonVariants({ variant: "outline", size: "lg" }),
-            "h-11 sm:h-12 text-xs xs:text-sm sm:text-base border-2 border-primary/30 text-primary hover:bg-accent hover:border-secondary font-semibold rounded-xl transition-colors flex items-center justify-center text-center px-2 sm:px-4",
+            "h-11 sm:h-12 text-xs xs:text-sm sm:text-base border-2 border-primary/30 text-primary hover:bg-accent hover:border-secondary font-semibold rounded-xl transition-all active:scale-[0.97] touch-manipulation flex items-center justify-center text-center px-2 sm:px-4",
           )}
         >
           <span>Cek Jadwal</span>
@@ -31,7 +31,7 @@ export function HeroActions({ actionsRef }: HeroActionsProps) {
           href="/booking"
           className={cn(
             buttonVariants({ size: "lg" }),
-            "h-11 sm:h-12 text-xs xs:text-sm sm:text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 sm:gap-2 text-center px-2 sm:px-4",
+            "h-11 sm:h-12 text-xs xs:text-sm sm:text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl shadow-xs transition-all active:scale-[0.97] touch-manipulation flex items-center justify-center gap-1.5 sm:gap-2 text-center px-2 sm:px-4",
           )}
         >
           <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
@@ -44,7 +44,7 @@ export function HeroActions({ actionsRef }: HeroActionsProps) {
         href="/programs"
         className={cn(
           buttonVariants({ size: "lg" }),
-          "h-11 sm:h-12 px-4 sm:px-7 text-xs xs:text-sm sm:text-base bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-md transition-colors flex items-center justify-center gap-2 group w-full",
+          "h-11 sm:h-12 px-4 sm:px-7 text-xs xs:text-sm sm:text-base bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-md transition-all active:scale-[0.98] touch-manipulation flex items-center justify-center gap-2 group w-full",
         )}
       >
         <span>Jelajahi Program</span>

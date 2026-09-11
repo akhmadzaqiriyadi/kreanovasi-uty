@@ -29,7 +29,7 @@ export function AboutPillars({ pillarsRef }: AboutPillarsProps) {
       className="space-y-6 sm:space-y-8 pt-4 sm:pt-6"
     >
       <div className="text-center space-y-1.5 max-w-xl mx-auto">
-        <h3 className="text-xl sm:text-2xl font-bold text-primary tracking-tight">
+        <h3 className="text-xl sm:text-2xl font-bold text-primary dark:text-foreground tracking-tight">
           {title}
         </h3>
         <p className="text-xs sm:text-sm text-muted-foreground">{subtitle}</p>
@@ -42,7 +42,7 @@ export function AboutPillars({ pillarsRef }: AboutPillarsProps) {
             <article
               key={pillar.id}
               className={cn(
-                "p-5 sm:p-6 rounded-2xl bg-white dark:bg-zinc-900 border shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-between space-y-4",
+                "p-5 sm:p-6 rounded-2xl bg-white dark:bg-zinc-900 border shadow-xs transition-all duration-300 hover:shadow-md active:scale-[0.99] touch-manipulation flex flex-col justify-between space-y-4",
                 pillar.accentColor,
               )}
             >
@@ -56,7 +56,7 @@ export function AboutPillars({ pillarsRef }: AboutPillarsProps) {
                   >
                     <IconComponent className="h-6 w-6" aria-hidden="true" />
                   </div>
-                  <span className="text-[11px] font-semibold text-muted-foreground/80 tracking-wide uppercase">
+                  <span className="text-[11px] font-semibold text-muted-foreground tracking-wide uppercase">
                     {pillar.subtitle}
                   </span>
                 </div>

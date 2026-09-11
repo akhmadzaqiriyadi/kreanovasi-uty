@@ -13,48 +13,42 @@ export function useVideoPlayer(options: UseVideoPlayerOptions = {}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(initialVolume);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(true);
 
   const hideControlsTimer = useRef<NodeJS.Timeout | null>(null);
 
-  // Initialize playback and audio
+  // Initialize playback with standard mobile-safe muted autoplay
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     video.volume = initialVolume;
-    setVolume(initialVolume);
+    video.muted = true;
+    setIsMuted(true);
 
     if (autoPlay) {
-      video.muted = false;
-      video
-        .play()
-        .then(() => {
-          setIsPlaying(true);
-          setIsMuted(false);
-          setHasLoaded(true);
-        })
-        .catch(() => {
-          // Browser prevented autoplay with sound; fallback to muted autoplay
-          video.muted = true;
-          setIsMuted(true);
-          video
-            .play()
-            .then(() => {
-              setIsPlaying(true);
-              setHasLoaded(true);
-            })
-            .catch(() => {
-              setIsPlaying(false);
-            });
-        });
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+            setHasLoaded(true);
+            setIsBuffering(false);
+          })
+          .catch(() => {
+            // Autoplay blocked by device policy (e.g. low power mode)
+            setIsPlaying(false);
+            setIsBuffering(false);
+          });
+      }
     }
 
     // Scroll viewport intersection observer
@@ -62,17 +56,21 @@ export function useVideoPlayer(options: UseVideoPlayerOptions = {}) {
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            video
-              .play()
-              .then(() => setIsPlaying(true))
-              .catch(() => {});
+            if (video.paused) {
+              video
+                .play()
+                .then(() => setIsPlaying(true))
+                .catch(() => {});
+            }
           } else {
-            video.pause();
-            setIsPlaying(false);
+            if (!video.paused) {
+              video.pause();
+              setIsPlaying(false);
+            }
           }
         }
       },
-      { threshold: 0.3 },
+      { threshold: 0.2 },
     );
 
     if (containerRef.current) {
@@ -183,6 +181,7 @@ export function useVideoPlayer(options: UseVideoPlayerOptions = {}) {
     isFullscreen,
     showControls,
     hasLoaded,
+    isBuffering,
     togglePlay,
     toggleMute,
     handleVolumeChange,
@@ -197,7 +196,27 @@ export function useVideoPlayer(options: UseVideoPlayerOptions = {}) {
       if (videoRef.current) {
         setDuration(videoRef.current.duration);
         setHasLoaded(true);
+        setIsBuffering(false);
       }
+    },
+    onLoadedData: () => {
+      setHasLoaded(true);
+      setIsBuffering(false);
+    },
+    onCanPlay: () => {
+      setHasLoaded(true);
+      setIsBuffering(false);
+    },
+    onWaiting: () => {
+      setIsBuffering(true);
+    },
+    onPlaying: () => {
+      setIsPlaying(true);
+      setHasLoaded(true);
+      setIsBuffering(false);
+    },
+    onPause: () => {
+      setIsPlaying(false);
     },
   };
 }

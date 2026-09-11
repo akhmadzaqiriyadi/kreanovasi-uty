@@ -21,7 +21,14 @@ export function HeroMorphIllustration({
   const altImageRef = useRef<HTMLImageElement>(null);
   const glowRef = useRef<HTMLDivElement>(null);
 
-  const { onMouseEnter, onMouseLeave } = useHeroMorph({
+  const {
+    onMouseEnter,
+    onMouseLeave,
+    onTouchStart,
+    onTouchMove,
+    onTouchEnd,
+    onTouchCancel,
+  } = useHeroMorph({
     primaryImageRef,
     altImageRef,
     glowRef,
@@ -32,9 +39,13 @@ export function HeroMorphIllustration({
       ref={imageRef}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      onTouchCancel={onTouchCancel}
       aria-label="Ilustrasi Karakter Inovasi UTY Creative Hub"
       className={cn(
-        "relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center cursor-pointer group select-none m-0",
+        "relative w-full max-w-[440px] lg:max-w-[480px] flex justify-center cursor-pointer group select-none m-0 touch-manipulation",
         className,
       )}
     >
@@ -76,7 +87,6 @@ export function HeroMorphIllustration({
             "w-full object-contain drop-shadow-xl absolute inset-0 m-auto opacity-0 will-change-[opacity,transform,filter]",
             maxHeight,
           )}
-          priority
         />
       </div>
     </figure>

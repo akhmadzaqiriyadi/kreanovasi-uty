@@ -164,7 +164,7 @@ export function MobileDrawer() {
               onClick={() => setOpen(false)}
               className={cn(
                 buttonVariants({ variant: "outline" }),
-                "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-semibold",
+                "w-full rounded-xl border-primary/40 text-primary hover:bg-primary/10 font-semibold active:scale-[0.98] touch-manipulation transition-all",
               )}
             >
               Cek Jadwal
@@ -174,7 +174,7 @@ export function MobileDrawer() {
               onClick={() => setOpen(false)}
               className={cn(
                 buttonVariants({ size: "default" }),
-                "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold flex items-center justify-center gap-1.5 shadow-md",
+                "w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold flex items-center justify-center gap-1.5 shadow-md active:scale-[0.98] touch-manipulation transition-all",
               )}
             >
               <Calendar className="h-4 w-4" aria-hidden="true" />

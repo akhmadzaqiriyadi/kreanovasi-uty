@@ -1,5 +1,11 @@
+export { AboutCta } from "./about-cta";
 export { AboutHeader } from "./about-header";
+export { AboutHeroBanner } from "./about-hero-banner";
+export { AboutPageSection } from "./about-page-section";
 export { AboutPillars } from "./about-pillars";
 export { AboutSection } from "./about-section";
+export { AboutStats } from "./about-stats";
 export { AboutStory } from "./about-story";
+export { AboutTeam } from "./about-team";
 export { AboutVideo } from "./about-video";
+export { AboutVisionMission } from "./about-vision-mission";

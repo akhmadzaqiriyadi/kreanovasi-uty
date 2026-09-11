@@ -2,7 +2,6 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 import { FooterBottom } from "./footer-bottom";
 import { FooterBrand } from "./footer-brand";
@@ -71,14 +70,16 @@ export function Footer() {
       className="w-full bg-slate-50 dark:bg-zinc-950 border-t border-border/60 pt-12 sm:pt-16 pb-6 sm:pb-8 relative overflow-hidden"
     >
       {/* Background Texture Pattern */}
-      <div className="absolute inset-0 opacity-[0.04] dark:opacity-[0.18] dark:invert pointer-events-none select-none">
-        <Image
-          src="/images/pattern-bg.svg"
-          alt="Background pattern"
-          fill
-          className="object-cover"
-        />
-      </div>
+      <div
+        className="absolute inset-0 opacity-[0.04] dark:opacity-[0.18] dark:invert pointer-events-none select-none"
+        style={{
+          backgroundImage: "url('/images/pattern-bg.svg')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        aria-hidden="true"
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10">
         <div

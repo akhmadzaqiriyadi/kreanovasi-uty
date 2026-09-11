@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  ExternalLink,
+  Loader2,
   Maximize2,
   Minimize2,
   Pause,
@@ -27,7 +27,7 @@ function formatVideoTime(timeInSeconds: number): string {
 }
 
 export function AboutVideo({ videoRef }: AboutVideoProps) {
-  const { src, driveUrl, caption, defaultVolume } = aboutConfig.video;
+  const { src, caption, defaultVolume } = aboutConfig.video;
 
   const {
     videoRef: internalVideoRef,
@@ -39,7 +39,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     duration,
     isFullscreen,
     showControls,
-    hasLoaded,
+    isBuffering,
     togglePlay,
     toggleMute,
     handleVolumeChange,
@@ -49,6 +49,11 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
     setShowControls,
     onTimeUpdate,
     onLoadedMetadata,
+    onLoadedData,
+    onWaiting,
+    onPlaying,
+    onCanPlay,
+    onPause,
   } = useVideoPlayer({ initialVolume: defaultVolume, autoPlay: true });
 
   return (
@@ -63,24 +68,49 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
         onMouseLeave={() => isPlaying && setShowControls(false)}
         className="relative w-full aspect-video rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-primary/20 dark:border-primary/40 bg-zinc-950 shadow-2xl group select-none"
       >
-        {/* Native HTML5 Video */}
+        {/* Native HTML5 Video with Mobile-Compliant Muted Autoplay */}
         <video
           ref={internalVideoRef}
           src={src}
           autoPlay
+          muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           onTimeUpdate={onTimeUpdate}
           onLoadedMetadata={onLoadedMetadata}
+          onLoadedData={onLoadedData}
+          onWaiting={onWaiting}
+          onPlaying={onPlaying}
+          onCanPlay={onCanPlay}
+          onPause={onPause}
           onClick={togglePlay}
-          className={cn(
-            "w-full h-full object-cover transition-opacity duration-700 cursor-pointer",
-            hasLoaded ? "opacity-100" : "opacity-0",
-          )}
+          className="w-full h-full object-cover cursor-pointer"
         >
           Browser Anda tidak mendukung tag video.
         </video>
+
+        {/* Buffering Indicator */}
+        {isBuffering && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 flex items-center justify-center bg-black/40 pointer-events-none z-20"
+          >
+            <Loader2 className="h-10 w-10 text-secondary animate-spin" />
+          </div>
+        )}
+
+        {/* Large Play Button Overlay if Paused */}
+        {!isPlaying && !isBuffering && (
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label="Putar video"
+            className="absolute inset-0 m-auto h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary/90 text-primary-foreground hover:bg-primary flex items-center justify-center shadow-2xl z-20 hover:scale-110 active:scale-95 transition-all cursor-pointer"
+          >
+            <Play className="h-8 w-8 sm:h-10 sm:w-10 ml-1 fill-current" />
+          </button>
+        )}
 
         {/* Clean Floating Unmute Button */}
         {isMuted && isPlaying && (
@@ -88,7 +118,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
             type="button"
             onClick={toggleMute}
             aria-label="Aktifkan suara video"
-            className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shadow-lg hover:scale-105 transition-transform cursor-pointer"
+            className="absolute top-4 left-4 z-20 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-secondary-foreground text-xs font-bold shadow-lg hover:scale-105 active:scale-95 transition-transform cursor-pointer"
           >
             <VolumeX className="h-4 w-4" />
             <span>Aktifkan Suara</span>
@@ -98,7 +128,7 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
         {/* Video Control Bar Overlay */}
         <div
           className={cn(
-            "absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-3 sm:p-5 transition-opacity duration-300 flex flex-col gap-2 sm:gap-3",
+            "absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-3 sm:p-5 transition-opacity duration-300 flex flex-col gap-2 sm:gap-3 z-30",
             showControls || !isPlaying
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none",
@@ -197,18 +227,11 @@ export function AboutVideo({ videoRef }: AboutVideoProps) {
         </div>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground font-medium px-1">
-        <figcaption>{caption}</figcaption>
-        <a
-          href={driveUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-primary hover:underline"
-        >
-          <span>Buka di Google Drive</span>
-          <ExternalLink className="h-3 w-3" />
-        </a>
-      </div>
+      {caption && (
+        <figcaption className="text-xs text-muted-foreground font-medium px-1 text-center sm:text-left">
+          {caption}
+        </figcaption>
+      )}
     </figure>
   );
 }

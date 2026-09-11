@@ -72,8 +72,8 @@ export function AboutStory({ storyRef }: AboutStoryProps) {
                     size: "default",
                   }),
                   isPrimary
-                    ? "h-11 px-5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-xs transition-colors flex items-center gap-2"
-                    : "h-11 px-5 border-2 border-primary/30 text-primary hover:bg-accent font-semibold rounded-xl transition-colors",
+                    ? "h-11 px-5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] touch-manipulation flex items-center gap-2"
+                    : "h-11 px-5 border-2 border-primary/30 dark:border-primary/50 text-primary dark:text-blue-200 hover:bg-accent font-semibold rounded-xl transition-all active:scale-[0.98] touch-manipulation",
                 )}
               >
                 <span>{action.label}</span>
@@ -100,7 +100,7 @@ export function AboutStory({ storyRef }: AboutStoryProps) {
             <div
               key={focus.id}
               className={cn(
-                "p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-border/80 shadow-xs space-y-2 transition-colors",
+                "p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-border/80 shadow-xs space-y-2 transition-all active:scale-[0.99] touch-manipulation",
                 isSecondary
                   ? "hover:border-secondary/60"
                   : "hover:border-primary/40",
@@ -112,19 +112,13 @@ export function AboutStory({ storyRef }: AboutStoryProps) {
                   className={cn(
                     "h-9 w-9 rounded-xl flex items-center justify-center shrink-0",
                     isSecondary
-                      ? "bg-secondary/15 text-secondary-foreground"
-                      : "bg-primary/10 text-primary",
+                      ? "bg-secondary/15 text-amber-600 dark:bg-secondary/20 dark:text-secondary"
+                      : "bg-primary/10 text-primary dark:bg-primary/25 dark:text-blue-300",
                   )}
                 >
-                  <Icon
-                    className={cn(
-                      "h-5 w-5",
-                      isSecondary ? "text-secondary" : "",
-                    )}
-                    aria-hidden="true"
-                  />
+                  <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
-                <h3 className="text-sm sm:text-base font-bold text-primary">
+                <h3 className="text-sm sm:text-base font-bold text-primary dark:text-foreground">
                   {focus.title}
                 </h3>
               </div>
