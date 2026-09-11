@@ -1,186 +1,209 @@
-# ⚡ NextBoi — Premium Next.js 16 + Bun Startup Template
+# 🚀 UTY Creative Hub (Kreanovasi UTY)
 
-[![Next.js 16](https://img.shields.io/badge/Next.js-16.2-black?style=flat-square&logo=next.js)](https://nextjs.org)
-[![React 19](https://img.shields.io/badge/React-19.0-blue?style=flat-square&logo=react)](https://react.dev)
-[![Tailwind v4](https://img.shields.io/badge/Tailwind-v4.0-38bdf8?style=flat-square&logo=tailwind-css)](https://tailwindcss.com)
-[![Bun](https://img.shields.io/badge/Bun-v1.3-f9f1e7?style=flat-square&logo=bun)](https://bun.sh)
-[![Playwright](https://img.shields.io/badge/Playwright-E2E-2e8b57?style=flat-square&logo=playwright)](https://playwright.dev)
-[![Biome](https://img.shields.io/badge/Biome-Linter-60a5fa?style=flat-square&logo=biome)](https://biomejs.dev)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![React 19](https://img.shields.io/badge/React-19.2-blue?style=for-the-badge&logo=react)](https://react.dev)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind-v4.0-38bdf8?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Biome](https://img.shields.io/badge/Biome-Linter-60a5fa?style=for-the-badge&logo=biome)](https://biomejs.dev)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-NextBoi is a state-of-the-art Next.js 16 and Bun boilerplate designed for high-velocity SaaS startup deployment. Enforcing strict type safety, modular domain boundaries, complete UI-logic hooks separation, and modern Server Actions pipelines.
+**UTY Creative Hub (Kreanovasi UTY)** adalah platform digital resmi pusat pengembangan kreativitas, inovasi, inkubasi ide, dan ekosistem riset terapan **Universitas Teknologi Yogyakarta (UTY)**. Dibangun dengan standar web modern untuk menyajikan pengalaman pengguna yang cepat, responsif, elegan, dan berkinerja tinggi bagi mahasiswa, dosen, mentor industri, dan masyarakat kampus.
 
----
-
-## ✨ Key Features & DX
-
-- **Next.js 16 (App Router)**: Fast rendering using Server Components by default.
-- **Server Actions**: Type-safe data mutations using native `"use server";` actions, eliminating REST API router configurations.
-- **React Compiler**: Automatic render memoization out-of-the-box (no manual `useMemo` / `useCallback` hooks).
-- **Separation of Concerns (SoC)**: UI components are purely visual. Form validation (Zod), submission states (TanStack Query), and side-effects are extracted into isolated logic hooks.
-- **Tailwind CSS v4 & Glassmorphism**: Premium styling with curated dark modes, glassmorphism utilities (`glass-panel`, `glass-card`), and mesh grid layouts.
-- **Playwright E2E Testing**: Comprehensive, parallel-ready E2E browser tests out-of-the-box.
-- **Biome Toolchain**: Formatting, linting, and imports sorting checked in under `120ms`!
+🌐 **Production URL:** [https://kreanovasi.uty.ac.id](https://kreanovasi.uty.ac.id)  
+📦 **Repository:** [https://github.com/akhmadzaqiriyadi/kreanovasi-uty](https://github.com/akhmadzaqiriyadi/kreanovasi-uty)
 
 ---
 
-## 🚀 Quick Start
+## 🌟 Fitur Utama
 
-```bash
-# 1. Clone repo
-git clone https://github.com/akhmadzaqiriyadi/nextboi-starter-kit.git
-cd nextboi-starter-kit
-
-# 2. Install dependencies + Playwright browsers
-bun install
-bunx playwright install
-
-# 3. Setup environment
-cp .env.example .env.local
-
-# 4. Run dev server
-bun run dev
-```
-
-Buka `http://localhost:3000`
-
-### 🔑 Demo Credentials
-
-| Role  | Email              | Password    |
-|-------|--------------------|-------------|
-| Admin | user@example.com   | password123 |
-| User  | guest@example.com  | password123 |
-
-> Mock API berjalan langsung di Next.js Route Handlers — tidak perlu backend eksternal untuk mulai.
+- **🎨 Modern UI & Glassmorphism Design:** Tampilan antarmuka berstandar premium dengan Tailwind CSS v4, dynamic dark/light mode, palet warna Navy & Gold khas kampus, serta micro-interactions yang halus.
+- **⚡ Next.js 16 + React 19 (App Router):** Performa loading secepat kilat dengan React Server Components (RSC), Turbopack compilation, dan static prerendering.
+- **🛡️ Keamanan Teruji & Terproteksi:** Dibangun dengan arsitektur bebas celah keamanan RSC (aman dari CVE-2025-55182) serta sanitasi input dan validasi data berbasis Zod.
+- **👥 Halaman "About Us" Interaktif (`/about`):**
+  - **Visi & Misi UTY Creative Hub:** Narasi strategis arah pengembangan inovasi kampus.
+  - **Statistik Ekosistem:** Metrik pencapaian (500+ mahasiswa aktif, 50+ event/tahun, 8 ruang kreatif, 15+ mitra industri).
+  - **Showcase Mentor & Dosen:** Profil pembina strategis dan pengarah program (Wakil Rektor IV & Mentor).
+  - **Carousel Tim Kreatif:** Slider responsif dengan navigasi swipe/touch dan auto-play untuk seluruh divisi tim mahasiswa.
+  - **Video Dokumentasi Profil:** Video player terintegrasi dengan kustomisasi volume slider, scrubber bar, fullscreen, dan fallback streaming Google Drive.
+  - **Tiga Pilar Keunggulan:** Kreativitas & Desain, Inovasi Terapan & Startup, serta Teknologi Masa Depan & FastLab Academy.
+- **📰 Artikel & Wawasan Inovasi (`/articles`):** Publikasi artikel PKM, riset terapan, panduan paten HKI, dan teknologi hardware.
+- **🏛️ Fasilitas & Ruang Kreatif (`/rooms`):** Informasi Co-Working Space, Podcast Studio, Meeting Room, dan Prototyping Lab.
+- **📅 Manajemen Event & Program:** Jadwal workshop, pitching bootcamp, dan seminar teknologi mahasiswa.
+- **📱 Responsif & Mobile-First:** Optimal diakses di semua resolusi layar mulai dari mobile smartphone, tablet, hingga layar desktop ultrawide.
 
 ---
 
-## 📂 Codebase Directory Structure
+## 🛠️ Tech Stack & Arsitektur
+
+| Komponen | Teknologi | Keterangan |
+|---|---|---|
+| **Framework** | Next.js 16.2.10 (App Router) | React Server Components & Turbopack |
+| **Library UI** | React 19.2.4 | Modern rendering & concurrency hooks |
+| **Styling** | Tailwind CSS v4 + tw-animate-css | CSS utilities & animation primitives |
+| **Komponen UI** | Radix UI / Shadcn UI | Accessible & unstyled UI primitives |
+| **Animasi** | GSAP 3 & ScrollTrigger | Scroll parallax, morphing hero & transitions |
+| **Icons** | Lucide React | Modern feather-style iconography |
+| **Formatting & Lint** | Biome v2 | Linter & formatter super cepat (<150ms) |
+| **Runtime & PM** | Node.js v22 / Bun v1.3 / npm v10 | Package manager & runtime |
+| **Process Manager** | PM2 | Background service runner di server VPS |
+| **Web Server** | Nginx Reverse Proxy | SSL handling & proxy forward ke Next.js |
+
+---
+
+## 📂 Struktur Direktori Proyek
 
 ```text
-src/
-├── app/                    # Routing, layouts, page templates, sitemap, and robots
-│   ├── (dashboard)/        # Dashboard route group — terisolasi dari landing layout
-│   ├── (marketing)/        # Landing page + auth pages (login, register)
-│   ├── api/auth/           # Mock API Route Handlers (login, register, logout, refresh, me)
-│   ├── layout.tsx          # Global template (font, theme provider)
-│   ├── robots.ts           # Dynamic crawler policies
-│   └── sitemap.ts          # Dynamic XML sitemap
-├── components/             # Reusable global layout elements
-│   ├── ui/                 # shadcn/ui base components (Button, Input, Card, dll)
-│   ├── navbar.tsx          # Navigation bar (auth-aware + scroll highlight)
-│   ├── footer.tsx          # Footer
-│   ├── hero-section.tsx    # Landing hero
-│   ├── features-grid.tsx   # Features section
-│   └── dx-widget.tsx       # DX Specs section
-├── config/                 # Static data configs (navigation items, env schema)
-├── features/               # Domain-specific feature modules
-│   ├── auth/               # Auth context, hooks, forms, schema, types
-│   │   ├── components/     # LoginForm, RegisterForm
-│   │   ├── hooks/          # useAuth, useLoginFormLogic, useRegisterFormLogic
-│   │   ├── providers/      # AuthProvider (context + silent refresh)
-│   │   ├── schemas/        # Zod schemas (loginSchema, registerSchema)
-│   │   └── types/          # User, AuthSession interfaces
-│   ├── dashboard/          # Dashboard components, hooks, types
-│   │   ├── components/     # AdminDashboard, UserDashboard + sub-components
-│   │   └── types/          # TabType dan feature types
-│   └── feedback/           # Feedback form feature
-│       ├── actions.ts      # Server Action untuk submit feedback
-│       ├── components/     # FeedbackForm
-│       ├── hooks/          # useFeedbackFormLogic
-│       └── schemas/        # Zod validation
-├── lib/                    # API client (Axios + silent refresh interceptor)
-├── proxy.ts                # Next.js Proxy — auth guard server-side redirect
-└── tests/                  # Playwright E2E specs
+kreanovasi-uty/
+├── public/
+│   ├── images/              # Aset statis tekstur, pattern SVG, dan ilustrasi portofolio
+│   ├── mentor/              # Foto resmi mentor & pembina UTY Creative Hub
+│   ├── team/                # Foto anggota tim mahasiswa UTY Creative Hub
+│   └── videos/              # Video profil institusional (uch-profile.mp4)
+├── src/
+│   ├── app/
+│   │   ├── (marketing)/
+│   │   │   ├── about/       # Halaman Tentang Kami (/about)
+│   │   │   ├── layout.tsx   # Marketing shared layout (Navbar & Footer)
+│   │   │   └── page.tsx     # Homepage landing page (/)
+│   │   ├── globals.css      # Design token variables & global CSS
+│   │   ├── layout.tsx       # Root document layout
+│   │   ├── robots.ts        # Dynamic crawler directives
+│   │   └── sitemap.ts       # XML sitemap generator
+│   ├── components/
+│   │   ├── about/           # Komponen modular halaman About Us
+│   │   │   ├── about-cta.tsx
+│   │   │   ├── about-hero-banner.tsx
+│   │   │   ├── about-page-section.tsx
+│   │   │   ├── about-pillars.tsx
+│   │   │   ├── about-stats.tsx
+│   │   │   ├── about-story.tsx
+│   │   │   ├── about-team.tsx       # Mentors & Team carousel slider
+│   │   │   ├── about-video.tsx      # Video player component
+│   │   │   └── about-vision-mission.tsx
+│   │   ├── articles/        # Grid dan kartu artikel
+│   │   ├── events/          # Grid dan kartu jadwal kegiatan
+│   │   ├── footer/          # Global footer & social links
+│   │   ├── hero/            # Landing page hero & morph vector
+│   │   ├── navbar/          # Header menu & mobile drawer
+│   │   ├── rooms/           # Ruang kreatif & studio showcase
+│   │   └── ui/              # Shadcn UI primitives (Button, Card, Dialog, dll)
+│   ├── config/              # Centralized configuration & content data
+│   │   ├── about.ts         # Konten About Us, team, mentors, & video
+│   │   ├── articles.ts      # Data artikel & wawasan
+│   │   ├── events.ts        # Data program & agenda
+│   │   ├── rooms.ts         # Data ruang kreatif & fasilitas
+│   │   └── site.ts          # Metadata, SEO tags, dan navigasi situs
+│   ├── hooks/               # Custom reusable React hooks
+│   │   ├── use-hero-morph.ts
+│   │   └── use-video-player.ts
+│   └── lib/                 # Utility helpers (cn, api-client, env schema)
+├── next.config.ts           # Konfigurasi Next.js (remotePatterns, rewrites)
+├── package.json             # Dependensi dan script project
+└── tsconfig.json            # Konfigurasi TypeScript
 ```
 
 ---
 
-## 🧠 Core Conventions & Guidelines
+## 🚀 Panduan Instalasi Lokal
 
-### 1. UI vs Logic Hook Separation
-All state managers, Zod form controllers, and side-effects must be decoupled into custom hooks. The component file retains pure representational markup:
+### 1. Prasyarat Sistem
+- **Node.js**: Versi 20.9.0 atau 22.x LTS (disarankan Node.js 22+)
+- **Package Manager**: npm, pnpm, atau Bun
 
-```typescript
-// Good: Extracting Logic to hooks
-export function FeedbackForm() {
-  const { register, handleSubmit, errors, isPending } = useFeedbackFormLogic();
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <Input {...register("name")} />
-      {/* Visual Markup */}
-    </form>
-  );
-}
-```
-
-### 2. Next.js 16 Server Actions
-Data submission and mutations are conducted through server action functions rather than Express-style REST route handlers:
-
-```typescript
-// src/features/feedback/actions.ts
-"use server";
-
-export async function submitFeedbackAction(data: FeedbackRequest) {
-  const result = feedbackSchema.safeParse(data);
-  if (!result.success) throw new Error("Invalid Input");
-  
-  // Database processing...
-  return { success: true };
-}
-```
-
-### 3. Rendering Flow (RSC vs CSR)
-1. Default to **React Server Components (RSC)** for all routes, layouts, and page structures.
-2. Nest Client Components (`"use client"`) strictly at leaf node interface elements (such as forms or interactive buttons).
-
----
-
-## 🛠️ Developer Commands
-
-### 1. Project Initialization
-Install packages and download browser binaries for Playwright:
+### 2. Clone Repository
 ```bash
+git clone https://github.com/akhmadzaqiriyadi/kreanovasi-uty.git
+cd kreanovasi-uty
+```
+
+### 3. Instalasi Dependensi
+```bash
+# Menggunakan npm
+npm install
+
+# Atau menggunakan Bun
 bun install
-bunx playwright install
 ```
 
-### 2. Run Local Development Server
+### 4. Menjalankan Server Development
 ```bash
-bun dev
+npm run dev
+# atau: bun dev
 ```
+Akses aplikasi melalui browser di **`http://localhost:3000`**.
 
-### 3. Verification Pipeline (Lint, Typecheck, Build)
+### 5. Build Produksi Lokal
 ```bash
-# Format, lint, and sort imports via Biome
-bun run check
-
-# Next.js TypeScript Type-check & Production Bundling
-bun run build
-```
-
-### 4. Run End-to-End Tests
-```bash
-# Run all Playwright tests across Chromium, Firefox, and WebKit
-bun run test:e2e
-
-# Run tests in interactive UI mode
-bun run test:e2e:ui
+npm run build
+npm run start
 ```
 
 ---
 
-## 🔄 Sambung ke Backend Nyata
+## 🚢 Panduan Deployment Produksi (VPS / Server)
 
-1. Set `NEXT_PUBLIC_API_URL=https://your-api.com` di `.env.local`
-2. Hapus folder `src/app/api/auth/` (mock routes tidak diperlukan)
-3. Pastikan backend mengembalikan response shape yang sama:
-   - `POST /auth/login` → `{ accessToken: string, user: { id, name, email, role } }`
-   - `POST /auth/refresh` → `{ accessToken: string }` (set `refresh_token` HttpOnly cookie)
-   - `GET /auth/me` → `{ id, name, email, role }`
-   - `POST /auth/logout` → `200 OK`
+Aplikasi ini dideploy pada server Ubuntu menggunakan **PM2** sebagai process manager dan **Nginx** sebagai reverse proxy.
+
+### 1. Setup Awal di Server
+```bash
+# Clone ke direktori server
+git clone https://github.com/akhmadzaqiriyadi/kreanovasi-uty.git /home/vps/uchwebapp/uch-creative-hub-frontend
+cd /home/vps/uchwebapp/uch-creative-hub-frontend
+
+# Install dependensi dan build
+npm ci
+npm run build
+```
+
+### 2. Konfigurasi PM2
+Jalankan service Next.js pada port yang ditentukan (default port `3002`):
+```bash
+# Menjalankan Next.js via PM2
+pm2 start npm --name "uch-frontend" -- start -- -p 3002
+
+# Simpan konfigurasi PM2 agar auto-start saat VPS restart
+pm2 save
+```
+
+### 3. Update & Redeploy Cepat
+Untuk melakukan update versi terbaru dari GitHub:
+```bash
+cd /home/vps/uchwebapp/uch-creative-hub-frontend
+git pull origin main
+npm run build
+pm2 reload uch-frontend
+```
 
 ---
 
-## 📄 License
-Created by **jekz**. Licensed under the [MIT License](LICENSE).
+## 🔒 Konfigurasi Keamanan & Aset Gambar
+
+Domain eksternal untuk gambar dikonfigurasi pada file [`next.config.ts`](file:///Users/zaq/uchapps/uchwebapp/next.config.ts):
+```typescript
+images: {
+  remotePatterns: [
+    { protocol: "http", hostname: "localhost" },
+    { protocol: "https", hostname: "kreanovasi.uty.ac.id" },
+    { protocol: "https", hostname: "uch.uty.ac.id" },
+    { protocol: "https", hostname: "drive.google.com" },
+    { protocol: "https", hostname: "lh3.googleusercontent.com" },
+    { protocol: "https", hostname: "images.unsplash.com" },
+  ],
+}
+```
+
+---
+
+## 👥 Kontributor & Pengembang
+
+Platform ini dikembangkan dan dikelola oleh tim **UTY Creative Hub** bersama mahasiswa berprestasi **Universitas Teknologi Yogyakarta**:
+* **Pembina / Mentor:** MS Hendriyawan A, S.T., M.Eng., Ph.D. & Puji Utomo, S.T., M.Eng.
+* **Lead Developer & Video Editor:** Akhmad Zaqi Riyadi ([@akhmadzaqiriyadi](https://github.com/akhmadzaqiriyadi))
+* **Creative Event & Content Team:** Tim Kreatif Mahasiswa UTY
+
+---
+
+## 📄 Lisensi
+
+Hak Cipta © 2026 **Universitas Teknologi Yogyakarta (UTY)**.  
+Didistribusikan di bawah lisensi [MIT License](LICENSE).
