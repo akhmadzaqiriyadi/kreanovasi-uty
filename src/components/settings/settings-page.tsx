@@ -52,7 +52,7 @@ export function SettingsPage() {
 
   return (
     <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-24 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl space-y-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
         {/* Header Banner */}
         <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
           <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
