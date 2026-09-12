@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { InteractivePagination } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
+import { TicketDialog } from "./ticket-dialog";
 
 export interface BookingRecord {
   id: string;
@@ -189,6 +190,11 @@ export function MyBookingsPage() {
     return filteredBookings.slice(start, start + pageSize);
   }, [filteredBookings, currentPage, pageSize]);
 
+  const [selectedTicket, setSelectedTicket] = useState<BookingRecord | null>(
+    null,
+  );
+  const [isTicketOpen, setIsTicketOpen] = useState(false);
+
   const handleCancelBooking = (id: string, code: string) => {
     setBookings((prev) =>
       prev.map((b) => (b.id === id ? { ...b, status: "cancelled" } : b)),
@@ -198,10 +204,9 @@ export function MyBookingsPage() {
     });
   };
 
-  const handleDownloadTicket = (code: string, roomName: string) => {
-    toast.success("E-Tiket Siap Diunduh", {
-      description: `Mengunduh bukti peminjaman digital ${code} (${roomName}).`,
-    });
+  const handleDownloadTicket = (bookingItem: BookingRecord) => {
+    setSelectedTicket(bookingItem);
+    setIsTicketOpen(true);
   };
 
   const getStatusBadge = (status: BookingRecord["status"]) => {
@@ -477,12 +482,7 @@ export function MyBookingsPage() {
                             {item.status === "approved" && (
                               <Button
                                 size="sm"
-                                onClick={() =>
-                                  handleDownloadTicket(
-                                    item.bookingCode,
-                                    item.roomName,
-                                  )
-                                }
+                                onClick={() => handleDownloadTicket(item)}
                                 className="h-8 rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
                               >
                                 <Download className="w-3.5 h-3.5 mr-1.5" />
@@ -521,6 +521,13 @@ export function MyBookingsPage() {
             />
           </CardContent>
         </Card>
+
+        {/* Modal E-Tiket Digital */}
+        <TicketDialog
+          booking={selectedTicket}
+          open={isTicketOpen}
+          onOpenChange={setIsTicketOpen}
+        />
       </div>
     </div>
   );
