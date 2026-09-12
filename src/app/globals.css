@@ -192,6 +192,15 @@
   }
   html {
     @apply font-sans scroll-smooth;
+    scrollbar-gutter: stable;
+  }
+
+  /* Mencegah pergeseran layout (halaman gerak/goyang) saat dropdown atau dialog Radix dibuka */
+  body[data-scroll-locked],
+  html[data-scroll-locked] {
+    margin-right: 0px !important;
+    padding-right: 0px !important;
+    overflow: visible !important;
   }
 
   /* Modern scrollbar styling */
