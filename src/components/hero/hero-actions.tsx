@@ -18,7 +18,7 @@ export function HeroActions({ actionsRef }: HeroActionsProps) {
       {/* Top Row: 2 side-by-side buttons */}
       <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full">
         <Link
-          href="/schedule"
+          href="/booking#schedule-navigator"
           className={cn(
             buttonVariants({ variant: "outline", size: "lg" }),
             "h-11 sm:h-12 text-xs xs:text-sm sm:text-base border-2 border-primary/30 text-primary hover:bg-accent hover:border-secondary font-semibold rounded-xl transition-all active:scale-[0.97] touch-manipulation flex items-center justify-center text-center px-2 sm:px-4",
@@ -28,7 +28,7 @@ export function HeroActions({ actionsRef }: HeroActionsProps) {
         </Link>
 
         <Link
-          href="/booking"
+          href="/booking/new"
           className={cn(
             buttonVariants({ size: "lg" }),
             "h-11 sm:h-12 text-xs xs:text-sm sm:text-base bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold rounded-xl shadow-xs transition-all active:scale-[0.97] touch-manipulation flex items-center justify-center gap-1.5 sm:gap-2 text-center px-2 sm:px-4",

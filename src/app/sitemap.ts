@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/about", priority: 0.8, changeFrequency: "monthly" as const },
     { path: "/programs", priority: 0.9, changeFrequency: "weekly" as const },
     { path: "/booking", priority: 0.9, changeFrequency: "daily" as const },
-    { path: "/schedule", priority: 0.8, changeFrequency: "daily" as const },
+    { path: "/booking/new", priority: 0.9, changeFrequency: "daily" as const },
     { path: "/articles", priority: 0.8, changeFrequency: "weekly" as const },
     { path: "/events", priority: 0.8, changeFrequency: "weekly" as const },
     { path: "/fastlab", priority: 0.8, changeFrequency: "monthly" as const },

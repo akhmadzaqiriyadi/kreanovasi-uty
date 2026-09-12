@@ -47,6 +47,7 @@ export function BookingScheduleNavigator({
 
   return (
     <section
+      id="schedule-navigator"
       ref={sectionRef}
       aria-labelledby="schedule-heading"
       className="w-full py-12 sm:py-16 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40"
