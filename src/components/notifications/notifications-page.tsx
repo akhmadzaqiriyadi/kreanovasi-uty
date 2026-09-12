@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { InteractivePagination } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 
 export interface SystemNotification {
@@ -95,6 +96,24 @@ const initialNotificationsList: SystemNotification[] = [
     actionUrl: "/my-bookings",
     actionLabel: "Riwayat",
   },
+  {
+    id: "notif-7",
+    category: "reminder",
+    title: "Pengingat Pengembalian Fasilitas",
+    message:
+      "Pastikan remote AC dan pointer proyektor Ruang Think Tank diletakkan kembali pada dock pengisian daya setelah selesai kegiatan.",
+    timestamp: "4 hari lalu",
+    isRead: true,
+  },
+  {
+    id: "notif-8",
+    category: "booking",
+    title: "Jadwal Reservasi Berhasil Dibatalkan",
+    message:
+      "Permohonan reservasi Coworking Space Hall (ID: UCH-294018) telah dibatalkan sesuai permohonan penanggung jawab kegiatan.",
+    timestamp: "5 hari lalu",
+    isRead: true,
+  },
 ];
 
 export function NotificationsPage() {
@@ -103,6 +122,18 @@ export function NotificationsPage() {
   );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 4;
+
+  const handleCategoryChange = (cat: string) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -116,6 +147,12 @@ export function NotificationsPage() {
       return matchCategory && matchSearch;
     });
   }, [notifications, selectedCategory, searchQuery]);
+
+  const totalPages = Math.ceil(filteredNotifications.length / pageSize) || 1;
+  const paginatedNotifications = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredNotifications.slice(start, start + pageSize);
+  }, [filteredNotifications, currentPage, pageSize]);
 
   const handleMarkAllAsRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
@@ -207,7 +244,7 @@ export function NotificationsPage() {
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto">
                 <button
                   type="button"
-                  onClick={() => setSelectedCategory("all")}
+                  onClick={() => handleCategoryChange("all")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     selectedCategory === "all"
@@ -219,7 +256,7 @@ export function NotificationsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedCategory("booking")}
+                  onClick={() => handleCategoryChange("booking")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     selectedCategory === "booking"
@@ -233,7 +270,7 @@ export function NotificationsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedCategory("reminder")}
+                  onClick={() => handleCategoryChange("reminder")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     selectedCategory === "reminder"
@@ -250,7 +287,7 @@ export function NotificationsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedCategory("system")}
+                  onClick={() => handleCategoryChange("system")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     selectedCategory === "system"
@@ -270,7 +307,7 @@ export function NotificationsPage() {
                   type="text"
                   placeholder="Cari notifikasi..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-9 h-10 rounded-xl text-xs bg-slate-50 dark:bg-zinc-800/60 border-border"
                 />
               </div>
@@ -293,7 +330,7 @@ export function NotificationsPage() {
                   </p>
                 </div>
               ) : (
-                filteredNotifications.map((notif) => (
+                paginatedNotifications.map((notif) => (
                   <div
                     key={notif.id}
                     className={cn(
@@ -374,6 +411,15 @@ export function NotificationsPage() {
                 ))
               )}
             </div>
+
+            {/* Pagination Component */}
+            <InteractivePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredNotifications.length}
+              pageSize={pageSize}
+            />
           </CardContent>
         </Card>
       </div>

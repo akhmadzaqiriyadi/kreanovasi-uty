@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { InteractivePagination } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 
 export interface BookingRecord {
@@ -87,12 +88,88 @@ const initialBookings: BookingRecord[] = [
     purpose: "Workshop UI/UX Design System Collaboration bersama praktisi.",
     status: "completed",
   },
+  {
+    id: "b-4",
+    bookingCode: "UCH-582910",
+    roomName: "FastLab IoT & Hardware Station",
+    roomImage:
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80",
+    location: "Gedung Creative Hub Lt. 2, Kampus 1 UTY",
+    date: "Kamis, 24 September 2026",
+    timeSlot: "08:30 - 11:30 WIB",
+    applicant: "Akhmad Zaqi Riyadi",
+    prodi: "Informatika",
+    role: "Mahasiswa",
+    audience: 5,
+    purpose: "Pengujian sensor mikrokontroler ESP32 dan kalibrasi prototipe.",
+    status: "approved",
+  },
+  {
+    id: "b-5",
+    bookingCode: "UCH-772109",
+    roomName: "Think Tank Meeting Room",
+    roomImage:
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=80",
+    location: "Gedung Creative Hub Lt. 2, Kampus 1 UTY",
+    date: "Senin, 07 September 2026",
+    timeSlot: "13:00 - 15:30 WIB",
+    applicant: "Akhmad Zaqi Riyadi",
+    prodi: "Informatika",
+    role: "Mahasiswa",
+    audience: 8,
+    purpose: "Brainstorming finalisasi sprint feature aplikasi kampus.",
+    status: "completed",
+  },
+  {
+    id: "b-6",
+    bookingCode: "UCH-294018",
+    roomName: "Coworking Space Hall",
+    roomImage:
+      "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?w=600&auto=format&fit=crop&q=80",
+    location: "Gedung Creative Hub Lt. 1, Kampus 1 UTY",
+    date: "Selasa, 01 September 2026",
+    timeSlot: "09:00 - 12:00 WIB",
+    applicant: "Akhmad Zaqi Riyadi",
+    prodi: "Informatika",
+    role: "Mahasiswa",
+    audience: 12,
+    purpose: "Jadwal dialihkan karena bentrok dengan kuliah umum tamu asing.",
+    status: "cancelled",
+  },
+  {
+    id: "b-7",
+    bookingCode: "UCH-901842",
+    roomName: "Multimedia & Podcast Studio",
+    roomImage:
+      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80",
+    location: "Gedung Creative Hub Lt. 3, Kampus 1 UTY",
+    date: "Rabu, 30 September 2026",
+    timeSlot: "14:00 - 17:00 WIB",
+    applicant: "Akhmad Zaqi Riyadi",
+    prodi: "Informatika",
+    role: "Mahasiswa",
+    audience: 4,
+    purpose: "Shooting video showcase produk inovasi mahasiswa UCH.",
+    status: "pending",
+  },
 ];
 
 export function MyBookingsPage() {
   const [bookings, setBookings] = useState<BookingRecord[]>(initialBookings);
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 3;
+
+  const handleFilterChange = (filter: string) => {
+    setActiveFilter(filter);
+    setCurrentPage(1);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
 
   const filteredBookings = useMemo(() => {
     return bookings.filter((item) => {
@@ -105,6 +182,12 @@ export function MyBookingsPage() {
       return matchStatus && matchSearch;
     });
   }, [bookings, activeFilter, searchQuery]);
+
+  const totalPages = Math.ceil(filteredBookings.length / pageSize) || 1;
+  const paginatedBookings = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredBookings.slice(start, start + pageSize);
+  }, [filteredBookings, currentPage, pageSize]);
 
   const handleCancelBooking = (id: string, code: string) => {
     setBookings((prev) =>
@@ -231,7 +314,7 @@ export function MyBookingsPage() {
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto">
                 <button
                   type="button"
-                  onClick={() => setActiveFilter("all")}
+                  onClick={() => handleFilterChange("all")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     activeFilter === "all"
@@ -243,7 +326,7 @@ export function MyBookingsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveFilter("approved")}
+                  onClick={() => handleFilterChange("approved")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     activeFilter === "approved"
@@ -256,7 +339,7 @@ export function MyBookingsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveFilter("pending")}
+                  onClick={() => handleFilterChange("pending")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     activeFilter === "pending"
@@ -269,7 +352,7 @@ export function MyBookingsPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setActiveFilter("completed")}
+                  onClick={() => handleFilterChange("completed")}
                   className={cn(
                     "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
                     activeFilter === "completed"
@@ -289,7 +372,7 @@ export function MyBookingsPage() {
                   type="text"
                   placeholder="Cari ID atau ruangan..."
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-9 h-10 rounded-xl text-xs bg-slate-50 dark:bg-zinc-800/60 border-border"
                 />
               </div>
@@ -312,7 +395,7 @@ export function MyBookingsPage() {
                   </p>
                 </div>
               ) : (
-                filteredBookings.map((item) => (
+                paginatedBookings.map((item) => (
                   <Card
                     key={item.id}
                     className="rounded-2xl border border-border/70 hover:border-primary/40 transition-all duration-300 overflow-hidden bg-white dark:bg-zinc-900 shadow-xs"
@@ -427,6 +510,15 @@ export function MyBookingsPage() {
                 ))
               )}
             </div>
+
+            {/* Pagination Component */}
+            <InteractivePagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+              totalItems={filteredBookings.length}
+              pageSize={pageSize}
+            />
           </CardContent>
         </Card>
       </div>
