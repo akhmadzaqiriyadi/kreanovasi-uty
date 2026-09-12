@@ -1,6 +1,7 @@
 "use client";
 
 import { Bell, Calendar, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -215,18 +216,13 @@ export function NavNotifications() {
         {/* Footer */}
         <div className="p-2 border-t border-border/60 bg-slate-50/50 dark:bg-zinc-800/30 text-center">
           <Button
+            asChild
             variant="ghost"
             size="sm"
-            onClick={() => {
-              toast.info("Pusat Notifikasi", {
-                description:
-                  "Semua notifikasi tersinkronisasi dengan akun SSO UTY Anda.",
-              });
-              setIsOpen(false);
-            }}
+            onClick={() => setIsOpen(false)}
             className="w-full text-xs font-semibold text-primary dark:text-blue-400 hover:bg-primary/10 h-8 rounded-lg"
           >
-            Lihat Semua Aktivitas
+            <Link href="/notifications">Lihat Semua Aktivitas</Link>
           </Button>
         </div>
       </PopoverContent>

@@ -25,7 +25,7 @@ export const dummyUser = {
 };
 
 export function NavUserMenu() {
-  const handleAction = (label: string, desc: string) => {
+  const _handleAction = (label: string, desc: string) => {
     toast.info(label, {
       description: desc,
     });
@@ -107,23 +107,20 @@ export function NavUserMenu() {
 
         <DropdownMenuGroup className="space-y-0.5">
           {/* Akun Saya */}
-          <DropdownMenuItem
-            onClick={() =>
-              handleAction(
-                "Akun Saya",
-                "Membuka profil data diri & verifikasi SSO UTY Anda.",
-              )
-            }
-            className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
-          >
-            <User className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
-            <span>Akun Saya</span>
+          <DropdownMenuItem asChild>
+            <Link
+              href="/account"
+              className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center"
+            >
+              <User className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
+              <span>Akun Saya</span>
+            </Link>
           </DropdownMenuItem>
 
           {/* Booking Saya / Riwayat */}
           <DropdownMenuItem asChild>
             <Link
-              href="/booking"
+              href="/my-bookings"
               className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center"
             >
               <History className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
@@ -132,17 +129,14 @@ export function NavUserMenu() {
           </DropdownMenuItem>
 
           {/* Pengaturan */}
-          <DropdownMenuItem
-            onClick={() =>
-              handleAction(
-                "Pengaturan Akun",
-                "Membuka pengaturan preferensi, privasi, dan notifikasi.",
-              )
-            }
-            className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors"
-          >
-            <Settings className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
-            <span>Pengaturan</span>
+          <DropdownMenuItem asChild>
+            <Link
+              href="/settings"
+              className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center"
+            >
+              <Settings className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
+              <span>Pengaturan</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
 

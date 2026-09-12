@@ -1,10 +1,16 @@
 "use client";
 
-import { ChevronDown, ExternalLink, History, Menu, User } from "lucide-react";
+import {
+  ChevronDown,
+  ExternalLink,
+  History,
+  Menu,
+  Settings,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -186,29 +192,31 @@ export function MobileDrawer() {
               </Badge>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-xs">
+            <div className="grid grid-cols-3 gap-1.5 text-xs">
               <Link
-                href="/booking"
+                href="/my-bookings"
                 onClick={() => setOpen(false)}
-                className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+                className="flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
               >
                 <History className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
-                <span>Riwayat</span>
+                <span className="text-[11px]">Riwayat</span>
               </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  toast.info("Akun Saya", {
-                    description:
-                      "Membuka profil data diri & verifikasi SSO UTY.",
-                  });
-                }}
-                className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+              <Link
+                href="/account"
+                onClick={() => setOpen(false)}
+                className="flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
               >
                 <User className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
-                <span>Akun Saya</span>
-              </button>
+                <span className="text-[11px]">Akun</span>
+              </Link>
+              <Link
+                href="/settings"
+                onClick={() => setOpen(false)}
+                className="flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+              >
+                <Settings className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
+                <span className="text-[11px]">Setelan</span>
+              </Link>
             </div>
           </div>
         </SheetContent>

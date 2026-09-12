@@ -12,6 +12,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/articles", priority: 0.8, changeFrequency: "weekly" as const },
     { path: "/events", priority: 0.8, changeFrequency: "weekly" as const },
     { path: "/fastlab", priority: 0.8, changeFrequency: "monthly" as const },
+    {
+      path: "/notifications",
+      priority: 0.7,
+      changeFrequency: "daily" as const,
+    },
+    { path: "/account", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/my-bookings", priority: 0.8, changeFrequency: "daily" as const },
+    { path: "/settings", priority: 0.6, changeFrequency: "monthly" as const },
   ];
 
   return routes.map((route) => ({
