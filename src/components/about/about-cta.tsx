@@ -2,7 +2,7 @@
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight, CalendarCheck, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarCheck } from "lucide-react";
 import Link from "next/link";
 import type React from "react";
 import { useEffect, useRef } from "react";
@@ -78,16 +78,6 @@ export function AboutCta({ sectionRef }: AboutCtaProps) {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl relative z-10">
         <div ref={innerRef} className="text-center space-y-6 sm:space-y-8">
-          {/* Icon */}
-          <div className="flex justify-center">
-            <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl bg-secondary/20 border border-secondary/30 flex items-center justify-center backdrop-blur-sm">
-              <Sparkles
-                className="h-7 w-7 sm:h-8 sm:w-8 text-secondary"
-                aria-hidden="true"
-              />
-            </div>
-          </div>
-
           {/* Text */}
           <div className="space-y-3">
             <h2
@@ -99,13 +89,6 @@ export function AboutCta({ sectionRef }: AboutCtaProps) {
             <p className="text-sm sm:text-base text-primary-foreground/75 leading-relaxed max-w-2xl mx-auto font-medium">
               {cta.description}
             </p>
-          </div>
-
-          {/* Divider */}
-          <div className="flex items-center justify-center gap-3">
-            <div className="h-px w-10 bg-secondary/40 rounded-full" />
-            <div className="h-1.5 w-1.5 rounded-full bg-secondary/60" />
-            <div className="h-px w-10 bg-secondary/40 rounded-full" />
           </div>
 
           {/* Actions */}

@@ -50,9 +50,6 @@ export function BookingFormModal({ bookingController }: BookingFormModalProps) {
     <Dialog open={isOpen} onOpenChange={(open) => !open && closeBookingModal()}>
       <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 rounded-3xl">
         <DialogHeader className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-xs font-bold w-fit">
-            <span>Formulir Reservasi Ruangan</span>
-          </div>
           <DialogTitle className="text-xl sm:text-2xl font-extrabold text-primary dark:text-foreground">
             Ajukan Peminjaman Fasilitas UCH
           </DialogTitle>

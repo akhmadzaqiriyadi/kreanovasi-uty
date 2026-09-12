@@ -59,10 +59,6 @@ export function BookingHeroBanner({ bannerRef }: BookingHeroBannerProps) {
 
         {/* Header Titles */}
         <div className="max-w-3xl mx-auto text-center space-y-5 sm:space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-xs font-bold tracking-wide">
-            <span>{header.badge}</span>
-          </div>
-
           <div className="space-y-1">
             <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight tracking-tight">
               {header.title}

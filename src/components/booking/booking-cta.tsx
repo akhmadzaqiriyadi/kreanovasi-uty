@@ -28,10 +28,6 @@ export function BookingCta({ onOpenModal, sectionRef }: BookingCtaProps) {
           />
 
           <div className="max-w-2xl mx-auto space-y-4 relative z-10">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary/20 border border-secondary/30 text-secondary text-xs font-bold tracking-wide">
-              Mulai Kolaborasi
-            </span>
-
             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
               Siap Memulai Proyek & Riset Inovasi Anda?
             </h3>
