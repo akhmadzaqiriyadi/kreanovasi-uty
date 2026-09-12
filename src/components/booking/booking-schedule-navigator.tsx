@@ -113,18 +113,30 @@ export function BookingScheduleNavigator({
                     type="button"
                     onClick={() => selectDate(day)}
                     className={cn(
-                      "py-2.5 px-1 sm:py-3.5 sm:px-2 rounded-xl sm:rounded-2xl transition-all duration-200 text-center flex flex-col items-center justify-center gap-1 cursor-pointer select-none",
+                      "relative h-20 sm:h-24 rounded-xl sm:rounded-2xl transition-all duration-200 text-center flex flex-col items-center justify-center gap-1 cursor-pointer select-none",
                       isSelected
-                        ? "bg-gradient-to-br from-[#2E417A] to-blue-700 text-white shadow-md transform scale-[1.03] ring-2 ring-primary/30"
+                        ? "bg-gradient-to-br from-[#2E417A] to-blue-700 text-white shadow-md transform scale-[1.03] ring-2 ring-primary/30 z-10"
                         : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-border/40",
                       isSunday && !isSelected && "opacity-75",
                     )}
                     aria-label={`Pilih tanggal ${format(day, "EEEE, d MMMM yyyy", { locale: id })}`}
                     aria-pressed={isSelected}
                   >
+                    {isDayToday && (
+                      <span
+                        className={cn(
+                          "absolute top-2 right-2 w-2 h-2 rounded-full",
+                          isSelected
+                            ? "bg-amber-400 ring-2 ring-blue-800"
+                            : "bg-primary dark:bg-blue-400",
+                        )}
+                        title="Hari Ini"
+                      />
+                    )}
+
                     <span
                       className={cn(
-                        "text-[11px] sm:text-xs font-semibold uppercase tracking-wider",
+                        "text-xs sm:text-sm font-semibold uppercase tracking-wider",
                         isSelected
                           ? "text-blue-100"
                           : isSunday
@@ -138,19 +150,6 @@ export function BookingScheduleNavigator({
                     <span className="text-base sm:text-xl lg:text-2xl font-black">
                       {format(day, "d")}
                     </span>
-
-                    {isDayToday && (
-                      <span
-                        className={cn(
-                          "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.2 rounded-full",
-                          isSelected
-                            ? "bg-amber-400 text-slate-900"
-                            : "bg-primary/15 text-primary dark:text-blue-300",
-                        )}
-                      >
-                        Hari Ini
-                      </span>
-                    )}
                   </button>
                 );
               })}
