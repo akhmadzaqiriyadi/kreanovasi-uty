@@ -11,7 +11,7 @@ import {
   Sun,
 } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,11 @@ import { cn } from "@/lib/utils";
 
 export function SettingsPage() {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [settings, setSettings] = useState({
     emailNotif: true,
@@ -32,6 +37,55 @@ export function SettingsPage() {
   });
 
   const [isSaving, setIsSaving] = useState(false);
+
+  const handleSetTheme = (targetTheme: "light" | "dark" | "system") => {
+    setTheme(targetTheme);
+
+    // Immediate DOM update for instant feedback
+    let isDark = false;
+    if (targetTheme === "system") {
+      isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      try {
+        localStorage.removeItem("theme");
+      } catch {
+        // ignore
+      }
+    } else {
+      isDark = targetTheme === "dark";
+      try {
+        localStorage.setItem("theme", targetTheme);
+      } catch {
+        // ignore
+      }
+    }
+
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+      document.documentElement.style.colorScheme = "dark";
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.style.colorScheme = "light";
+    }
+
+    toast.success(
+      targetTheme === "system"
+        ? "Mode Tampilan: Ikuti Sistem (OS)"
+        : targetTheme === "dark"
+          ? "Mode Tampilan: Gelap"
+          : "Mode Tampilan: Terang",
+      {
+        description:
+          targetTheme === "system"
+            ? `Tema otomatis menyesuaikan preferensi OS perangkat (${isDark ? "Gelap" : "Terang"}).`
+            : `Tema antarmuka diubah ke ${targetTheme === "dark" ? "Mode Gelap" : "Mode Terang"}.`,
+      },
+    );
+  };
+
+  const isCurrentTheme = (key: "light" | "dark" | "system") => {
+    if (!mounted) return false;
+    return theme === key;
+  };
 
   const handleSaveSettings = () => {
     setIsSaving(true);
@@ -178,65 +232,80 @@ export function SettingsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                   type="button"
-                  onClick={() => setTheme("light")}
+                  onClick={() => handleSetTheme("light")}
                   className={cn(
-                    "p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer",
-                    theme === "light"
-                      ? "border-primary bg-primary/5 dark:bg-primary/10 shadow-xs"
-                      : "border-border/70 hover:border-border",
+                    "p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer",
+                    isCurrentTheme("light")
+                      ? "border-primary bg-primary/5 dark:bg-primary/15 shadow-sm ring-2 ring-primary/30"
+                      : "border-border/70 hover:border-border hover:bg-slate-50 dark:hover:bg-zinc-800/40",
                   )}
                 >
-                  <Sun className="w-5 h-5 text-amber-500 shrink-0" />
-                  <div>
-                    <span className="text-xs font-bold text-foreground block">
-                      Mode Terang
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      Tampilan putih bersih
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <Sun className="w-5 h-5 text-amber-500 shrink-0" />
+                    <div>
+                      <span className="text-xs font-bold text-foreground block">
+                        Mode Terang
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        Tampilan putih bersih
+                      </span>
+                    </div>
                   </div>
+                  {isCurrentTheme("light") && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0" />
+                  )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setTheme("dark")}
+                  onClick={() => handleSetTheme("dark")}
                   className={cn(
-                    "p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer",
-                    theme === "dark"
-                      ? "border-primary bg-primary/5 dark:bg-primary/10 shadow-xs"
-                      : "border-border/70 hover:border-border",
+                    "p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer",
+                    isCurrentTheme("dark")
+                      ? "border-primary bg-primary/5 dark:bg-primary/15 shadow-sm ring-2 ring-primary/30"
+                      : "border-border/70 hover:border-border hover:bg-slate-50 dark:hover:bg-zinc-800/40",
                   )}
                 >
-                  <Moon className="w-5 h-5 text-blue-400 shrink-0" />
-                  <div>
-                    <span className="text-xs font-bold text-foreground block">
-                      Mode Gelap
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      Nyaman untuk malam hari
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <Moon className="w-5 h-5 text-blue-400 shrink-0" />
+                    <div>
+                      <span className="text-xs font-bold text-foreground block">
+                        Mode Gelap
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        Nyaman untuk malam hari
+                      </span>
+                    </div>
                   </div>
+                  {isCurrentTheme("dark") && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0" />
+                  )}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setTheme("system")}
+                  onClick={() => handleSetTheme("system")}
                   className={cn(
-                    "p-4 rounded-2xl border text-left flex items-center gap-3 transition-all cursor-pointer",
-                    theme === "system"
-                      ? "border-primary bg-primary/5 dark:bg-primary/10 shadow-xs"
-                      : "border-border/70 hover:border-border",
+                    "p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer",
+                    isCurrentTheme("system")
+                      ? "border-primary bg-primary/5 dark:bg-primary/15 shadow-sm ring-2 ring-primary/30"
+                      : "border-border/70 hover:border-border hover:bg-slate-50 dark:hover:bg-zinc-800/40",
                   )}
                 >
-                  <Laptop className="w-5 h-5 text-purple-400 shrink-0" />
-                  <div>
-                    <span className="text-xs font-bold text-foreground block">
-                      Ikuti Sistem
-                    </span>
-                    <span className="text-[10px] text-muted-foreground">
-                      Otomatis sesuai OS
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <Laptop className="w-5 h-5 text-purple-400 shrink-0" />
+                    <div>
+                      <span className="text-xs font-bold text-foreground block">
+                        Ikuti Sistem
+                      </span>
+                      <span className="text-[10px] text-muted-foreground">
+                        Otomatis sesuai OS
+                      </span>
+                    </div>
                   </div>
+                  {isCurrentTheme("system") && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-primary shrink-0" />
+                  )}
                 </button>
               </div>
             </div>
