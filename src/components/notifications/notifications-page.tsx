@@ -137,48 +137,48 @@ export function NotificationsPage() {
     switch (category) {
       case "booking":
         return (
-          <div className="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
-            <CheckCircle2 className="w-5 h-5" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 shadow-xs">
+            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         );
       case "reminder":
         return (
-          <div className="w-10 h-10 rounded-2xl bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 shadow-xs">
-            <Calendar className="w-5 h-5" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-100 dark:bg-blue-950/80 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 shadow-xs">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         );
       default:
         return (
-          <div className="w-10 h-10 rounded-2xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-xs">
-            <Sparkles className="w-5 h-5" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 shadow-xs">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
         );
     }
   };
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-24 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
+    <div className="min-h-screen pt-20 sm:pt-28 lg:pt-32 pb-12 sm:pb-20 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
+      <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 max-w-7xl space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header Banner */}
-        <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
-          <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
-                  <Bell className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+        <Card className="rounded-2xl sm:rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
+          <CardHeader className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
+                  <Bell className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2.5">
-                    <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white">
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white">
                       Pusat Notifikasi
                     </CardTitle>
                     {unreadCount > 0 && (
-                      <Badge className="bg-rose-500 text-white font-bold text-xs px-2.5 py-0.5 border-none shadow-xs">
+                      <Badge className="bg-rose-500 text-white font-bold text-[10px] sm:text-xs px-2 py-0.5 border-none shadow-xs">
                         {unreadCount} Baru
                       </Badge>
                     )}
                   </div>
-                  <p className="text-blue-100 text-xs sm:text-sm mt-1 leading-relaxed max-w-xl">
+                  <p className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 leading-relaxed max-w-xl">
                     Pembaruan terkini seputar permohonan peminjaman ruangan,
                     konfirmasi reservasi, dan aktivitas fasilitas UTY Creative
                     Hub.
@@ -200,7 +200,7 @@ export function NotificationsPage() {
             </div>
           </CardHeader>
 
-          <CardContent className="p-6 sm:p-8 space-y-6">
+          <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
             {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               {/* Filter Tabs */}

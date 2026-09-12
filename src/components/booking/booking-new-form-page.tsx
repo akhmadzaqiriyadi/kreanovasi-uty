@@ -185,17 +185,17 @@ export function BookingNewFormPage() {
   }
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-24 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
+    <div className="min-h-screen pt-20 sm:pt-28 lg:pt-32 pb-12 sm:pb-20 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
+      <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 max-w-7xl space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Back Navigation Button */}
         <div>
           <Button
             asChild
             variant="outline"
-            className="rounded-xl border-border hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs sm:text-sm font-semibold"
+            className="rounded-xl border-border hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs sm:text-sm font-semibold h-8 sm:h-9"
           >
             <Link href="/booking">
-              <ArrowLeft className="w-4 h-4 mr-2" />
+              <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5 sm:mr-2" />
               Kembali ke Jadwal & Katalog Ruangan
             </Link>
           </Button>
@@ -204,16 +204,16 @@ export function BookingNewFormPage() {
         {/* Form Container Card */}
         <Card className="rounded-2xl sm:rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
           {/* Header Banner */}
-          <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white border-b border-white/10">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
-                <Building2 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+          <CardHeader className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white border-b border-white/10">
+            <div className="flex items-center gap-3.5 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
+                <Building2 className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
               </div>
               <div>
-                <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white">
+                <CardTitle className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white">
                   Ajukan Peminjaman Fasilitas UCH
                 </CardTitle>
-                <CardDescription className="text-blue-100 text-xs sm:text-sm mt-1 leading-relaxed">
+                <CardDescription className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 leading-relaxed">
                   Lengkapi formulir di bawah ini untuk mengajukan peminjaman
                   ruangan kreatif dan fasilitas resmi UTY Creative Hub.
                 </CardDescription>
@@ -221,10 +221,10 @@ export function BookingNewFormPage() {
             </div>
           </CardHeader>
 
-          <CardContent className="p-6 sm:p-8 space-y-8">
-            <form onSubmit={handleSubmit} className="space-y-8">
+          <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
               {/* --- SECTION 1: PROFIL PENYEWA DENGAN TOGGLE LOGIN & ROLE DOSEN/MAHASISWA --- */}
-              <div className="p-5 sm:p-6 rounded-2xl bg-slate-50/80 dark:bg-zinc-800/40 border border-border/80 space-y-5">
+              <div className="p-3.5 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl bg-slate-50/80 dark:bg-zinc-800/40 border border-border/80 space-y-4 sm:space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-blue-300 shrink-0">

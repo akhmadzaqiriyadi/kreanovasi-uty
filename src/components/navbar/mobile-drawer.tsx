@@ -4,6 +4,7 @@ import {
   ChevronDown,
   ExternalLink,
   History,
+  LogOut,
   Menu,
   Settings,
   User,
@@ -11,6 +12,7 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +35,13 @@ export function MobileDrawer() {
   const [open, setOpen] = useState(false);
   const [mobileProgramOpen, setMobileProgramOpen] = useState(false);
 
+  const handleLogout = () => {
+    setOpen(false);
+    toast.success("Berhasil Keluar", {
+      description: "Sesi akun SSO Kampus UTY telah diakhiri.",
+    });
+  };
+
   const isActivePath = (href: string) => {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
@@ -43,8 +52,8 @@ export function MobileDrawer() {
   };
 
   return (
-    <div className="flex items-center gap-1.5 md:hidden">
-      <ThemeToggle className="h-9 w-9 rounded-full" />
+    <div className="flex items-center gap-1 sm:gap-1.5 md:hidden">
+      <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9 rounded-full" />
       <NavNotifications />
       <NavUserMenu />
 
@@ -53,9 +62,9 @@ export function MobileDrawer() {
           <Button
             variant="ghost"
             size="icon"
-            className="h-9 w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-xl ml-0.5"
+            className="h-8 w-8 sm:h-9 sm:w-9 border border-input bg-background/50 hover:bg-accent backdrop-blur-sm rounded-xl ml-0.5"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
             <span className="sr-only">Buka menu navigasi</span>
           </Button>
         </SheetTrigger>
@@ -218,6 +227,16 @@ export function MobileDrawer() {
                 <span className="text-[11px]">Setelan</span>
               </Link>
             </div>
+
+            {/* Tombol Logout SSO */}
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/70 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 font-bold text-xs hover:bg-rose-100 dark:hover:bg-rose-900/50 transition-colors cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Keluar dari Akun (Logout)</span>
+            </button>
           </div>
         </SheetContent>
       </Sheet>

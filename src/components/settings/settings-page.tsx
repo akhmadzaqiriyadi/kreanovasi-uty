@@ -105,20 +105,20 @@ export function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-24 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
+    <div className="min-h-screen pt-20 sm:pt-28 lg:pt-32 pb-12 sm:pb-20 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
+      <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 max-w-7xl space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header Banner */}
-        <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
-          <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
-                <Settings className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+        <Card className="rounded-2xl sm:rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
+          <CardHeader className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
+            <div className="flex items-center gap-3.5 sm:gap-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
+                <Settings className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
               </div>
               <div>
-                <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white">
+                <CardTitle className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white">
                   Pengaturan Akun & Preferensi
                 </CardTitle>
-                <p className="text-blue-100 text-xs sm:text-sm mt-1 leading-relaxed max-w-xl">
+                <p className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 leading-relaxed max-w-xl">
                   Kelola preferensi notifikasi peminjaman, tampilan tema,
                   bahasa, dan keamanan akun SSO UTY Anda.
                 </p>
@@ -126,12 +126,12 @@ export function SettingsPage() {
             </div>
           </CardHeader>
 
-          <CardContent className="p-6 sm:p-8 space-y-8">
+          <CardContent className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8">
             {/* Section 1: Notifications */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-3 pb-3 border-b border-border/60">
-                <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary dark:text-blue-400 flex items-center justify-center shrink-0">
-                  <Bell className="w-4 h-4" />
+            <div className="space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-2.5 sm:gap-3 pb-2.5 sm:pb-3 border-b border-border/60">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-primary/10 text-primary dark:text-blue-400 flex items-center justify-center shrink-0">
+                  <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-foreground">

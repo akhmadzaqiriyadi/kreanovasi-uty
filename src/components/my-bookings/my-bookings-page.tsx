@@ -155,21 +155,21 @@ export function MyBookingsPage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-24 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
+    <div className="min-h-screen pt-20 sm:pt-28 lg:pt-32 pb-12 sm:pb-20 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
+      <div className="container mx-auto px-3.5 sm:px-6 lg:px-8 max-w-7xl space-y-4 sm:space-y-6 lg:space-y-8">
         {/* Header Banner */}
-        <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
-          <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
-                  <History className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+        <Card className="rounded-2xl sm:rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
+          <CardHeader className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
+                  <History className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white">
+                  <CardTitle className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white">
                     Booking Saya & Riwayat Peminjaman
                   </CardTitle>
-                  <p className="text-blue-100 text-xs sm:text-sm mt-1 leading-relaxed max-w-xl">
+                  <p className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 leading-relaxed max-w-xl">
                     Pantau status verifikasi, unduh e-tiket resmi peminjaman,
                     dan kelola jadwal penggunaan fasilitas UTY Creative Hub
                     Anda.
@@ -179,10 +179,10 @@ export function MyBookingsPage() {
 
               <Button
                 asChild
-                className="rounded-2xl font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md self-start sm:self-auto h-11 px-5 cursor-pointer"
+                className="rounded-xl sm:rounded-2xl font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md self-start sm:self-auto h-9 sm:h-11 px-4 sm:px-5 text-xs sm:text-sm cursor-pointer"
               >
                 <Link href="/booking/new">
-                  <Plus className="w-4 h-4 mr-1.5" />
+                  <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
                   Ajukan Peminjaman Baru
                 </Link>
               </Button>
@@ -191,41 +191,41 @@ export function MyBookingsPage() {
 
           {/* Quick Metrics Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-border/60 border-b border-border/60 bg-slate-50/70 dark:bg-zinc-800/40">
-            <div className="p-4 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+            <div className="p-2.5 sm:p-4 text-center">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
                 Total Pengajuan
               </span>
-              <span className="text-xl sm:text-2xl font-extrabold text-foreground">
+              <span className="text-lg sm:text-2xl font-extrabold text-foreground">
                 {bookings.length}
               </span>
             </div>
-            <div className="p-4 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+            <div className="p-2.5 sm:p-4 text-center">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
                 Disetujui / Aktif
               </span>
-              <span className="text-xl sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
+              <span className="text-lg sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
                 {bookings.filter((b) => b.status === "approved").length}
               </span>
             </div>
-            <div className="p-4 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+            <div className="p-2.5 sm:p-4 text-center">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
                 Menunggu Review
               </span>
-              <span className="text-xl sm:text-2xl font-extrabold text-amber-600 dark:text-amber-400">
+              <span className="text-lg sm:text-2xl font-extrabold text-amber-600 dark:text-amber-400">
                 {bookings.filter((b) => b.status === "pending").length}
               </span>
             </div>
-            <div className="p-4 text-center">
-              <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+            <div className="p-2.5 sm:p-4 text-center">
+              <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
                 Selesai Digunakan
               </span>
-              <span className="text-xl sm:text-2xl font-extrabold text-blue-600 dark:text-blue-400">
+              <span className="text-lg sm:text-2xl font-extrabold text-blue-600 dark:text-blue-400">
                 {bookings.filter((b) => b.status === "completed").length}
               </span>
             </div>
           </div>
 
-          <CardContent className="p-6 sm:p-8 space-y-6">
+          <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
             {/* Filter Controls */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto">
