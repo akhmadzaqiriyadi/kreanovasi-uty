@@ -70,11 +70,11 @@ export function BookingNewFormPage() {
     (r) => r.id === selectedRoomId || r.slug === selectedRoomId,
   );
 
-  // Jika sukses disubmit, tampilkan tampilan konfirmasi tiket permohonan
+  // Jika sukses disubmit, tampilkan tampilan konfirmasi tiket permohonan yang terpusat rapi
   if (submissionSuccess) {
     return (
-      <div className="min-h-screen py-12 sm:py-16 bg-gradient-to-b from-background via-slate-50/60 to-background dark:via-zinc-950/40">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+      <div className="min-h-screen flex items-center justify-center pt-28 pb-16 sm:pt-36 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-slate-50/60 to-background dark:via-zinc-950/40">
+        <div className="w-full max-w-3xl my-auto">
           <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900">
             <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] to-blue-700 text-white text-center">
               <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center mx-auto mb-3 text-amber-300">
@@ -163,7 +163,7 @@ export function BookingNewFormPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 sm:py-12 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
+    <div className="min-h-screen pt-28 sm:pt-32 lg:pt-36 pb-16 sm:pb-24 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
         {/* Back Navigation Button */}
         <div>
