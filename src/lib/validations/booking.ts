@@ -2,12 +2,13 @@ import { z } from "zod";
 
 export const bookingFormSchema = z
   .object({
+    role: z.enum(["mahasiswa", "dosen"]),
     room: z.string().min(1, "Silakan pilih ruangan yang ingin dipesan"),
     name: z.string().min(3, "Nama penanggung jawab minimal 3 karakter"),
     npm: z
       .string()
-      .min(8, "NPM minimal 8 karakter")
-      .regex(/^[0-9]+$/, "NPM hanya boleh berisi angka"),
+      .min(6, "Nomor identitas (NPM/NIDN/NIK) minimal 6 digit")
+      .regex(/^[0-9]+$/, "Nomor identitas hanya boleh berisi angka"),
     prodi: z.string().min(3, "Program studi wajib diisi"),
     purpose: z
       .string()

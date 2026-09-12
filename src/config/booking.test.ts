@@ -41,6 +41,7 @@ describe("bookingConfig", () => {
 describe("bookingFormSchema", () => {
   test("validates valid booking payload", () => {
     const validData = {
+      role: "mahasiswa" as const,
       room: "think-tank",
       name: "Akhmad Zaqi",
       npm: "5210411234",
@@ -58,6 +59,7 @@ describe("bookingFormSchema", () => {
 
   test("rejects invalid payload when endTime is before startTime", () => {
     const invalidData = {
+      role: "mahasiswa" as const,
       room: "think-tank",
       name: "Akhmad Zaqi",
       npm: "5210411234",
@@ -93,5 +95,27 @@ describe("bookingFormSchema", () => {
 
     const result = bookingFormSchema.safeParse(invalidData);
     expect(result.success).toBe(false);
+  });
+
+  test("validates valid dosen booking payload with NIDN and role", () => {
+    const validDosenData = {
+      role: "dosen",
+      room: "maker-space",
+      name: "Dr. Bambang Sutrisno, M.Kom.",
+      npm: "0514088201",
+      prodi: "Informatika",
+      purpose: "Workshop riset kolaborasi kecerdasan buatan mahasiswa & dosen.",
+      audience: 20,
+      date: "2026-09-18",
+      startTime: "13:00",
+      endTime: "16:00",
+    };
+
+    const result = bookingFormSchema.safeParse(validDosenData);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.role).toBe("dosen");
+      expect(result.data.npm).toBe("0514088201");
+    }
   });
 });

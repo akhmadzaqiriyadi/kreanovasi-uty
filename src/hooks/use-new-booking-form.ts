@@ -29,13 +29,32 @@ export const studyPrograms = [
   "Hukum",
 ];
 
-export const defaultStudentProfile = {
-  name: "Akhmad Zaqi Riyadi",
-  npm: "5210411234",
-  prodi: "Informatika",
-  email: "zaqi@students.uty.ac.id",
-  role: "Mahasiswa Aktif UTY",
+export type ApplicantRole = "mahasiswa" | "dosen";
+
+export const mockProfiles = {
+  mahasiswa: {
+    role: "mahasiswa" as const,
+    roleLabel: "Mahasiswa",
+    name: "Akhmad Zaqi Riyadi",
+    idNumber: "5210411234",
+    idLabel: "NPM Mahasiswa",
+    prodi: "Informatika",
+    email: "zaqi@students.uty.ac.id",
+    affiliation: "Mahasiswa Aktif UTY",
+  },
+  dosen: {
+    role: "dosen" as const,
+    roleLabel: "Dosen / Pengajar",
+    name: "Dr. Bambang Sutrisno, M.Kom.",
+    idNumber: "0514088201",
+    idLabel: "NIDN / NIK Dosen",
+    prodi: "Informatika",
+    email: "bambang.sutrisno@staff.uty.ac.id",
+    affiliation: "Dosen Tetap FST UTY",
+  },
 };
+
+export const defaultStudentProfile = mockProfiles.mahasiswa;
 
 export interface BookingSubmissionSummary {
   bookingId: string;
@@ -43,6 +62,9 @@ export interface BookingSubmissionSummary {
   date: string;
   timeSlot: string;
   applicant: string;
+  role: ApplicantRole;
+  idNumber: string;
+  idLabel: string;
   prodi: string;
   audience: number;
   purpose: string;
@@ -55,6 +77,8 @@ export function useNewBookingForm() {
   const roomParam = searchParams.get("room") || "";
   const dateParam = searchParams.get("date") || "";
 
+  const [applicantRole, setApplicantRole] =
+    useState<ApplicantRole>("mahasiswa");
   const [useLoggedInProfile, setUseLoggedInProfile] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submissionSuccess, setSubmissionSuccess] =
@@ -78,10 +102,11 @@ export function useNewBookingForm() {
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
+      role: "mahasiswa",
       room: roomParam,
-      name: defaultStudentProfile.name,
-      npm: defaultStudentProfile.npm,
-      prodi: defaultStudentProfile.prodi,
+      name: mockProfiles.mahasiswa.name,
+      npm: mockProfiles.mahasiswa.idNumber,
+      prodi: mockProfiles.mahasiswa.prodi,
       purpose: "",
       audience: 5,
       date: dateParam,
@@ -89,6 +114,22 @@ export function useNewBookingForm() {
       endTime: "11:00",
     },
   });
+
+  // Handle switching applicant role (Mahasiswa <-> Dosen)
+  const handleRoleChange = useCallback(
+    (newRole: ApplicantRole) => {
+      setApplicantRole(newRole);
+      form.setValue("role", newRole, { shouldValidate: true });
+
+      if (useLoggedInProfile) {
+        const targetProfile = mockProfiles[newRole];
+        form.setValue("name", targetProfile.name, { shouldValidate: true });
+        form.setValue("npm", targetProfile.idNumber, { shouldValidate: true });
+        form.setValue("prodi", targetProfile.prodi, { shouldValidate: true });
+      }
+    },
+    [form, useLoggedInProfile],
+  );
 
   // Sync if URL search params change
   useEffect(() => {
@@ -131,13 +172,14 @@ export function useNewBookingForm() {
     (checked: boolean) => {
       setUseLoggedInProfile(checked);
       if (checked) {
-        form.setValue("name", defaultStudentProfile.name, {
+        const profile = mockProfiles[applicantRole];
+        form.setValue("name", profile.name, {
           shouldValidate: true,
         });
-        form.setValue("npm", defaultStudentProfile.npm, {
+        form.setValue("npm", profile.idNumber, {
           shouldValidate: true,
         });
-        form.setValue("prodi", defaultStudentProfile.prodi, {
+        form.setValue("prodi", profile.prodi, {
           shouldValidate: true,
         });
       } else {
@@ -146,7 +188,7 @@ export function useNewBookingForm() {
         form.setValue("prodi", "");
       }
     },
-    [form],
+    [applicantRole, form],
   );
 
   // Handle Calendar date selection
@@ -173,6 +215,7 @@ export function useNewBookingForm() {
         (r) => r.id === values.room || r.slug === values.room,
       );
       const roomName = matchedRoom?.name || values.room;
+      const isDosen = values.role === "dosen";
 
       const summary: BookingSubmissionSummary = {
         bookingId: `UCH-${Math.floor(100000 + Math.random() * 900000)}`,
@@ -180,6 +223,9 @@ export function useNewBookingForm() {
         date: values.date,
         timeSlot: `${values.startTime} - ${values.endTime} WIB`,
         applicant: values.name,
+        role: values.role,
+        idNumber: values.npm,
+        idLabel: isDosen ? "NIDN / NIK" : "NPM",
         prodi: values.prodi,
         audience: values.audience,
         purpose: values.purpose,
@@ -201,6 +247,10 @@ export function useNewBookingForm() {
 
   return {
     form,
+    applicantRole,
+    handleRoleChange,
+    activeProfile: mockProfiles[applicantRole],
+    mockProfiles,
     rooms: bookingConfig.rooms,
     studyPrograms,
     timeSlots: bookingConfig.timeSlots,

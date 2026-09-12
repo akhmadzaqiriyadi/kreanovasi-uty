@@ -5,11 +5,13 @@ import { id } from "date-fns/locale";
 import {
   ArrowLeft,
   ArrowRight,
+  Briefcase,
   Building2,
   Calendar as CalendarIcon,
   CheckCircle2,
   Clock,
   FileText,
+  GraduationCap,
   Loader2,
   MapPin,
   ShieldCheck,
@@ -18,6 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Controller } from "react-hook-form";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -43,15 +46,15 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  defaultStudentProfile,
-  useNewBookingForm,
-} from "@/hooks/use-new-booking-form";
+import { useNewBookingForm } from "@/hooks/use-new-booking-form";
 import { cn } from "@/lib/utils";
 
 export function BookingNewFormPage() {
   const {
     form,
+    applicantRole,
+    handleRoleChange,
+    activeProfile,
     rooms,
     studyPrograms,
     timeSlots,
@@ -91,9 +94,24 @@ export function BookingNewFormPage() {
             <CardContent className="p-6 sm:p-8 space-y-6">
               <div className="p-5 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-border/70 space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-border/60">
-                  <span className="text-xs font-semibold uppercase text-muted-foreground">
-                    ID Reservasi
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold uppercase text-muted-foreground">
+                      ID Reservasi
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className={cn(
+                        "text-[10px] font-bold tracking-wide",
+                        submissionSuccess.role === "dosen"
+                          ? "bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-700"
+                          : "bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-700",
+                      )}
+                    >
+                      {submissionSuccess.role === "dosen"
+                        ? "Dosen / Pengajar"
+                        : "Mahasiswa"}
+                    </Badge>
+                  </div>
                   <span className="font-mono font-bold text-sm sm:text-base text-primary dark:text-blue-300">
                     {submissionSuccess.bookingId}
                   </span>
@@ -120,8 +138,12 @@ export function BookingNewFormPage() {
                     <span className="text-muted-foreground block mb-0.5">
                       Penanggung Jawab
                     </span>
-                    <span className="text-foreground font-semibold">
-                      {submissionSuccess.applicant} ({submissionSuccess.prodi})
+                    <span className="text-foreground font-semibold block">
+                      {submissionSuccess.applicant}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground font-mono">
+                      {submissionSuccess.idLabel}: {submissionSuccess.idNumber}{" "}
+                      ({submissionSuccess.prodi})
                     </span>
                   </div>
                   <div>
@@ -201,7 +223,7 @@ export function BookingNewFormPage() {
 
           <CardContent className="p-6 sm:p-8 space-y-8">
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* --- SECTION 1: PROFIL PENYEWA DENGAN TOGGLE LOGIN --- */}
+              {/* --- SECTION 1: PROFIL PENYEWA DENGAN TOGGLE LOGIN & ROLE DOSEN/MAHASISWA --- */}
               <div className="p-5 sm:p-6 rounded-2xl bg-slate-50/80 dark:bg-zinc-800/40 border border-border/80 space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border/60">
                   <div className="flex items-center gap-3">
@@ -213,7 +235,8 @@ export function BookingNewFormPage() {
                         Informasi Penanggung Jawab
                       </h3>
                       <p className="text-xs text-muted-foreground">
-                        Identitas mahasiswa/organisasi yang mengajukan reservasi
+                        Pilih kategori pemohon: Mahasiswa atau Dosen / Tenaga
+                        Pendidik
                       </p>
                     </div>
                   </div>
@@ -234,32 +257,77 @@ export function BookingNewFormPage() {
                   </div>
                 </div>
 
+                {/* Switcher Kategori Pemohon: Mahasiswa vs Dosen */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      Kategori Pemohon:
+                    </span>
+                    <div className="inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-zinc-800 border border-border/60">
+                      <button
+                        type="button"
+                        onClick={() => handleRoleChange("mahasiswa")}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          applicantRole === "mahasiswa"
+                            ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <GraduationCap className="w-3.5 h-3.5" />
+                        Mahasiswa
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRoleChange("dosen")}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          applicantRole === "dosen"
+                            ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <Briefcase className="w-3.5 h-3.5" />
+                        Dosen / Pengajar
+                      </button>
+                    </div>
+                  </div>
+
+                  <span className="text-[11px] font-medium text-muted-foreground">
+                    Status:{" "}
+                    <strong className="text-foreground">
+                      {activeProfile.affiliation}
+                    </strong>
+                  </span>
+                </div>
+
                 {useLoggedInProfile ? (
                   /* Tampilan Profil Login Otomatis */
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                       <ShieldCheck className="w-4 h-4" />
                       <span>
-                        Data profil akun terverifikasi terisi otomatis
+                        Data profil akun SSO ({activeProfile.roleLabel})
+                        terverifikasi terisi otomatis
                       </span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                       <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
                         <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                          Nama Mahasiswa
+                          Nama {activeProfile.roleLabel}
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
-                          {defaultStudentProfile.name}
+                          {activeProfile.name}
                         </span>
                       </div>
 
                       <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
                         <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                          NPM
+                          {activeProfile.idLabel}
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-foreground truncate block font-mono">
-                          {defaultStudentProfile.npm}
+                          {activeProfile.idNumber}
                         </span>
                       </div>
 
@@ -268,7 +336,7 @@ export function BookingNewFormPage() {
                           Program Studi
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
-                          {defaultStudentProfile.prodi}
+                          {activeProfile.prodi}
                         </span>
                       </div>
 
@@ -277,7 +345,7 @@ export function BookingNewFormPage() {
                           Email SSO Kampus
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
-                          {defaultStudentProfile.email}
+                          {activeProfile.email}
                         </span>
                       </div>
                     </div>
@@ -290,11 +358,18 @@ export function BookingNewFormPage() {
                         htmlFor="name"
                         className="text-xs font-bold text-foreground/80"
                       >
-                        Nama Lengkap <span className="text-rose-500">*</span>
+                        {applicantRole === "dosen"
+                          ? "Nama Lengkap & Gelar Dosen"
+                          : "Nama Lengkap Mahasiswa"}{" "}
+                        <span className="text-rose-500">*</span>
                       </Label>
                       <Input
                         id="name"
-                        placeholder="Contoh: Budi Santoso"
+                        placeholder={
+                          applicantRole === "dosen"
+                            ? "Contoh: Dr. Bambang Sutrisno, M.Kom."
+                            : "Contoh: Budi Santoso"
+                        }
                         {...form.register("name")}
                         className="h-11 rounded-xl"
                       />
@@ -310,13 +385,20 @@ export function BookingNewFormPage() {
                         htmlFor="npm"
                         className="text-xs font-bold text-foreground/80"
                       >
-                        NPM Mahasiswa <span className="text-rose-500">*</span>
+                        {applicantRole === "dosen"
+                          ? "NIDN / NIK Dosen"
+                          : "NPM Mahasiswa"}{" "}
+                        <span className="text-rose-500">*</span>
                       </Label>
                       <Input
                         id="npm"
                         type="number"
                         inputMode="numeric"
-                        placeholder="Contoh: 5210411234"
+                        placeholder={
+                          applicantRole === "dosen"
+                            ? "Contoh: 0514088201"
+                            : "Contoh: 5210411234"
+                        }
                         {...form.register("npm")}
                         className="h-11 rounded-xl font-mono"
                       />

@@ -39,6 +39,7 @@ export function useBookingForm(
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
+      role: "mahasiswa",
       room: initialRoomId || "",
       name: "",
       npm: "",
