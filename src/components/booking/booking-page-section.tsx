@@ -1,41 +1,36 @@
 "use client";
 
-import { useBookingForm } from "@/hooks/use-booking-form";
+import { useRouter } from "next/navigation";
 import { useBookingSchedule } from "@/hooks/use-booking-schedule";
 import { BookingCta } from "./booking-cta";
-import { BookingFormModal } from "./booking-form-modal";
 import { BookingHeroBanner } from "./booking-hero-banner";
 import { BookingInfoSection } from "./booking-info-section";
 import { BookingRoomCards } from "./booking-room-cards";
 import { BookingScheduleNavigator } from "./booking-schedule-navigator";
 
 export function BookingPageSection() {
+  const router = useRouter();
   const scheduleController = useBookingSchedule();
-
-  const bookingController = useBookingForm(undefined, (newBooking) => {
-    scheduleController.addBooking(newBooking);
-  });
 
   return (
     <main aria-label="Halaman Reservasi Ruangan UTY Creative Hub">
       {/* 1. Hero Banner */}
       <BookingHeroBanner />
 
-      {/* 2. Interactive Date Navigator & Room Availability Schedule (Reference Flow) */}
+      {/* 2. Interactive Date Navigator & Room Availability Schedule */}
       <BookingScheduleNavigator
         scheduleController={scheduleController}
         onBookRoom={(roomId, dateStr) =>
-          bookingController.openBookingModal(roomId, dateStr)
+          router.push(
+            `/booking/new?room=${encodeURIComponent(roomId)}&date=${encodeURIComponent(dateStr)}`,
+          )
         }
       />
 
-      {/* 3. Catalog Room Cards with Detail Facilities */}
+      {/* 3. Catalog Room Cards (Without prefilled date) */}
       <BookingRoomCards
         onSelectRoom={(roomId) =>
-          bookingController.openBookingModal(
-            roomId,
-            scheduleController.formattedSelectedDate,
-          )
+          router.push(`/booking/new?room=${encodeURIComponent(roomId)}`)
         }
       />
 
@@ -43,10 +38,7 @@ export function BookingPageSection() {
       <BookingInfoSection />
 
       {/* 5. Bottom CTA */}
-      <BookingCta onOpenModal={() => bookingController.openBookingModal()} />
-
-      {/* 6. Booking Form Dialog Modal (Decoupled & Accessible) */}
-      <BookingFormModal bookingController={bookingController} />
+      <BookingCta onOpenModal={() => router.push("/booking/new")} />
     </main>
   );
 }
