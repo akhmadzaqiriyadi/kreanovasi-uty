@@ -12,10 +12,27 @@ import {
   bookingFormSchema,
 } from "@/lib/validations/booking";
 
+export const studyPrograms = [
+  "Informatika",
+  "Sistem Informasi",
+  "Teknologi Informasi",
+  "Teknik Elektro",
+  "Teknik Sipil",
+  "Teknik Industri",
+  "Arsitektur",
+  "Manajemen",
+  "Akuntansi",
+  "Ilmu Komunikasi",
+  "Psikologi",
+  "Hubungan Internasional",
+  "Sastra Inggris",
+  "Hukum",
+];
+
 export const defaultStudentProfile = {
   name: "Akhmad Zaqi Riyadi",
   npm: "5210411234",
-  prodi: "Informatika / Teknologi Informasi",
+  prodi: "Informatika",
   email: "zaqi@students.uty.ac.id",
   role: "Mahasiswa Aktif UTY",
 };
@@ -185,6 +202,7 @@ export function useNewBookingForm() {
   return {
     form,
     rooms: bookingConfig.rooms,
+    studyPrograms,
     timeSlots: bookingConfig.timeSlots,
     availableEndTimes,
     useLoggedInProfile,

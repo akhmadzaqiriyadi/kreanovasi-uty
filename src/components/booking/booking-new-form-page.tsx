@@ -5,10 +5,11 @@ import { id } from "date-fns/locale";
 import {
   ArrowLeft,
   ArrowRight,
-  BookOpen,
+  Building2,
   Calendar as CalendarIcon,
   CheckCircle2,
   Clock,
+  FileText,
   Loader2,
   MapPin,
   ShieldCheck,
@@ -52,6 +53,7 @@ export function BookingNewFormPage() {
   const {
     form,
     rooms,
+    studyPrograms,
     timeSlots,
     availableEndTimes,
     useLoggedInProfile,
@@ -162,7 +164,7 @@ export function BookingNewFormPage() {
 
   return (
     <div className="min-h-screen py-8 sm:py-12 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl space-y-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8">
         {/* Back Navigation Button */}
         <div>
           <Button
@@ -183,7 +185,7 @@ export function BookingNewFormPage() {
           <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white border-b border-white/10">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-md">
-                <BookOpen className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                <Building2 className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
                 <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white">
@@ -312,7 +314,9 @@ export function BookingNewFormPage() {
                       </Label>
                       <Input
                         id="npm"
-                        placeholder="Contoh: 5210411000"
+                        type="number"
+                        inputMode="numeric"
+                        placeholder="Contoh: 5210411234"
                         {...form.register("npm")}
                         className="h-11 rounded-xl font-mono"
                       />
@@ -330,11 +334,30 @@ export function BookingNewFormPage() {
                       >
                         Program Studi <span className="text-rose-500">*</span>
                       </Label>
-                      <Input
-                        id="prodi"
-                        placeholder="Contoh: Informatika"
-                        {...form.register("prodi")}
-                        className="h-11 rounded-xl"
+                      <Controller
+                        name="prodi"
+                        control={form.control}
+                        render={({ field }) => (
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="h-11 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-medium">
+                              <SelectValue placeholder="Pilih Program Studi" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-xl max-h-60">
+                              {studyPrograms.map((p) => (
+                                <SelectItem
+                                  key={p}
+                                  value={p}
+                                  className="text-xs sm:text-sm cursor-pointer"
+                                >
+                                  {p}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
                       />
                       {form.formState.errors.prodi && (
                         <p className="text-[11px] text-rose-500 font-medium">
@@ -572,7 +595,7 @@ export function BookingNewFormPage() {
                   htmlFor="purpose"
                   className="text-xs sm:text-sm font-bold text-foreground/90 flex items-center gap-2"
                 >
-                  <BookOpen className="w-4 h-4 text-primary dark:text-blue-300" />
+                  <FileText className="w-4 h-4 text-primary dark:text-blue-300" />
                   Tujuan & Deskripsi Kegiatan{" "}
                   <span className="text-rose-500">*</span>
                 </Label>
