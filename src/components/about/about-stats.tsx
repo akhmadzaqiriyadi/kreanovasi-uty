@@ -17,7 +17,10 @@ interface AboutStatsProps {
 
 const statIcons: Record<
   AboutStat["iconName"],
-  React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
+  React.ComponentType<{
+    className?: string;
+    "aria-hidden"?: boolean | "true" | "false";
+  }>
 > = {
   users: Users,
   calendar: Calendar,

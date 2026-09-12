@@ -11,7 +11,10 @@ interface AboutVisionMissionProps {
 
 const missionIcons: Record<
   AboutMission["iconName"],
-  React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
+  React.ComponentType<{
+    className?: string;
+    "aria-hidden"?: boolean | "true" | "false";
+  }>
 > = {
   target: Target,
   zap: Zap,

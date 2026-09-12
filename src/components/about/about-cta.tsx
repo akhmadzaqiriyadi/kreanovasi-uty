@@ -114,7 +114,10 @@ export function AboutCta({ sectionRef }: AboutCtaProps) {
               href={cta.primaryAction.href}
               className="inline-flex items-center gap-2 px-6 py-3 sm:px-7 sm:py-3.5 rounded-xl bg-secondary hover:bg-secondary/90 text-secondary-foreground font-bold text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 active:scale-[0.97] touch-manipulation"
             >
-              <CalendarCheck className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+              <CalendarCheck
+                className="h-4 w-4 sm:h-5 sm:w-5"
+                aria-hidden="true"
+              />
               <span>{cta.primaryAction.label}</span>
             </Link>
 
@@ -123,7 +126,10 @@ export function AboutCta({ sectionRef }: AboutCtaProps) {
               className="inline-flex items-center gap-2 px-6 py-3 sm:px-7 sm:py-3.5 rounded-xl border-2 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 font-semibold text-sm sm:text-base transition-all duration-300 active:scale-[0.97] touch-manipulation"
             >
               <span>{cta.secondaryAction.label}</span>
-              <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+              <ArrowRight
+                className="h-4 w-4 sm:h-5 sm:w-5"
+                aria-hidden="true"
+              />
             </Link>
           </div>
         </div>

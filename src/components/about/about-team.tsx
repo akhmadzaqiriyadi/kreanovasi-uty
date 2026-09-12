@@ -2,8 +2,8 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
 import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   type AboutMentor,
   type AboutTeamMember,

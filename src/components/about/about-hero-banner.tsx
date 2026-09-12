@@ -30,7 +30,6 @@ export function AboutHeroBanner({ bannerRef }: AboutHeroBannerProps) {
         );
       }
 
-
       if (titleRef.current?.children) {
         tl.fromTo(
           Array.from(titleRef.current.children),
@@ -108,12 +107,14 @@ export function AboutHeroBanner({ bannerRef }: AboutHeroBannerProps) {
             <Home className="h-3.5 w-3.5" aria-hidden="true" />
             <span>Beranda</span>
           </Link>
-          <ChevronRight className="h-3.5 w-3.5 text-primary-foreground/40" aria-hidden="true" />
+          <ChevronRight
+            className="h-3.5 w-3.5 text-primary-foreground/40"
+            aria-hidden="true"
+          />
           <span className="text-primary-foreground/90">Tentang Kami</span>
         </nav>
 
         <div className="max-w-3xl mx-auto text-center space-y-5 sm:space-y-6">
-
           {/* Title */}
           <div ref={titleRef} className="space-y-1">
             <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight tracking-tight">
@@ -134,8 +135,6 @@ export function AboutHeroBanner({ bannerRef }: AboutHeroBannerProps) {
           >
             {heroBanner.description}
           </p>
-
-
         </div>
       </div>
 
