@@ -37,11 +37,13 @@ export function BookingScheduleNavigator({
     weekDays,
     navigateWeek,
     selectDate,
+    selectToday,
+    isTodaySelected,
     getRoomAvailability,
   } = scheduleController;
 
   const rooms = roomsConfig.rooms;
-  const isSelectedToday = isSameDay(selectedDate, new Date());
+  const isSelectedToday = isTodaySelected;
 
   return (
     <section
@@ -66,20 +68,39 @@ export function BookingScheduleNavigator({
 
         {/* Date Navigator Card */}
         <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-border/80 shadow-lg overflow-hidden">
-          {/* Week Header with Prev / Next */}
-          <div className="p-4 sm:p-6 border-b border-border/60 bg-slate-50/60 dark:bg-zinc-800/40 flex items-center justify-between gap-2 sm:gap-4">
-            <button
-              type="button"
-              onClick={() => navigateWeek("prev")}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-semibold text-foreground/80 hover:bg-slate-100 dark:hover:bg-zinc-700 hover:text-foreground transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
-              aria-label="Minggu sebelumnya"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline">Minggu Lalu</span>
-            </button>
+          {/* Week Header with Prev / Next / Today Toggle */}
+          <div className="p-4 sm:p-6 border-b border-border/60 bg-slate-50/60 dark:bg-zinc-800/40 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => navigateWeek("prev")}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-semibold text-foreground/80 hover:bg-slate-100 dark:hover:bg-zinc-700 hover:text-foreground transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
+                aria-label="Minggu sebelumnya"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Minggu Lalu</span>
+              </button>
 
-            <div className="text-center">
-              <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+              {/* Toggle Hari Ini */}
+              <button
+                type="button"
+                onClick={selectToday}
+                className={cn(
+                  "inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-all shadow-2xs active:scale-[0.98] cursor-pointer",
+                  isTodaySelected
+                    ? "bg-[#2E417A] text-white shadow-xs"
+                    : "border border-border bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-700",
+                )}
+                aria-label="Kembali ke Hari Ini"
+                aria-pressed={isTodaySelected}
+              >
+                <CalendarIcon className="w-3.5 h-3.5" />
+                <span>Hari Ini</span>
+              </button>
+            </div>
+
+            <div className="text-center order-first sm:order-none w-full sm:w-auto">
+              <div className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
                 Rentang Minggu
               </div>
               <h3 className="text-base sm:text-lg lg:text-xl font-extrabold text-primary dark:text-blue-300">
@@ -91,7 +112,7 @@ export function BookingScheduleNavigator({
             <button
               type="button"
               onClick={() => navigateWeek("next")}
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-semibold text-foreground/80 hover:bg-slate-100 dark:hover:bg-zinc-700 hover:text-foreground transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-2 sm:px-4 sm:py-2 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-semibold text-foreground/80 hover:bg-slate-100 dark:hover:bg-zinc-700 hover:text-foreground transition-all shadow-2xs active:scale-[0.98] cursor-pointer"
               aria-label="Minggu selanjutnya"
             >
               <span className="hidden sm:inline">Minggu Depan</span>
@@ -195,10 +216,11 @@ export function BookingScheduleNavigator({
         </div>
 
         {/* Room Availability Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-8">
-          {rooms.map((room) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+          {rooms.map((room, index) => {
             const availability = getRoomAvailability(room.id, selectedDate);
             const isAvailable = availability.hasSlotsAvailable;
+            const isThirdOfThree = index === 2 && rooms.length === 3;
 
             return (
               <div
@@ -208,6 +230,8 @@ export function BookingScheduleNavigator({
                   isAvailable
                     ? "hover:-translate-y-1 ring-1 ring-border/50"
                     : "opacity-85",
+                  isThirdOfThree &&
+                    "md:col-span-2 md:max-w-2xl md:mx-auto md:w-full",
                 )}
               >
                 <div>

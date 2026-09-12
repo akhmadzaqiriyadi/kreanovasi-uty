@@ -40,8 +40,9 @@ export function BookingRoomCards({
 
         {/* Room Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {rooms.map((room) => {
+          {rooms.map((room, index) => {
             const isAvailable = room.status.state === "available";
+            const isThirdOfThree = index === 2 && rooms.length === 3;
 
             return (
               <div
@@ -51,6 +52,8 @@ export function BookingRoomCards({
                   isAvailable
                     ? "hover:-translate-y-1.5 cursor-pointer"
                     : "opacity-85",
+                  isThirdOfThree &&
+                    "md:max-lg:col-span-2 md:max-lg:max-w-md md:max-lg:mx-auto md:max-lg:w-full",
                 )}
               >
                 <div>

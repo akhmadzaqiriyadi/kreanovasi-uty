@@ -54,6 +54,17 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
     setSelectedDate(date);
   }, []);
 
+  const selectToday = useCallback(() => {
+    const today = new Date();
+    setCurrentWeek(startOfWeek(today, { weekStartsOn: 1 }));
+    setSelectedDate(today);
+  }, []);
+
+  const isTodaySelected = useMemo(
+    () => isSameDay(selectedDate, new Date()),
+    [selectedDate],
+  );
+
   const getBookingsForDateAndRoom = useCallback(
     (roomId: string, targetDate: Date = selectedDate): ScheduleItem[] => {
       const dateStr = format(targetDate, "yyyy-MM-dd");
@@ -136,6 +147,8 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
     bookings,
     navigateWeek,
     selectDate,
+    selectToday,
+    isTodaySelected,
     getBookingsForDateAndRoom,
     getRoomAvailability,
     addBooking,

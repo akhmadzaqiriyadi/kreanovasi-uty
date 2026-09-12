@@ -24,7 +24,8 @@ describe("bookingScheduleConfig", () => {
     const roomIds = new Set(schedule.map((item) => item.roomId));
 
     expect(roomIds.size).toBeGreaterThanOrEqual(3);
-    expect(roomIds.has("think-tank-1")).toBe(true);
-    expect(roomIds.has("coworking-space")).toBe(true);
+    expect(roomIds.has("think-tank-meeting-room")).toBe(true);
+    expect(roomIds.has("coworking-space-hall")).toBe(true);
+    expect(roomIds.has("fastlab-prototyping-iot")).toBe(true);
   });
 });
