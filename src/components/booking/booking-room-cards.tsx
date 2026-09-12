@@ -26,18 +26,11 @@ export function BookingRoomCards({
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-12">
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="flex items-center justify-center gap-2.5">
-            <div className="h-0.5 w-8 bg-secondary rounded-full" />
-            <span className="text-xs font-bold text-secondary tracking-widest uppercase">
-              Pilihan Ruangan
-            </span>
-            <div className="h-0.5 w-8 bg-secondary rounded-full" />
-          </div>
           <h2
             id="rooms-heading"
             className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-primary dark:text-foreground tracking-tight"
           >
-            Ruangan UTY Creative Hub
+            Katalog Fasilitas Ruangan
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground font-medium leading-relaxed">
             Setiap ruangan dirancang khusus untuk mendukung produktivitas,

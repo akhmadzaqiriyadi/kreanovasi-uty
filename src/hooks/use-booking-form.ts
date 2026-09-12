@@ -18,7 +18,19 @@ export interface BookingSubmissionResult {
   applicant: string;
 }
 
-export function useBookingForm(initialRoomId?: string) {
+export function useBookingForm(
+  initialRoomId?: string,
+  onBookingCreated?: (booking: {
+    roomId: string;
+    roomName: string;
+    date: string;
+    startTime: string;
+    endTime: string;
+    applicant: string;
+    purpose: string;
+    organization?: string;
+  }) => void,
+) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [lastSubmitted, setLastSubmitted] =
@@ -60,9 +72,12 @@ export function useBookingForm(initialRoomId?: string) {
   }, [selectedStartTime, availableEndTimes, form]);
 
   const openBookingModal = useCallback(
-    (roomId?: string) => {
+    (roomId?: string, date?: string) => {
       if (roomId) {
         form.setValue("room", roomId);
+      }
+      if (date) {
+        form.setValue("date", date, { shouldValidate: true });
       }
       setIsOpen(true);
     },
@@ -78,7 +93,7 @@ export function useBookingForm(initialRoomId?: string) {
       setIsSubmitting(true);
       try {
         // Simulasi network request API menggunakan data dummy lokal
-        await new Promise((resolve) => setTimeout(resolve, 900));
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
         const matchedRoom = bookingConfig.rooms.find(
           (r) => r.id === values.room || r.slug === values.room,
@@ -94,6 +109,19 @@ export function useBookingForm(initialRoomId?: string) {
         };
 
         setLastSubmitted(fakeResult);
+
+        // Notifikasi ke sistem jadwal agar langsung muncul di kalender timeline
+        onBookingCreated?.({
+          roomId: values.room,
+          roomName,
+          date: values.date,
+          startTime: values.startTime,
+          endTime: values.endTime,
+          applicant: values.name,
+          purpose: values.purpose,
+          organization: values.prodi,
+        });
+
         toast.success("Permohonan Reservasi Berhasil Diajukan!", {
           description: `ID: ${fakeResult.bookingId} untuk ruangan ${roomName}. Menunggu approval admin UCH.`,
           duration: 5000,
@@ -109,7 +137,7 @@ export function useBookingForm(initialRoomId?: string) {
         setIsSubmitting(false);
       }
     },
-    [form],
+    [form, onBookingCreated],
   );
 
   return {

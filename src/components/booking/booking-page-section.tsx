@@ -1,32 +1,51 @@
 "use client";
 
 import { useBookingForm } from "@/hooks/use-booking-form";
+import { useBookingSchedule } from "@/hooks/use-booking-schedule";
 import { BookingCta } from "./booking-cta";
 import { BookingFormModal } from "./booking-form-modal";
 import { BookingHeroBanner } from "./booking-hero-banner";
 import { BookingInfoSection } from "./booking-info-section";
 import { BookingRoomCards } from "./booking-room-cards";
+import { BookingScheduleNavigator } from "./booking-schedule-navigator";
 
 export function BookingPageSection() {
-  const bookingController = useBookingForm();
+  const scheduleController = useBookingSchedule();
+
+  const bookingController = useBookingForm(undefined, (newBooking) => {
+    scheduleController.addBooking(newBooking);
+  });
 
   return (
     <main aria-label="Halaman Reservasi Ruangan UTY Creative Hub">
-      {/* 1. Hero Banner with Brand Depth */}
+      {/* 1. Hero Banner */}
       <BookingHeroBanner />
 
-      {/* 2. Room Cards with Availability Status Badges */}
-      <BookingRoomCards
-        onSelectRoom={(roomId) => bookingController.openBookingModal(roomId)}
+      {/* 2. Interactive Date Navigator & Room Availability Schedule (Reference Flow) */}
+      <BookingScheduleNavigator
+        scheduleController={scheduleController}
+        onBookRoom={(roomId, dateStr) =>
+          bookingController.openBookingModal(roomId, dateStr)
+        }
       />
 
-      {/* 3. Operational Hours & Peminjaman Guidelines */}
+      {/* 3. Catalog Room Cards with Detail Facilities */}
+      <BookingRoomCards
+        onSelectRoom={(roomId) =>
+          bookingController.openBookingModal(
+            roomId,
+            scheduleController.formattedSelectedDate,
+          )
+        }
+      />
+
+      {/* 4. Operational Hours & Peminjaman Guidelines */}
       <BookingInfoSection />
 
-      {/* 4. Bottom CTA */}
+      {/* 5. Bottom CTA */}
       <BookingCta onOpenModal={() => bookingController.openBookingModal()} />
 
-      {/* 5. Booking Form Dialog Modal (Decoupled & Accessible) */}
+      {/* 6. Booking Form Dialog Modal (Decoupled & Accessible) */}
       <BookingFormModal bookingController={bookingController} />
     </main>
   );
