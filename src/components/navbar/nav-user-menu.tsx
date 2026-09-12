@@ -2,7 +2,6 @@
 
 import { ChevronDown, History, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
-import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,28 +12,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
 
 export const dummyUser = {
   name: "Akhmad Zaqi Riyadi",
   email: "zaqi@students.uty.ac.id",
-  role: "Mahasiswa Aktif UTY",
+  role: "Mahasiswa",
   npm: "5210411234",
   avatarUrl:
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
 };
 
 export function NavUserMenu() {
-  const _handleAction = (label: string, desc: string) => {
-    toast.info(label, {
-      description: desc,
-    });
-  };
+  const { user, logout } = useAuth();
+  const currentUser = user || dummyUser;
 
   const handleLogout = () => {
-    toast.success("Berhasil Keluar", {
-      description: "Sesi akun SSO Kampus UTY telah diakhiri.",
-    });
+    logout();
   };
 
   return (
@@ -51,9 +46,9 @@ export function NavUserMenu() {
         >
           <div className="relative">
             <Avatar className="h-7 w-7 sm:h-8 sm:w-8 border border-border/80">
-              <AvatarImage src={dummyUser.avatarUrl} alt={dummyUser.name} />
+              <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
               <AvatarFallback className="bg-primary text-primary-foreground font-bold text-xs">
-                AZ
+                {currentUser.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             {/* Status indicator badge (Online) */}
@@ -61,7 +56,7 @@ export function NavUserMenu() {
           </div>
 
           <span className="hidden xl:inline-block text-xs font-bold text-foreground max-w-[120px] truncate">
-            {dummyUser.name.split(" ")[0]}
+            {currentUser.name.split(" ")[0]}
           </span>
 
           <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
@@ -77,30 +72,30 @@ export function NavUserMenu() {
         <div className="p-3 bg-slate-50/70 dark:bg-zinc-800/40 rounded-xl mb-1 border border-border/50">
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10 border border-primary/30 shrink-0">
-              <AvatarImage src={dummyUser.avatarUrl} alt={dummyUser.name} />
+              <AvatarImage src={currentUser.avatarUrl} alt={currentUser.name} />
               <AvatarFallback className="bg-primary text-primary-foreground font-bold text-sm">
-                AZ
+                {currentUser.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold text-foreground truncate">
-                {dummyUser.name}
+                {currentUser.name}
               </p>
               <p className="text-[11px] text-muted-foreground truncate">
-                {dummyUser.email}
+                {currentUser.email}
               </p>
             </div>
           </div>
 
           <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between">
             <span className="text-[10px] font-mono font-semibold text-muted-foreground">
-              NPM {dummyUser.npm}
+              {currentUser.npm ? `ID ${currentUser.npm}` : "Terverifikasi"}
             </span>
             <Badge
               variant="secondary"
-              className="text-[10px] font-bold py-0 px-2 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-none"
+              className="text-[10px] font-bold py-0 px-2 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-none capitalize"
             >
-              Mahasiswa
+              {currentUser.role === "umum" ? "Non-Civitas" : currentUser.role}
             </Badge>
           </div>
         </div>

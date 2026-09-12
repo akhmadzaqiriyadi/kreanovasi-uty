@@ -34,30 +34,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useAuth } from "@/context/auth-context";
 import { studyPrograms } from "@/hooks/use-new-booking-form";
 import { cn } from "@/lib/utils";
 
 export function AccountPage() {
+  const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<"profile" | "academic" | "stats">(
     "profile",
   );
 
   const [formData, setFormData] = useState({
-    name: dummyUser.name,
-    email: dummyUser.email,
-    npm: dummyUser.npm,
+    name: user?.name || dummyUser.name,
+    email: user?.email || dummyUser.email,
+    npm: user?.npm || dummyUser.npm,
     prodi: "Informatika",
     faculty: "Fakultas Sains & Teknologi",
     phone: "0812-3456-7890",
-    role: "Mahasiswa Aktif UTY",
+    role: user?.role === "umum" ? "Non-Civitas / Mitra" : "Mahasiswa Aktif UTY",
   });
 
   const [isSaving, setIsSaving] = useState(false);
 
   const handleLogout = () => {
-    toast.success("Berhasil Keluar", {
-      description: "Sesi akun SSO Kampus UTY telah diakhiri.",
-    });
+    logout();
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -66,7 +66,7 @@ export function AccountPage() {
     setTimeout(() => {
       setIsSaving(false);
       toast.success("Profil Berhasil Diperbarui", {
-        description: "Data profil akun SSO Anda telah tersimpan di sistem.",
+        description: "Data profil akun Anda telah tersimpan di sistem.",
       });
     }, 600);
   };
@@ -82,7 +82,7 @@ export function AccountPage() {
             <div className="absolute top-3 right-3 sm:top-4 sm:right-4 flex items-center gap-2">
               <Badge className="bg-emerald-500 text-white font-bold text-[10px] sm:text-xs py-0.5 sm:py-1 px-2.5 sm:px-3 border-none shadow-md flex items-center gap-1.5">
                 <ShieldCheck className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span className="hidden xs:inline">Akun SSO</span> Terverifikasi
+                <span className="hidden xs:inline">Akun</span> Terverifikasi
               </Badge>
             </div>
           </div>
@@ -238,13 +238,13 @@ export function AccountPage() {
                       className="h-11 rounded-xl bg-muted/60 font-mono"
                     />
                     <span className="text-[10px] text-muted-foreground block">
-                      Tersinkronisasi otomatis dengan database SSO UTY.
+                      Tersinkronisasi otomatis dengan database sistem UCH.
                     </span>
                   </div>
 
                   <div className="space-y-1.5">
                     <Label htmlFor="email" className="text-xs font-bold">
-                      Email SSO Kampus
+                      Email Terdaftar
                     </Label>
                     <Input
                       id="email"

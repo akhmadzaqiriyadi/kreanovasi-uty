@@ -18,9 +18,9 @@ Sebelum adanya sistem web mandiri, peminjaman ruangan dan fasilitas di UTY Creat
 4. **Tidak Ada Riwayat Terpusat**: Mahasiswa tidak memiliki catatan peminjaman terdahulu, dan pengelola kesulitan mengukur utilisasi fasilitas kampus.
 
 ### 1.2 Tujuan Produk (Objective)
-Membangun platform reservasi daring terpadu yang memfasilitasi mahasiswa dan dosen UTY untuk:
+Membangun platform reservasi daring terpadu yang memfasilitasi mahasiswa, dosen UTY, serta mitra eksternal / non-civitas untuk:
 - Mengecek ketersediaan fasilitas secara transparan dan seketika (*real-time*).
-- Mengajukan peminjaman dalam hitungan detik dengan integrasi profil SSO kampus.
+- Mengajukan peminjaman dalam hitungan detik dengan integrasi profil akun terverifikasi.
 - Memantau proses persetujuan transparan hingga penerbitan **E-Tiket resmi**.
 
 ---
@@ -29,8 +29,9 @@ Membangun platform reservasi daring terpadu yang memfasilitasi mahasiswa dan dos
 
 | Persona | Profil & Karakteristik | Kebutuhan Utama | Hambatan Utama |
 | :--- | :--- | :--- | :--- |
-| **Mahasiswa Aktif** (Ketua UKM, Tim Riset, Peserta PKM) | Mengorganisasi workshop, rapat divisi, shooting podcast, atau perakitan alat IoT. | - Proses reservasi cepat dari HP.<br>- Auto-fill data SSO (NPM & Prodi).<br>- Bukti reservasi digital (E-Tiket). | Sering terburu-buru, butuh kepastian persetujuan jadwal secara cepat. |
+| **Mahasiswa Aktif** (Ketua UKM, Tim Riset, Peserta PKM) | Mengorganisasi workshop, rapat divisi, shooting podcast, atau perakitan alat IoT. | - Proses reservasi cepat dari HP.<br>- Auto-fill data akun (NPM & Prodi).<br>- Bukti reservasi digital (E-Tiket). | Sering terburu-buru, butuh kepastian persetujuan jadwal secara cepat. |
 | **Dosen / Tenaga Pengajar** | Mengadakan bimbingan penelitian, evaluasi proyek, atau pelatihan teknologi bersama mitra industri. | - Opsi kategori pemohon khusus Dosen (NIDN).<br>- Prioritas peminjaman untuk riset hibah/PKM. | Tidak ingin direpotkan dengan formulir administratif yang rumit. |
+| **Non-Civitas / Mitra Luar / Umum** | Komunitas kreatif, startup teknologi, institusi rekanan, atau pegiat inovasi di luar kampus. | - Registrasi akun umum dengan NIK KTP & Asal Instansi.<br>- Reservasi fasilitas kolaboratif UCH untuk kegiatan bersama. | Memerlukan kejelasan izin dan format identitas non-civitas. |
 | **Pengelola Fasilitas / Admin UCH** | Staf pengelola gedung dan laboran FastLab yang bertugas meninjau kelayakan acara dan alokasi perangkat. | - Dashboard antrean permohonan.<br>- Log bentrok jadwal otomatis.<br>- Tombol persetujuan / penolakan dengan catatan. | Kesulitan melacak log inventaris jika terjadi kerusakan fasilitas. |
 
 ---
@@ -51,13 +52,13 @@ flowchart TD
     HasSlot -- Ya --> ClickBook[Klik 'Book Now' / 'Ajukan Peminjaman']
     ClickBook --> FormPage[Masuk ke Halaman /booking/new]
     
-    FormPage --> RoleSelection[Pilih Kategori: Mahasiswa atau Dosen]
-    RoleSelection --> AutoFillCheck{Gunakan Data SSO Login?}
+    FormPage --> RoleSelection[Pilih Kategori: Mahasiswa, Dosen, atau Non-Civitas]
+    RoleSelection --> AutoFillCheck{Gunakan Data Profil Akun?}
     
-    AutoFillCheck -- Ya --> PopulateSSO[Otomatis Mengisi Nama, NPM/NIDN, Prodi, Email]
+    AutoFillCheck -- Ya --> PopulateProfile[Otomatis Mengisi Nama, ID, Prodi/Instansi, Email]
     AutoFillCheck -- Tidak --> ManualInput[Input Manual Data Identitas & Kontak WA]
     
-    PopulateSSO --> FillEvent[Isi Tanggal, Jam, Estimasi Peserta & Tujuan Kegiatan]
+    PopulateProfile --> FillEvent[Isi Tanggal, Jam, Estimasi Peserta & Tujuan Kegiatan]
     ManualInput --> FillEvent
     
     FillEvent --> Validation{Validasi Form Lolos?}
@@ -97,8 +98,8 @@ flowchart TD
 #### Tahap 2: Pengisian Formulir (`/booking/new`)
 1. Pengguna diarahkan ke halaman mandiri formulir peminjaman berukuran penuh (*full-width container*).
 2. Terdapat **Profile Switcher**:
-   - Pilihan kategori: **Mahasiswa** (NPM) atau **Dosen** (NIDN).
-   - Switch toggle: *"Gunakan profil login saya"* (otomatis mengisi data SSO tanpa perlu mengetik ulang).
+   - Pilihan kategori: **Mahasiswa** (NPM), **Dosen** (NIDN), atau **Non-Civitas / Mitra** (NIK KTP & Asal Instansi).
+   - Switch toggle: *"Gunakan profil login saya"* (otomatis mengisi data akun tanpa perlu mengetik ulang).
 3. Pengisian data kegiatan:
    - Pilihan ruangan, tanggal kegiatan (interaktif via Calendar Picker).
    - Jam mulai & jam selesai (dropdown interval 30 menit).
@@ -189,8 +190,8 @@ stateDiagram-v2
 
 1. **Responsivitas Layar Penuh (*Full Container*)**:
    - Form tidak lagi berada dalam modal sempit, melainkan di halaman penuh `/booking/new` yang proporsional di HP (375px) hingga layar Ultra-Wide desktop.
-2. **Seamless SSO Switcher**:
-   - Pengguna tidak dipaksa mengetik data yang sama berulang kali. Satu klik tombol switch langsung mengisi identitas dari sesi SSO.
+2. **Seamless Profile Switcher**:
+   - Pengguna tidak dipaksa mengetik data yang sama berulang kali. Satu klik tombol switch langsung mengisi identitas dari sesi akun terdaftar.
 3. **E-Tiket Digital Interaktif Modal**:
    - Modal E-Tiket modern yang dilengkapi logo resmi, barcode/QR Code visual, rincian ruangan, sesi waktu, dan tombol cetak/simpan PDF (`window.print()`).
 4. **Pagination & Filter Interaktif**:
@@ -202,7 +203,7 @@ stateDiagram-v2
 
 - **Performa**: Waktu respon navigasi form < 100ms; skor Core Web Vitals LCP < 1.2s pada koneksi 4G seluler.
 - **Aksesibilitas (a11y)**: Memenuhi standar WCAG 2.1 Level AA (dukungan screen reader, navigasi keyboard penuh pada DatePicker dan Select dropdown).
-- **Keamanan Data**: Sanitasi seluruh input teks untuk mencegah XSS; enkripsi data reservasi civitas academica.
+- **Keamanan Data**: Sanitasi seluruh input teks untuk mencegah XSS; enkripsi data reservasi civitas academica dan mitra umum.
 - **Kompatibilitas**: Berjalan mulus di Google Chrome, Safari Mobile, Firefox, dan Microsoft Edge modern.
 
 ---
@@ -210,6 +211,6 @@ stateDiagram-v2
 ## 8. Metrik Keberhasilan Produk (Key Performance Indicators)
 
 1. **Booking Completion Rate**: > 85% pengguna yang membuka halaman `/booking/new` berhasil menyelesaikan submit reservasi.
-2. **Waktu Rata-rata Pengisian Form**: < 90 detik saat menggunakan fitur Auto-fill SSO.
+2. **Waktu Rata-rata Pengisian Form**: < 90 detik saat menggunakan fitur Auto-fill Profil Akun.
 3. **Tingkat Bentrok Jadwal**: 0% jadwal tabrakan berkat validasi otomatis.
-4. **User Satisfaction Score (CSAT)**: > 4.5/5 dari survei kepuasan mahasiswa dan dosen pasca-kegiatan.
+4. **User Satisfaction Score (CSAT)**: > 4.5/5 dari survei kepuasan mahasiswa, dosen, dan mitra umum pasca-kegiatan.

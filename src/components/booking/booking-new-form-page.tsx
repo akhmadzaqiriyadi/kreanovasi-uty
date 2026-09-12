@@ -257,7 +257,7 @@ export function BookingNewFormPage() {
                   </div>
                 </div>
 
-                {/* Switcher Kategori Pemohon: Mahasiswa vs Dosen */}
+                {/* Switcher Kategori Pemohon: Mahasiswa vs Dosen vs Non-Civitas */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-muted-foreground">
@@ -288,7 +288,20 @@ export function BookingNewFormPage() {
                         )}
                       >
                         <Briefcase className="w-3.5 h-3.5" />
-                        Dosen / Pengajar
+                        Dosen
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRoleChange("umum")}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          applicantRole === "umum"
+                            ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
+                            : "text-muted-foreground hover:text-foreground",
+                        )}
+                      >
+                        <Building2 className="w-3.5 h-3.5" />
+                        Non-Civitas
                       </button>
                     </div>
                   </div>
@@ -307,7 +320,7 @@ export function BookingNewFormPage() {
                     <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                       <ShieldCheck className="w-4 h-4" />
                       <span>
-                        Data profil akun SSO ({activeProfile.roleLabel})
+                        Data profil akun ({activeProfile.roleLabel})
                         terverifikasi terisi otomatis
                       </span>
                     </div>
@@ -333,7 +346,9 @@ export function BookingNewFormPage() {
 
                       <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
                         <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                          Program Studi
+                          {applicantRole === "umum"
+                            ? "Asal Instansi"
+                            : "Program Studi"}
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
                           {activeProfile.prodi}
@@ -342,7 +357,7 @@ export function BookingNewFormPage() {
 
                       <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
                         <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                          Email SSO Kampus
+                          Email Terdaftar
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
                           {activeProfile.email}
@@ -360,7 +375,9 @@ export function BookingNewFormPage() {
                       >
                         {applicantRole === "dosen"
                           ? "Nama Lengkap & Gelar Dosen"
-                          : "Nama Lengkap Mahasiswa"}{" "}
+                          : applicantRole === "umum"
+                            ? "Nama Lengkap Pemohon"
+                            : "Nama Lengkap Mahasiswa"}{" "}
                         <span className="text-rose-500">*</span>
                       </Label>
                       <Input
@@ -368,7 +385,9 @@ export function BookingNewFormPage() {
                         placeholder={
                           applicantRole === "dosen"
                             ? "Contoh: Dr. Bambang Sutrisno, M.Kom."
-                            : "Contoh: Budi Santoso"
+                            : applicantRole === "umum"
+                              ? "Contoh: Hendri Pratama"
+                              : "Contoh: Budi Santoso"
                         }
                         {...form.register("name")}
                         className="h-11 rounded-xl"
@@ -387,7 +406,9 @@ export function BookingNewFormPage() {
                       >
                         {applicantRole === "dosen"
                           ? "NIDN / NIK Dosen"
-                          : "NPM Mahasiswa"}{" "}
+                          : applicantRole === "umum"
+                            ? "NIK KTP Pemohon"
+                            : "NPM Mahasiswa"}{" "}
                         <span className="text-rose-500">*</span>
                       </Label>
                       <Input
@@ -397,7 +418,9 @@ export function BookingNewFormPage() {
                         placeholder={
                           applicantRole === "dosen"
                             ? "Contoh: 0514088201"
-                            : "Contoh: 5210411234"
+                            : applicantRole === "umum"
+                              ? "Contoh: 3404011205940003"
+                              : "Contoh: 5210411234"
                         }
                         {...form.register("npm")}
                         className="h-11 rounded-xl font-mono"
@@ -414,33 +437,45 @@ export function BookingNewFormPage() {
                         htmlFor="prodi"
                         className="text-xs font-bold text-foreground/80"
                       >
-                        Program Studi <span className="text-rose-500">*</span>
+                        {applicantRole === "umum"
+                          ? "Instansi / Asal Lembaga"
+                          : "Program Studi"}{" "}
+                        <span className="text-rose-500">*</span>
                       </Label>
-                      <Controller
-                        name="prodi"
-                        control={form.control}
-                        render={({ field }) => (
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <SelectTrigger className="h-11 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-medium">
-                              <SelectValue placeholder="Pilih Program Studi" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-xl max-h-60">
-                              {studyPrograms.map((p) => (
-                                <SelectItem
-                                  key={p}
-                                  value={p}
-                                  className="text-xs sm:text-sm cursor-pointer"
-                                >
-                                  {p}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
+                      {applicantRole === "umum" ? (
+                        <Input
+                          id="prodi"
+                          placeholder="Contoh: PT Kreasi Digital / Komunitas IoT"
+                          {...form.register("prodi")}
+                          className="h-11 rounded-xl text-xs sm:text-sm font-medium"
+                        />
+                      ) : (
+                        <Controller
+                          name="prodi"
+                          control={form.control}
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <SelectTrigger className="h-11 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-medium">
+                                <SelectValue placeholder="Pilih Program Studi" />
+                              </SelectTrigger>
+                              <SelectContent className="rounded-xl max-h-60">
+                                {studyPrograms.map((p) => (
+                                  <SelectItem
+                                    key={p}
+                                    value={p}
+                                    className="text-xs sm:text-sm cursor-pointer"
+                                  >
+                                    {p}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      )}
                       {form.formState.errors.prodi && (
                         <p className="text-[11px] text-rose-500 font-medium">
                           {form.formState.errors.prodi.message}

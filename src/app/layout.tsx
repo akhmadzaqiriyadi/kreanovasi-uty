@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import { AuthModal } from "@/components/auth/auth-modal";
 import { GlobalLoadingBar } from "@/components/global-loading-bar";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
+import { AuthProvider } from "@/context/auth-context";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -101,9 +103,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
-            <GlobalLoadingBar />
-            {children}
-            <Toaster position="top-right" />
+            <AuthProvider>
+              <GlobalLoadingBar />
+              {children}
+              <AuthModal />
+              <Toaster position="top-right" />
+            </AuthProvider>
           </QueryProvider>
         </ThemeProvider>
       </body>

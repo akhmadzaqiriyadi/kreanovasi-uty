@@ -118,4 +118,27 @@ describe("bookingFormSchema", () => {
       expect(result.data.npm).toBe("0514088201");
     }
   });
+
+  test("validates valid non-civitas (umum) booking payload with NIK", () => {
+    const validUmumData = {
+      role: "umum",
+      room: "co-working",
+      name: "Hendri Pratama",
+      npm: "3404011205940003",
+      prodi: "Inkubator Startup Jogja",
+      purpose: "Sesi mentoring dan pitching produk startup binaan.",
+      audience: 15,
+      date: "2026-09-20",
+      startTime: "10:00",
+      endTime: "12:00",
+    };
+
+    const result = bookingFormSchema.safeParse(validUmumData);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.role).toBe("umum");
+      expect(result.data.npm).toBe("3404011205940003");
+      expect(result.data.prodi).toBe("Inkubator Startup Jogja");
+    }
+  });
 });

@@ -100,7 +100,7 @@ export function SettingsPage() {
   const handleLogoutAllDevices = () => {
     toast.success("Sesi Perangkat Direset", {
       description:
-        "Semua sesi perangkat lain berhasil diakhiri untuk keamanan akun SSO Anda.",
+        "Semua sesi perangkat lain berhasil diakhiri untuk keamanan akun Anda.",
     });
   };
 
@@ -120,7 +120,7 @@ export function SettingsPage() {
                 </CardTitle>
                 <p className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 leading-relaxed max-w-xl">
                   Kelola preferensi notifikasi peminjaman, tampilan tema,
-                  bahasa, dan keamanan akun SSO UTY Anda.
+                  bahasa, dan keamanan akun Anda.
                 </p>
               </div>
             </div>
@@ -318,10 +318,10 @@ export function SettingsPage() {
                 </div>
                 <div>
                   <h3 className="text-sm sm:text-base font-bold text-foreground">
-                    Keamanan & Autentikasi SSO
+                    Keamanan & Autentikasi Akun
                   </h3>
                   <p className="text-xs text-muted-foreground">
-                    Manajemen keamanan akun kampus Anda
+                    Manajemen keamanan akun Anda
                   </p>
                 </div>
               </div>
@@ -330,15 +330,14 @@ export function SettingsPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold text-foreground">
-                      Autentikasi Dua Langkah (2FA SSO)
+                      Autentikasi Dua Langkah (2FA)
                     </span>
                     <Badge className="bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-bold text-[10px] border-none">
                       Aktif
                     </Badge>
                   </div>
                   <p className="text-[11px] text-muted-foreground">
-                    Akun Anda terlindungi oleh sistem keamanan Single Sign-On
-                    UTY Yogyakarta.
+                    Akun Anda terlindungi oleh verifikasi keamanan akun UCH.
                   </p>
                 </div>
 

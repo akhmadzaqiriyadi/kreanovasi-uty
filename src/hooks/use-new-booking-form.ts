@@ -29,7 +29,7 @@ export const studyPrograms = [
   "Hukum",
 ];
 
-export type ApplicantRole = "mahasiswa" | "dosen";
+export type ApplicantRole = "mahasiswa" | "dosen" | "umum";
 
 export const mockProfiles = {
   mahasiswa: {
@@ -51,6 +51,16 @@ export const mockProfiles = {
     prodi: "Informatika",
     email: "bambang.sutrisno@staff.uty.ac.id",
     affiliation: "Dosen Tetap FST UTY",
+  },
+  umum: {
+    role: "umum" as const,
+    roleLabel: "Non-Civitas / Mitra",
+    name: "Hendri Pratama",
+    idNumber: "3404011205940003",
+    idLabel: "NIK KTP Pemohon",
+    prodi: "Inkubator Startup",
+    email: "hendri@mitra.org",
+    affiliation: "Mitra Industri / Umum",
   },
 };
 

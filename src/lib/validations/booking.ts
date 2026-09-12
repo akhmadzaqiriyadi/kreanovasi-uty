@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const bookingFormSchema = z
   .object({
-    role: z.enum(["mahasiswa", "dosen"]),
+    role: z.enum(["mahasiswa", "dosen", "umum"]),
     room: z.string().min(1, "Silakan pilih ruangan yang ingin dipesan"),
     name: z.string().min(3, "Nama penanggung jawab minimal 3 karakter"),
     npm: z
