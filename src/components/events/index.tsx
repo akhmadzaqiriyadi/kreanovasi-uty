@@ -1,4 +1,12 @@
 export { EventCard } from "./event-card";
+export { EventDetailContent } from "./event-detail-content";
+export { EventDetailHeader } from "./event-detail-header";
+export { EventRegistrationModal } from "./event-registration-modal";
+export { EventsCatalogContent } from "./events-catalog-content";
+export { EventsCatalogHero } from "./events-catalog-hero";
+export { EventsCatalogPage } from "./events-catalog-page";
+export { EventsFilterBar } from "./events-filter-bar";
 export { EventsGrid } from "./events-grid";
 export { EventsHeader } from "./events-header";
 export { EventsSection } from "./events-section";
+export { RelatedEvents } from "./related-events";
