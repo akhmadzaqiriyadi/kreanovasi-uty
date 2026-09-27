@@ -15,7 +15,7 @@ test.describe("Landing Page E2E Tests", () => {
       page.locator("text=Innovate. Collaborate. Create.").first(),
     ).toBeVisible();
     await expect(
-      page.getByRole("heading", { name: "UTY Creative Hub" }),
+      page.getByRole("heading", { name: "UTY Creative Hub" }).first(),
     ).toBeVisible();
   });
 

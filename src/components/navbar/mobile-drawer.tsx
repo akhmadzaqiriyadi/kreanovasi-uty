@@ -219,11 +219,22 @@ export function MobileDrawer() {
                   </div>
                   <Badge
                     variant="secondary"
-                    className="text-[9px] font-bold py-0 px-1.5 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-none capitalize"
+                    className={cn(
+                      "text-[9px] font-bold py-0 px-1.5 border-none capitalize",
+                      currentUser.role === "admin"
+                        ? "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300"
+                        : currentUser.role === "dosen"
+                          ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300"
+                          : currentUser.role === "umum"
+                            ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+                            : "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
+                    )}
                   >
-                    {currentUser.role === "umum"
-                      ? "Non-Civitas"
-                      : currentUser.role}
+                    {currentUser.role === "admin"
+                      ? "Administrator"
+                      : currentUser.role === "umum"
+                        ? "Non-Civitas"
+                        : currentUser.role}
                   </Badge>
                 </div>
 

@@ -12,17 +12,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/context/auth-context";
+import { defaultUser, useAuth } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
+import type { UserProfile } from "@/types/auth";
 
-export const dummyUser = {
-  name: "Akhmad Zaqi Riyadi",
-  email: "zaqi@students.uty.ac.id",
-  role: "Mahasiswa",
-  npm: "5210411234",
-  avatarUrl:
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
-};
+export const dummyUser: UserProfile = defaultUser;
 
 export function NavUserMenu() {
   const { user, logout } = useAuth();
@@ -89,13 +83,32 @@ export function NavUserMenu() {
 
           <div className="mt-2.5 pt-2 border-t border-border/50 flex items-center justify-between">
             <span className="text-[10px] font-mono font-semibold text-muted-foreground">
-              {currentUser.npm ? `ID ${currentUser.npm}` : "Terverifikasi"}
+              {currentUser.role === "admin"
+                ? "Super Admin"
+                : currentUser.npm
+                  ? `ID ${currentUser.npm}`
+                  : currentUser.idNumber
+                    ? `ID ${currentUser.idNumber}`
+                    : "Terverifikasi"}
             </span>
             <Badge
               variant="secondary"
-              className="text-[10px] font-bold py-0 px-2 bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-none capitalize"
+              className={cn(
+                "text-[10px] font-bold py-0 px-2 border-none capitalize",
+                currentUser.role === "admin"
+                  ? "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300"
+                  : currentUser.role === "dosen"
+                    ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300"
+                    : currentUser.role === "umum"
+                      ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+                      : "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300",
+              )}
             >
-              {currentUser.role === "umum" ? "Non-Civitas" : currentUser.role}
+              {currentUser.role === "admin"
+                ? "Administrator"
+                : currentUser.role === "umum"
+                  ? "Non-Civitas"
+                  : currentUser.role}
             </Badge>
           </div>
         </div>

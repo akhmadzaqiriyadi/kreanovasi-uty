@@ -368,10 +368,10 @@ export function BookingNewFormPage() {
                 ) : (
                   /* Input Manual Profil Penanggung Jawab */
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-1">
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       <Label
                         htmlFor="name"
-                        className="text-xs font-bold text-foreground/80"
+                        className="text-xs font-bold text-foreground/80 block"
                       >
                         {applicantRole === "dosen"
                           ? "Nama Lengkap & Gelar Dosen"
@@ -399,10 +399,10 @@ export function BookingNewFormPage() {
                       )}
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       <Label
                         htmlFor="npm"
-                        className="text-xs font-bold text-foreground/80"
+                        className="text-xs font-bold text-foreground/80 block"
                       >
                         {applicantRole === "dosen"
                           ? "NIDN / NIK Dosen"
@@ -432,10 +432,10 @@ export function BookingNewFormPage() {
                       )}
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="space-y-2">
                       <Label
                         htmlFor="prodi"
-                        className="text-xs font-bold text-foreground/80"
+                        className="text-xs font-bold text-foreground/80 block"
                       >
                         {applicantRole === "umum"
                           ? "Instansi / Asal Lembaga"
