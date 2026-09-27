@@ -2,12 +2,14 @@
 
 import {
   ChevronDown,
+  ChevronRight,
   ExternalLink,
   History,
   LogIn,
   LogOut,
   Menu,
   Settings,
+  ShieldCheck,
   User,
   UserPlus,
 } from "lucide-react";
@@ -237,6 +239,22 @@ export function MobileDrawer() {
                         : currentUser.role}
                   </Badge>
                 </div>
+
+                {/* Admin Dashboard Mobile Shortcut */}
+                {(currentUser.role === "admin" ||
+                  currentUser.permissions?.includes("users:read")) && (
+                  <Link
+                    href="/admin"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-between py-2.5 px-3 rounded-xl border border-purple-500/30 bg-purple-500/10 font-bold text-purple-700 dark:text-purple-300 text-xs hover:bg-purple-500/20 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                      <span>Admin Dashboard (PBAC)</span>
+                    </div>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                )}
 
                 <div className="grid grid-cols-3 gap-1.5 text-xs">
                   <Link

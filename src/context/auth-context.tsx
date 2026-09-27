@@ -28,6 +28,9 @@ export const defaultUser: UserProfile = {
 
 interface AuthContextType {
   isLoggedIn: boolean;
+  isAdmin: boolean;
+  can: (permission: string) => boolean;
+  canAny: (...permissions: string[]) => boolean;
   user: UserProfile | null;
   authModalOpen: boolean;
   authModalTab: "login" | "register";
@@ -119,6 +122,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [backendUser]);
 
   const isLoggedIn = Boolean(user && getLocalAccessToken());
+  const isAdmin = Boolean(isLoggedIn && user?.role === "admin");
+
+  const can = (permission: string): boolean => {
+    if (!isLoggedIn || !user) return false;
+    if (isAdmin) return true;
+    return Boolean(user.permissions?.includes(permission));
+  };
+
+  const canAny = (...perms: string[]): boolean => {
+    if (!isLoggedIn || !user) return false;
+    if (isAdmin) return true;
+    return perms.some((p) => user.permissions?.includes(p));
+  };
 
   const openLoginModal = () => {
     setAuthModalTab("login");
@@ -189,6 +205,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         isLoggedIn,
+        isAdmin,
+        can,
+        canAny,
         user,
         authModalOpen,
         authModalTab,

@@ -1,6 +1,13 @@
 "use client";
 
-import { ChevronDown, History, LogOut, Settings, User } from "lucide-react";
+import {
+  ChevronDown,
+  History,
+  LogOut,
+  Settings,
+  ShieldCheck,
+  User,
+} from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -114,6 +121,28 @@ export function NavUserMenu() {
         </div>
 
         <DropdownMenuGroup className="space-y-0.5">
+          {/* Admin Dashboard (Only visible for Admin / Authorized) */}
+          {(currentUser.role === "admin" ||
+            currentUser.permissions?.includes("users:read")) && (
+            <DropdownMenuItem asChild>
+              <Link
+                href="/admin"
+                className="rounded-xl px-3 py-2 text-xs font-bold cursor-pointer bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-300 transition-colors flex items-center justify-between mb-1"
+              >
+                <div className="flex items-center">
+                  <ShieldCheck className="w-4 h-4 mr-2.5 text-purple-600 dark:text-purple-400" />
+                  <span>Admin Dashboard</span>
+                </div>
+                <Badge
+                  variant="outline"
+                  className="bg-purple-500/20 text-purple-700 dark:text-purple-300 border-purple-500/30 text-[9px] py-0 px-1.5"
+                >
+                  PBAC
+                </Badge>
+              </Link>
+            </DropdownMenuItem>
+          )}
+
           {/* Akun Saya */}
           <DropdownMenuItem asChild>
             <Link
