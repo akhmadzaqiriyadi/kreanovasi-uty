@@ -2,20 +2,15 @@
 
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "sonner";
+import {
+  mapBackendUserToProfile,
+  useCurrentUserQuery,
+  useLogoutMutation,
+} from "@/hooks/use-auth-mutations";
+import { getLocalAccessToken, setLocalTokens } from "@/lib/api-client";
+import type { UserProfile } from "@/types/auth";
 
-export interface UserProfile {
-  name: string;
-  email: string;
-  role: "mahasiswa" | "dosen" | "umum";
-  roleLabel: string;
-  idNumber: string;
-  idLabel: string;
-  affiliation: string;
-  npm?: string;
-  prodi?: string;
-  avatarUrl: string;
-}
+export type { UserProfile };
 
 export const defaultUser: UserProfile = {
   name: "Akhmad Zaqi Riyadi",
@@ -36,6 +31,7 @@ interface AuthContextType {
   user: UserProfile | null;
   authModalOpen: boolean;
   authModalTab: "login" | "register";
+  isAuthLoading: boolean;
   openLoginModal: () => void;
   openRegisterModal: () => void;
   closeAuthModal: () => void;
@@ -43,31 +39,84 @@ interface AuthContextType {
   login: (userData?: Partial<UserProfile>) => void;
   register: (userData: Partial<UserProfile>) => void;
   logout: () => void;
+  setSessionUser: (profile: UserProfile | null) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // Default: false (Belum login / Tamu) agar navbar menampilkan tombol Masuk & Daftar
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<UserProfile | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "register">(
-    "login",
-  );
+  const [authModalTab, setAuthModalTab] = useState<"login" | "register">("login");
 
-  // Inisialisasi state login dari localStorage jika ada
-  useEffect(() => {
-    try {
-      const savedAuth = localStorage.getItem("uch_auth_logged_in");
-      if (savedAuth === "true") {
-        setIsLoggedIn(true);
-        setUser(defaultUser);
+  // Query profile from backend if access token exists
+  const {
+    data: backendUser,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useCurrentUserQuery();
+
+  const logoutMutation = useLogoutMutation({
+    onSuccess: () => {
+      setUser(null);
+      try {
+        localStorage.removeItem("uch_user_profile");
+      } catch {
+        // ignore
       }
-    } catch {
-      // ignore
+    },
+  });
+
+  // Handle expired or invalid token automatically
+  useEffect(() => {
+    if (isProfileError) {
+      setUser(null);
+      setLocalTokens(null, null);
+      try {
+        localStorage.removeItem("uch_user_profile");
+      } catch {
+        // ignore
+      }
     }
-  }, []);
+  }, [isProfileError]);
+
+  // Restore cached user profile or sync with backend user query
+  useEffect(() => {
+    if (backendUser) {
+      const mapped = mapBackendUserToProfile(backendUser);
+      setUser(mapped);
+      try {
+        localStorage.setItem("uch_user_profile", JSON.stringify(mapped));
+      } catch {
+        // ignore
+      }
+    } else {
+      const token = getLocalAccessToken();
+      if (token) {
+        try {
+          const cached = localStorage.getItem("uch_user_profile");
+          if (cached) {
+            const parsed = JSON.parse(cached);
+            if (parsed.email === "admin@gozaq.com" || parsed.role === "admin") {
+              parsed.role = "admin";
+              parsed.roleLabel = "System Administrator";
+              parsed.idLabel = "Admin ID";
+              parsed.npm = undefined;
+              parsed.prodi = "Unit Manajemen Sistem";
+              parsed.affiliation = "Pengelola UTY Creative Hub";
+            }
+            setUser(parsed);
+          }
+        } catch {
+          // ignore
+        }
+      } else {
+        setUser(null);
+      }
+    }
+  }, [backendUser]);
+
+  const isLoggedIn = Boolean(user && getLocalAccessToken());
 
   const openLoginModal = () => {
     setAuthModalTab("login");
@@ -83,22 +132,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthModalOpen(false);
   };
 
+  const setSessionUser = (profile: UserProfile | null) => {
+    setUser(profile);
+    if (profile) {
+      try {
+        localStorage.setItem("uch_user_profile", JSON.stringify(profile));
+      } catch {
+        // ignore
+      }
+    } else {
+      try {
+        localStorage.removeItem("uch_user_profile");
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   const login = (userData?: Partial<UserProfile>) => {
     const updatedUser: UserProfile = {
       ...defaultUser,
       ...userData,
     };
-    setIsLoggedIn(true);
-    setUser(updatedUser);
+    setSessionUser(updatedUser);
     setAuthModalOpen(false);
-    try {
-      localStorage.setItem("uch_auth_logged_in", "true");
-    } catch {
-      // ignore
-    }
-    toast.success("Berhasil Masuk", {
-      description: `Selamat datang kembali, ${updatedUser.name}!`,
-    });
   };
 
   const register = (userData: Partial<UserProfile>) => {
@@ -118,30 +175,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       avatarUrl:
         "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80",
     };
-    setIsLoggedIn(true);
-    setUser(newUser);
+    setSessionUser(newUser);
     setAuthModalOpen(false);
-    try {
-      localStorage.setItem("uch_auth_logged_in", "true");
-    } catch {
-      // ignore
-    }
-    toast.success("Pendaftaran Berhasil", {
-      description: `Akun ${newUser.roleLabel} Anda telah aktif di UTY Creative Hub.`,
-    });
   };
 
   const logout = () => {
-    setIsLoggedIn(false);
-    setUser(null);
-    try {
-      localStorage.removeItem("uch_auth_logged_in");
-    } catch {
-      // ignore
-    }
-    toast.info("Berhasil Keluar", {
-      description: "Sesi akun Anda telah diakhiri.",
-    });
+    logoutMutation.mutate();
   };
 
   return (
@@ -151,6 +190,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         authModalOpen,
         authModalTab,
+        isAuthLoading: isProfileLoading || logoutMutation.isPending,
         openLoginModal,
         openRegisterModal,
         closeAuthModal,
@@ -158,6 +198,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         login,
         register,
         logout,
+        setSessionUser,
       }}
     >
       {children}

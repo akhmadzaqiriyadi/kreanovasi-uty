@@ -1,14 +1,68 @@
 import type { AxiosInstance } from "axios";
 import axios from "axios";
-import { env } from "@/lib/env";
+import type { ApiEnvelope, BackendAuthResponse } from "@/types/auth";
 
 // In-memory token storage references for client-side routing
 let _accessToken: string | null = null;
 let _refreshSubscribers: Array<(token: string) => void> = [];
 let _isRefreshing = false;
 
+// Initialize token from storage on client side if available
+if (typeof window !== "undefined") {
+  try {
+    _accessToken = localStorage.getItem("uch_access_token");
+  } catch {
+    _accessToken = null;
+  }
+}
+
+export function getLocalAccessToken(): string | null {
+  if (!_accessToken && typeof window !== "undefined") {
+    try {
+      _accessToken = localStorage.getItem("uch_access_token");
+    } catch {
+      _accessToken = null;
+    }
+  }
+  return _accessToken;
+}
+
+export function getLocalRefreshToken(): string | null {
+  if (typeof window !== "undefined") {
+    try {
+      return localStorage.getItem("uch_refresh_token");
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
+export function setLocalTokens(accessToken: string | null, refreshToken?: string | null) {
+  _accessToken = accessToken;
+  if (typeof window !== "undefined") {
+    try {
+      if (accessToken) {
+        localStorage.setItem("uch_access_token", accessToken);
+      } else {
+        localStorage.removeItem("uch_access_token");
+      }
+
+      if (refreshToken !== undefined) {
+        if (refreshToken) {
+          localStorage.setItem("uch_refresh_token", refreshToken);
+        } else {
+          localStorage.removeItem("uch_refresh_token");
+        }
+      }
+    } catch {
+      // ignore storage errors
+    }
+  }
+}
+
 export function setLocalAccessToken(token: string | null) {
-  _accessToken = token;
+  setLocalTokens(token);
 }
 
 function dispatchLoadingStart() {
@@ -26,8 +80,10 @@ function dispatchLoadingEnd() {
 const apiClient: AxiosInstance = axios.create({
   baseURL:
     typeof window !== "undefined"
-      ? "/api-proxy"
-      : env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api",
+      ? "/api/v1"
+      : process.env.BACKEND_API_URL
+        ? `${process.env.BACKEND_API_URL}/api/v1`
+        : "http://localhost:8080/api/v1",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -38,8 +94,9 @@ const apiClient: AxiosInstance = axios.create({
 apiClient.interceptors.request.use(
   (config) => {
     dispatchLoadingStart();
-    if (_accessToken && config.headers) {
-      config.headers.Authorization = `Bearer ${_accessToken}`;
+    const token = getLocalAccessToken();
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -59,9 +116,9 @@ apiClient.interceptors.response.use(
     dispatchLoadingEnd();
     const originalRequest = error.config;
     const isAuthRequest =
-      originalRequest?.url?.includes("auth/login") ||
-      originalRequest?.url?.includes("auth/refresh") ||
-      originalRequest?.url?.includes("auth/logout");
+      originalRequest?.url?.includes("/auth/login") ||
+      originalRequest?.url?.includes("/auth/refresh") ||
+      originalRequest?.url?.includes("/auth/register");
 
     // Check if error is 401 and request has not been retried yet, and not an auth request
     if (
@@ -72,8 +129,9 @@ apiClient.interceptors.response.use(
     ) {
       originalRequest._retry = true;
 
-      if (typeof window === "undefined") {
-        // If on the server (RSC), we don't have access to browser in-memory token state
+      const refreshToken = getLocalRefreshToken();
+      if (!refreshToken || typeof window === "undefined") {
+        setLocalTokens(null, null);
         return Promise.reject(error);
       }
 
@@ -90,30 +148,31 @@ apiClient.interceptors.response.use(
       _isRefreshing = true;
 
       try {
-        // Perform silent token refresh
-        // This goes through /api-proxy which propagates the HttpOnly refresh_token cookie
-        const response = await axios.post(
-          "/api-proxy/auth/refresh",
-          {},
+        // Perform silent token refresh via reverse proxy
+        const response = await axios.post<ApiEnvelope<BackendAuthResponse>>(
+          "/api/v1/auth/refresh",
+          { refresh_token: refreshToken },
           { headers: { "Content-Type": "application/json" } },
         );
 
-        const { accessToken } = response.data;
-        setLocalAccessToken(accessToken);
+        const newAccessToken = response.data?.data?.access_token;
+        const newRefreshToken = response.data?.data?.refresh_token;
 
-        // Update header and broadcast to subscribers
-        apiClient.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
-        for (const callback of _refreshSubscribers) callback(accessToken);
-        _refreshSubscribers = [];
+        if (newAccessToken) {
+          setLocalTokens(newAccessToken, newRefreshToken || refreshToken);
 
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        return apiClient(originalRequest);
+          // Update header and broadcast to subscribers
+          apiClient.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+          for (const callback of _refreshSubscribers) callback(newAccessToken);
+          _refreshSubscribers = [];
+
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return apiClient(originalRequest);
+        }
       } catch (refreshError) {
         // If refresh fails, clear token memory and reject request
-        setLocalAccessToken(null);
+        setLocalTokens(null, null);
         _refreshSubscribers = [];
-
-        // Re-trigger redirect or context cleanup from UI side by propagating 401
         return Promise.reject(refreshError);
       } finally {
         _isRefreshing = false;
