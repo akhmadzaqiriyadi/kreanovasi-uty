@@ -33,7 +33,9 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
           tabIndex={-1}
           disabled={disabled}
           className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer p-0.5 rounded-md focus:outline-hidden disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label={showPassword ? "Sembunyikan kata sandi" : "Lihat kata sandi"}
+          aria-label={
+            showPassword ? "Sembunyikan kata sandi" : "Lihat kata sandi"
+          }
         >
           {showPassword ? (
             <EyeOff className="w-4 h-4" />

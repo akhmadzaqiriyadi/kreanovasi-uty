@@ -77,9 +77,11 @@ export function AuthModal() {
   } = useAuth();
 
   // Consolidated form states
-  const [loginForm, setLoginForm] = useState<LoginFormState>(INITIAL_LOGIN_FORM);
-  const [registerForm, setRegisterForm] =
-    useState<RegisterFormState>(INITIAL_REGISTER_FORM);
+  const [loginForm, setLoginForm] =
+    useState<LoginFormState>(INITIAL_LOGIN_FORM);
+  const [registerForm, setRegisterForm] = useState<RegisterFormState>(
+    INITIAL_REGISTER_FORM,
+  );
 
   const updateLoginForm = (field: keyof LoginFormState, value: string) => {
     setLoginForm((prev) => ({ ...prev, [field]: value }));
@@ -470,7 +472,10 @@ export function AuthModal() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="regPassword" className="text-xs font-bold block">
+                <Label
+                  htmlFor="regPassword"
+                  className="text-xs font-bold block"
+                >
                   Kata Sandi Baru (Min. 6 Karakter)
                 </Label>
                 <PasswordInput

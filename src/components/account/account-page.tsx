@@ -57,7 +57,8 @@ export function AccountPage() {
     user?.role ||
     (user?.email === "admin@gozaq.com"
       ? "admin"
-      : user?.email.includes("@staff.uty.ac.id") || user?.email.includes("bambang")
+      : user?.email.includes("@staff.uty.ac.id") ||
+          user?.email.includes("bambang")
         ? "dosen"
         : "mahasiswa");
   const isAdmin = userRole === "admin";
@@ -123,7 +124,8 @@ export function AccountPage() {
         user.role ||
         (user.email === "admin@gozaq.com"
           ? "admin"
-          : user.email.includes("@staff.uty.ac.id") || user.email.includes("bambang")
+          : user.email.includes("@staff.uty.ac.id") ||
+              user.email.includes("bambang")
             ? "dosen"
             : "mahasiswa");
       const isAdm = uRole === "admin";
@@ -135,7 +137,9 @@ export function AccountPage() {
         name: user.name,
         email: user.email,
         npm: isAdm
-          ? (user.id ? `ADM-${user.id.slice(0, 8).toUpperCase()}` : "ADM-001")
+          ? user.id
+            ? `ADM-${user.id.slice(0, 8).toUpperCase()}`
+            : "ADM-001"
           : isUm
             ? user.idNumber || ""
             : isDos
@@ -337,14 +341,20 @@ export function AccountPage() {
                     {isAdmin ? (
                       <>
                         {" • "}
-                        <span className="font-semibold text-foreground">Pengelola UTY Creative Hub</span>
+                        <span className="font-semibold text-foreground">
+                          Pengelola UTY Creative Hub
+                        </span>
                         {" • ID "}
-                        <span className="font-mono font-bold text-foreground">{formData.npm}</span>
+                        <span className="font-mono font-bold text-foreground">
+                          {formData.npm}
+                        </span>
                       </>
                     ) : isDosen ? (
                       <>
                         {" • NIDN "}
-                        <span className="font-mono font-bold text-foreground">{formData.npm}</span>
+                        <span className="font-mono font-bold text-foreground">
+                          {formData.npm}
+                        </span>
                         {" • "}
                         <span>{formData.faculty}</span>
                       </>
@@ -353,7 +363,9 @@ export function AccountPage() {
                         {formData.npm ? (
                           <>
                             {" • NIK "}
-                            <span className="font-mono font-bold text-foreground">{formData.npm}</span>
+                            <span className="font-mono font-bold text-foreground">
+                              {formData.npm}
+                            </span>
                           </>
                         ) : null}
                         {" • "}
@@ -364,7 +376,9 @@ export function AccountPage() {
                         {formData.npm ? (
                           <>
                             {" • NPM "}
-                            <span className="font-mono font-bold text-foreground">{formData.npm}</span>
+                            <span className="font-mono font-bold text-foreground">
+                              {formData.npm}
+                            </span>
                           </>
                         ) : null}
                         {" • "}
@@ -684,7 +698,8 @@ export function AccountPage() {
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Kewenangan penuh menyetujui jadwal, membatalkan sepihak, dan membuka slot khusus fasilitas.
+                          Kewenangan penuh menyetujui jadwal, membatalkan
+                          sepihak, dan membuka slot khusus fasilitas.
                         </p>
                       </div>
                     </div>
@@ -703,7 +718,8 @@ export function AccountPage() {
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Audit pengguna sistem, verifikasi berkas dosen & mahasiswa, serta penugasan peran manajerial.
+                          Audit pengguna sistem, verifikasi berkas dosen &
+                          mahasiswa, serta penugasan peran manajerial.
                         </p>
                       </div>
                     </div>
@@ -723,7 +739,8 @@ export function AccountPage() {
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Pusat riset kolaboratif dan asistensi tugas akhir mahasiswa FST UTY.
+                        Pusat riset kolaboratif dan asistensi tugas akhir
+                        mahasiswa FST UTY.
                       </p>
                     </div>
                   </div>
@@ -742,7 +759,8 @@ export function AccountPage() {
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        Status kerja sama resmi pemanfaatan coworking space dan auditorium kampus.
+                        Status kerja sama resmi pemanfaatan coworking space dan
+                        auditorium kampus.
                       </p>
                     </div>
                   </div>
@@ -762,7 +780,8 @@ export function AccountPage() {
                           </Badge>
                         </div>
                         <p className="text-xs text-muted-foreground">
-                          Divisi Riset & Pengembangan Teknologi • Anggota Pengurus
+                          Divisi Riset & Pengembangan Teknologi • Anggota
+                          Pengurus
                         </p>
                       </div>
                     </div>
@@ -803,7 +822,9 @@ export function AccountPage() {
                 {isAdmin ? "12 Ruangan" : "8 Kali"}
               </span>
               <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1 block">
-                {isAdmin ? "Semua ruangan aktif beroperasi" : "Semua kegiatan terselenggara"}
+                {isAdmin
+                  ? "Semua ruangan aktif beroperasi"
+                  : "Semua kegiatan terselenggara"}
               </span>
             </Card>
 
@@ -815,7 +836,9 @@ export function AccountPage() {
                 {isAdmin ? "48 Berkas" : "24 Jam"}
               </span>
               <span className="text-[11px] text-muted-foreground font-medium mt-1 block">
-                {isAdmin ? "Periode semester berjalan" : "Rata-rata 3 jam per sesi"}
+                {isAdmin
+                  ? "Periode semester berjalan"
+                  : "Rata-rata 3 jam per sesi"}
               </span>
             </Card>
 
@@ -827,7 +850,9 @@ export function AccountPage() {
                 {isAdmin ? "85%" : "100%"}
               </span>
               <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-1 block">
-                {isAdmin ? "Kategori jam produktif kampus" : "Tanpa pembatalan mendadak"}
+                {isAdmin
+                  ? "Kategori jam produktif kampus"
+                  : "Tanpa pembatalan mendadak"}
               </span>
             </Card>
 

@@ -180,8 +180,12 @@ test.describe("Authentication & Account E2E Flow", () => {
 
     // Verify /account page for Admin role
     await page.goto("/account");
-    await expect(page.getByRole("heading", { name: "System Administrator" })).toBeVisible();
-    await expect(page.getByText("Pengelola UTY Creative Hub").first()).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "System Administrator" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText("Pengelola UTY Creative Hub").first(),
+    ).toBeVisible();
     await expect(page.getByText("ID Akses Administrator")).toBeVisible();
     await expect(page.getByText("Hak Akses & Otoritas")).toBeVisible();
     await expect(page.getByText("Mahasiswa Aktif UTY")).not.toBeVisible();
@@ -408,7 +412,9 @@ test.describe("Authentication & Account E2E Flow", () => {
     const userMenuBtn = page.getByRole("button", { name: "Menu Pengguna" });
     await expect(userMenuBtn).toBeVisible({ timeout: 12000 });
     await page.goto("/account");
-    await expect(page.getByRole("heading", { name: "System Administrator" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "System Administrator" }),
+    ).toBeVisible();
 
     // Go to Keamanan tab
     await page.getByRole("button", { name: "Keamanan" }).click();

@@ -96,7 +96,9 @@ export function useLoginMutation(options?: {
       if (data) {
         setLocalTokens(data.access_token, data.refresh_token);
         queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, data.user);
-        queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
+        queryClient.invalidateQueries({
+          queryKey: AUTH_QUERY_KEYS.currentUser,
+        });
         toast.success("Berhasil Masuk", {
           description: `Selamat datang kembali, ${data.user.name}!`,
         });
@@ -140,7 +142,9 @@ export function useRegisterMutation(options?: {
       if (data) {
         setLocalTokens(data.access_token, data.refresh_token);
         queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, data.user);
-        queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
+        queryClient.invalidateQueries({
+          queryKey: AUTH_QUERY_KEYS.currentUser,
+        });
         toast.success("Pendaftaran Berhasil", {
           description: `Akun Anda telah berhasil didaftarkan di UTY Creative Hub!`,
         });
@@ -159,9 +163,7 @@ export function useRegisterMutation(options?: {
 }
 
 // 3. Hook for User Logout Mutation
-export function useLogoutMutation(options?: {
-  onSuccess?: () => void;
-}) {
+export function useLogoutMutation(options?: { onSuccess?: () => void }) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -191,7 +193,8 @@ export function useCurrentUserQuery() {
   return useQuery({
     queryKey: AUTH_QUERY_KEYS.currentUser,
     queryFn: async () => {
-      const response = await apiClient.get<ApiEnvelope<BackendUser>>("/auth/profile");
+      const response =
+        await apiClient.get<ApiEnvelope<BackendUser>>("/auth/profile");
       return response.data.data;
     },
     enabled: Boolean(token),
@@ -217,7 +220,9 @@ export function useUpdateProfileMutation(options?: {
     onSuccess: (data) => {
       if (data) {
         queryClient.setQueryData(AUTH_QUERY_KEYS.currentUser, data);
-        queryClient.invalidateQueries({ queryKey: AUTH_QUERY_KEYS.currentUser });
+        queryClient.invalidateQueries({
+          queryKey: AUTH_QUERY_KEYS.currentUser,
+        });
         toast.success("Profil Diperbarui", {
           description: "Perubahan data profil Anda berhasil disimpan.",
         });

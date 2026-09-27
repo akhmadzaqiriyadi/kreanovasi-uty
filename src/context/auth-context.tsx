@@ -47,7 +47,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "register">("login");
+  const [authModalTab, setAuthModalTab] = useState<"login" | "register">(
+    "login",
+  );
 
   // Query profile from backend if access token exists
   const {

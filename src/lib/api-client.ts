@@ -38,7 +38,10 @@ export function getLocalRefreshToken(): string | null {
   return null;
 }
 
-export function setLocalTokens(accessToken: string | null, refreshToken?: string | null) {
+export function setLocalTokens(
+  accessToken: string | null,
+  refreshToken?: string | null,
+) {
   _accessToken = accessToken;
   if (typeof window !== "undefined") {
     try {

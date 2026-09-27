@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { mapBackendUserToProfile } from "./use-auth-mutations";
 import type { BackendUser } from "@/types/auth";
+import { mapBackendUserToProfile } from "./use-auth-mutations";
 
 describe("mapBackendUserToProfile", () => {
   it("maps mahasiswa user correctly", () => {
