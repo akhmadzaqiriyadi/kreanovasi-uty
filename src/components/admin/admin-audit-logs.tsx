@@ -128,10 +128,10 @@ export function AdminAuditLogs() {
                 <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">
                   Aksi Keamanan
                 </TableHead>
-                <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">
+                <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground hidden sm:table-cell">
                   Entitas Target
                 </TableHead>
-                <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">
+                <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground hidden md:table-cell">
                   Detail / Aktor
                 </TableHead>
                 <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground text-right pr-4">
@@ -150,10 +150,10 @@ export function AdminAuditLogs() {
                     <TableCell>
                       <Skeleton className="h-5 w-24 rounded-full" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Skeleton className="h-4 w-20" />
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Skeleton className="h-4 w-36" />
                     </TableCell>
                     <TableCell className="text-right pr-4">
@@ -220,12 +220,12 @@ export function AdminAuditLogs() {
                       </TableCell>
 
                       {/* Entity */}
-                      <TableCell className="py-3 text-xs font-mono font-semibold text-foreground">
+                      <TableCell className="py-3 text-xs font-mono font-semibold text-foreground hidden sm:table-cell">
                         {log.entity}
                       </TableCell>
 
                       {/* Details / Actor */}
-                      <TableCell className="py-3 text-xs text-muted-foreground max-w-[250px] truncate">
+                      <TableCell className="py-3 text-xs text-muted-foreground max-w-[250px] truncate hidden md:table-cell">
                         {log.details ? (
                           <span className="font-mono text-[11px]">
                             {JSON.stringify(log.details)}

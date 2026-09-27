@@ -80,9 +80,9 @@ export function AdminRolesMatrix() {
       {/* Informational Header Card */}
       <Card className="border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md shadow-xs">
         <CardHeader className="pb-3">
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+              <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 shrink-0">
                 <KeyRound className="w-5 h-5" />
               </div>
               <div>
@@ -90,15 +90,14 @@ export function AdminRolesMatrix() {
                   Matriks Hak Akses (PBAC & Dynamic RBAC)
                 </CardTitle>
                 <CardDescription className="text-xs">
-                  Konfigurasi hak akses berbasis izin granular (Permission-Based
-                  Access Control) secara dinamis tanpa perlu deploy ulang.
+                  Konfigurasi wewenang granular per role secara dinamis.
                 </CardDescription>
               </div>
             </div>
 
             <Badge
               variant="outline"
-              className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 text-xs px-2.5 py-1 hidden sm:flex items-center gap-1 font-semibold"
+              className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 text-xs px-2.5 py-1 w-fit flex items-center gap-1 font-semibold"
             >
               <Sparkles className="w-3.5 h-3.5" />
               Enterprise PBAC
@@ -112,9 +111,8 @@ export function AdminRolesMatrix() {
             <span>
               {canManageRoles ? (
                 <>
-                  Anda memiliki wewenang <strong>roles:manage</strong>. Klik
-                  tombol switch pada kolom role untuk memberi atau mencabut izin
-                  secara real-time.
+                  Anda memiliki wewenang <strong>roles:manage</strong>. Geser
+                  tabel ke samping pada layar kecil untuk melihat semua role.
                 </>
               ) : (
                 <>
@@ -128,13 +126,13 @@ export function AdminRolesMatrix() {
         </CardContent>
       </Card>
 
-      {/* Permissions Matrix Table */}
+      {/* Permissions Matrix Table with Sticky Column */}
       <div className="rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
-          <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-zinc-800/40">
+        <div className="overflow-x-auto relative">
+          <Table className="min-w-[600px]">
+            <TableHeader className="bg-slate-50/80 dark:bg-zinc-800/60">
               <TableRow className="border-border/60 hover:bg-transparent">
-                <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground pl-4 min-w-[240px]">
+                <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground pl-4 w-[240px] sticky left-0 bg-slate-50 dark:bg-zinc-800 z-10 shadow-xs">
                   Granular Permission
                 </TableHead>
                 {isLoading
@@ -149,7 +147,7 @@ export function AdminRolesMatrix() {
                   : roles.map((r) => (
                       <TableHead
                         key={r.id}
-                        className="text-center font-bold text-xs uppercase tracking-wider text-muted-foreground px-4 min-w-[120px]"
+                        className="text-center font-bold text-xs uppercase tracking-wider text-muted-foreground px-4 min-w-[110px]"
                       >
                         <div className="flex flex-col items-center gap-0.5">
                           <span className="capitalize">{r.name}</span>
@@ -166,9 +164,9 @@ export function AdminRolesMatrix() {
               {isLoading
                 ? Array.from({ length: 6 }).map((_, i) => (
                     <TableRow key={i} className="border-border/40">
-                      <TableCell className="pl-4 py-3">
+                      <TableCell className="pl-4 py-3 sticky left-0 bg-white dark:bg-zinc-900 z-10">
                         <Skeleton className="h-4 w-32 mb-1" />
-                        <Skeleton className="h-3 w-56" />
+                        <Skeleton className="h-3 w-48" />
                       </TableCell>
                       {Array.from({ length: 4 }).map((_, j) => (
                         <TableCell key={j} className="text-center">
@@ -188,14 +186,14 @@ export function AdminRolesMatrix() {
                         key={perm.id}
                         className="border-border/40 hover:bg-slate-50/50 dark:hover:bg-zinc-800/30 transition-colors"
                       >
-                        {/* Permission identifier & description */}
-                        <TableCell className="pl-4 py-3.5">
+                        {/* Sticky Permission identifier & description */}
+                        <TableCell className="pl-4 py-3.5 sticky left-0 bg-white/95 dark:bg-zinc-900/95 z-10 border-r border-border/40 shadow-xs">
                           <div className="flex items-center gap-2">
                             <code className="text-xs font-bold text-primary font-mono bg-primary/10 px-2 py-0.5 rounded-md">
                               {perm.id}
                             </code>
                           </div>
-                          <p className="text-[11px] text-muted-foreground mt-1">
+                          <p className="text-[11px] text-muted-foreground mt-1 max-w-[210px] line-clamp-2">
                             {desc}
                           </p>
                         </TableCell>

@@ -3,6 +3,8 @@
 import {
   Activity,
   ArrowLeft,
+  ChevronRight,
+  Home,
   KeyRound,
   LayoutDashboard,
   Lock,
@@ -32,38 +34,38 @@ export function AdminDashboardPage() {
   const hasAccess =
     isLoggedIn && (isAdmin || can("users:read") || can("roles:manage"));
 
-  // Unauthorized State View
+  // Unauthorized State View (with ample padding to avoid fixed navbar collision)
   if (!hasAccess) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
-        <div className="max-w-md w-full p-8 rounded-3xl bg-white/80 dark:bg-zinc-900/80 border border-border/80 shadow-2xl backdrop-blur-xl text-center space-y-6">
+      <div className="min-h-[85vh] pt-24 sm:pt-28 md:pt-32 pb-16 px-4 flex items-center justify-center">
+        <div className="max-w-md w-full p-6 sm:p-8 rounded-3xl bg-white/85 dark:bg-zinc-900/85 border border-border/80 shadow-2xl backdrop-blur-xl text-center space-y-6">
           <div className="w-16 h-16 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto ring-8 ring-destructive/5">
             <Lock className="w-8 h-8" />
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-xl font-black text-foreground">
-              Akses Terbatas: Administrator Only
+            <h1 className="text-xl sm:text-2xl font-black text-foreground">
+              Akses Terbatas: Administrator
             </h1>
-            <p className="text-xs text-muted-foreground leading-relaxed">
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Halaman ini diperuntukkan khusus bagi pengelola sistem dan
               administrator UTY Creative Hub dengan hak akses terverifikasi.
             </p>
           </div>
 
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-zinc-800/40 border border-border/60 text-xs text-left space-y-1">
-            <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Status Akun Anda:
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Status Akun Anda
             </span>
-            <div className="font-bold text-foreground">
+            <div className="font-bold text-foreground truncate">
               {isLoggedIn
                 ? `${user?.name} (${user?.role})`
-                : "Belum Masuk (Guest)"}
+                : "Belum Masuk (Tamu / Guest)"}
             </div>
             <div className="text-[11px] text-muted-foreground">
               {isLoggedIn
-                ? "Akun Anda tidak memiliki izin granular users:read atau roles:manage."
-                : "Silakan masuk menggunakan akun kredensial Administrator."}
+                ? "Akun Anda belum memiliki izin users:read atau roles:manage."
+                : "Silakan masuk menggunakan akun Administrator (contoh: admin@gozaq.com)."}
             </div>
           </div>
 
@@ -71,7 +73,7 @@ export function AdminDashboardPage() {
             {!isLoggedIn ? (
               <Button
                 onClick={openLoginModal}
-                className="flex-1 rounded-xl font-bold bg-primary hover:bg-primary/90"
+                className="flex-1 rounded-xl font-bold bg-primary hover:bg-primary/90 h-11 text-xs"
               >
                 <LogIn className="w-4 h-4 mr-2" />
                 Masuk Sebagai Admin
@@ -80,7 +82,7 @@ export function AdminDashboardPage() {
               <Button
                 asChild
                 variant="outline"
-                className="flex-1 rounded-xl border-border/70"
+                className="flex-1 rounded-xl border-border/70 h-11 text-xs"
               >
                 <Link href="/account">Buka Profil Akun</Link>
               </Button>
@@ -89,10 +91,10 @@ export function AdminDashboardPage() {
             <Button
               asChild
               variant="outline"
-              className="rounded-xl border-border/70"
+              className="rounded-xl border-border/70 h-11 text-xs"
             >
               <Link href="/">
-                <ArrowLeft className="w-4 h-4 mr-2" />
+                <ArrowLeft className="w-4 h-4 mr-1.5" />
                 Beranda
               </Link>
             </Button>
@@ -103,53 +105,71 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen py-8 sm:py-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-8">
+    <div className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-24 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
+      {/* Breadcrumb Navigation */}
+      <nav
+        aria-label="Breadcrumb navigasi admin"
+        className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium"
+      >
+        <Link
+          href="/"
+          className="flex items-center gap-1 hover:text-foreground transition-colors"
+        >
+          <Home className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
+          <span>Beranda</span>
+        </Link>
+        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40" />
+        <span className="text-foreground font-semibold">Admin Dashboard</span>
+      </nav>
+
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-border/60">
-        <div>
-          <div className="flex items-center gap-2 mb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-6 rounded-3xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs">
+        <div className="space-y-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
-              className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 font-bold text-[11px] px-2.5 py-0.5"
+              className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 font-bold text-[10px] sm:text-[11px] px-2.5 py-0.5"
             >
               <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-              Portal Kendali Sistem
+              Pusat Kendali Sistem
             </Badge>
             <span className="text-xs text-muted-foreground">
               • UTY Creative Hub
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-foreground">
             Dashboard Administrator
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-2xl">
-            Pusat manajemen pengguna terintegrasi, konfigurasi hak akses
-            granular (PBAC), dan monitoring kehandalan infrastruktur backend.
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+            Manajemen pengguna terpadu, konfigurasi matriks wewenang granular
+            (PBAC), dan monitoring kesehatan infrastruktur backend.
           </p>
         </div>
 
         {/* User Identity & Shortcuts */}
-        <div className="flex items-center gap-3">
-          <div className="text-right hidden sm:block">
-            <div className="text-xs font-bold text-foreground">
+        <div className="flex items-center justify-between sm:justify-end gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-border/50">
+          <div className="text-left md:text-right">
+            <div className="text-xs font-bold text-foreground truncate max-w-[180px]">
               {user?.name}
             </div>
-            <div className="text-[11px] text-muted-foreground">
+            <div className="text-[11px] text-muted-foreground truncate max-w-[180px]">
               {user?.email}
             </div>
           </div>
+
           <Badge
             variant="secondary"
-            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none px-3 py-1 text-xs capitalize"
+            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none px-3 py-1 text-xs capitalize shrink-0"
           >
             {user?.role === "admin" ? "Super Admin" : user?.role}
           </Badge>
+
           <Button
             asChild
             variant="outline"
             size="sm"
-            className="rounded-xl border-border/70 text-xs hidden lg:flex"
+            className="rounded-xl border-border/70 text-xs hidden lg:flex shrink-0"
           >
             <a
               href="http://localhost:8080/docs"
@@ -157,7 +177,7 @@ export function AdminDashboardPage() {
               rel="noreferrer"
             >
               <Server className="w-3.5 h-3.5 mr-1.5 text-primary" />
-              API Docs (Scalar)
+              API Docs
             </a>
           </Button>
         </div>
@@ -169,39 +189,41 @@ export function AdminDashboardPage() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid grid-cols-2 sm:grid-cols-4 h-auto p-1.5 rounded-2xl bg-slate-100/80 dark:bg-zinc-800/60 border border-border/50 backdrop-blur-md">
-          <TabsTrigger
-            value="overview"
-            className="rounded-xl py-2.5 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-2"
-          >
-            <LayoutDashboard className="w-4 h-4 text-primary" />
-            <span>Ringkasan</span>
-          </TabsTrigger>
+        <div className="overflow-x-auto pb-1 scrollbar-none">
+          <TabsList className="flex w-full min-w-[340px] sm:min-w-0 sm:grid sm:grid-cols-4 h-auto p-1.5 rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md">
+            <TabsTrigger
+              value="overview"
+              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+            >
+              <LayoutDashboard className="w-4 h-4 text-primary shrink-0" />
+              <span>Ringkasan</span>
+            </TabsTrigger>
 
-          <TabsTrigger
-            value="users"
-            className="rounded-xl py-2.5 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-2"
-          >
-            <Users className="w-4 h-4 text-primary" />
-            <span>Manajemen Pengguna</span>
-          </TabsTrigger>
+            <TabsTrigger
+              value="users"
+              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+            >
+              <Users className="w-4 h-4 text-primary shrink-0" />
+              <span>Pengguna</span>
+            </TabsTrigger>
 
-          <TabsTrigger
-            value="roles"
-            className="rounded-xl py-2.5 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-2"
-          >
-            <KeyRound className="w-4 h-4 text-primary" />
-            <span>Matriks PBAC</span>
-          </TabsTrigger>
+            <TabsTrigger
+              value="roles"
+              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+            >
+              <KeyRound className="w-4 h-4 text-primary shrink-0" />
+              <span>Matriks PBAC</span>
+            </TabsTrigger>
 
-          <TabsTrigger
-            value="audit"
-            className="rounded-xl py-2.5 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-2"
-          >
-            <Activity className="w-4 h-4 text-primary" />
-            <span>Log Keamanan</span>
-          </TabsTrigger>
-        </TabsList>
+            <TabsTrigger
+              value="audit"
+              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
+            >
+              <Activity className="w-4 h-4 text-primary shrink-0" />
+              <span>Audit Log</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Tab 1: Overview */}
         <TabsContent

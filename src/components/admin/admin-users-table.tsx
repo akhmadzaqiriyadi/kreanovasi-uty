@@ -110,10 +110,60 @@ export function AdminUsersTable() {
     setUserToDelete(null);
   };
 
+  const getRoleBadge = (role: string) => {
+    switch (role) {
+      case "admin":
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none"
+          >
+            admin
+          </Badge>
+        );
+      case "dosen":
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold border-none"
+          >
+            dosen
+          </Badge>
+        );
+      case "mahasiswa":
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold border-none"
+          >
+            mahasiswa
+          </Badge>
+        );
+      case "umum":
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold border-none"
+          >
+            non-civitas
+          </Badge>
+        );
+      default:
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-medium border-none capitalize"
+          >
+            {role}
+          </Badge>
+        );
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Search and Filters Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input
@@ -123,7 +173,7 @@ export function AdminUsersTable() {
               setSearch(e.target.value);
               setPage(1);
             }}
-            className="pl-9 bg-background/80 border-border/60 rounded-xl"
+            className="pl-9 bg-background/80 border-border/60 rounded-xl text-xs sm:text-sm h-10"
           />
         </div>
 
@@ -136,7 +186,7 @@ export function AdminUsersTable() {
               setPage(1);
             }}
           >
-            <SelectTrigger className="w-full sm:w-[180px] bg-background/80 border-border/60 rounded-xl">
+            <SelectTrigger className="w-full sm:w-[170px] bg-background/80 border-border/60 rounded-xl text-xs h-10">
               <SelectValue placeholder="Semua Role" />
             </SelectTrigger>
             <SelectContent>
@@ -145,7 +195,7 @@ export function AdminUsersTable() {
               <SelectItem value="dosen">Dosen / Tendik</SelectItem>
               <SelectItem value="mahasiswa">Mahasiswa</SelectItem>
               <SelectItem value="umum">Non-Civitas / Mitra</SelectItem>
-              <SelectItem value="user">User Umum</SelectItem>
+              <SelectItem value="user">User Biasa</SelectItem>
             </SelectContent>
           </Select>
 
@@ -153,15 +203,116 @@ export function AdminUsersTable() {
             variant="outline"
             size="sm"
             onClick={() => refetch()}
-            className="rounded-xl border-border/60 shrink-0"
+            className="rounded-xl border-border/60 h-10 px-3 text-xs shrink-0"
           >
             Refresh
           </Button>
         </div>
       </div>
 
-      {/* Users Table Container */}
-      <div className="rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md overflow-hidden shadow-xs">
+      {/* Mobile Card View (< sm screens) */}
+      <div className="block sm:hidden space-y-3">
+        {isLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 space-y-2.5"
+            >
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-3 w-48" />
+              <div className="flex justify-between pt-2">
+                <Skeleton className="h-5 w-20 rounded-full" />
+                <Skeleton className="h-5 w-16 rounded-full" />
+              </div>
+            </div>
+          ))
+        ) : isError ? (
+          <div className="p-6 rounded-2xl bg-destructive/10 border border-destructive/20 text-center space-y-1">
+            <AlertCircle className="w-6 h-6 text-destructive mx-auto" />
+            <p className="text-xs font-bold text-foreground">
+              Gagal memuat pengguna
+            </p>
+          </div>
+        ) : users.length === 0 ? (
+          <div className="p-8 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 text-center space-y-2">
+            <Users className="w-6 h-6 text-muted-foreground/60 mx-auto" />
+            <p className="text-xs text-muted-foreground">
+              Tidak ada pengguna ditemukan
+            </p>
+          </div>
+        ) : (
+          users.map((item) => (
+            <div
+              key={item.id}
+              className="p-4 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs space-y-3"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold text-xs text-foreground truncate">
+                    {item.name}
+                  </h3>
+                  <p className="text-[11px] text-muted-foreground font-mono truncate">
+                    {item.email}
+                  </p>
+                </div>
+                {getRoleBadge(item.role)}
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] pt-1 border-t border-border/40">
+                <span className="text-muted-foreground">
+                  {item.id_number
+                    ? `ID: ${item.id_number}`
+                    : item.affiliation || "UTY"}
+                </span>
+
+                {item.is_verified ? (
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 text-[10px]">
+                    <UserCheck className="w-3 h-3" />
+                    Terverifikasi
+                  </span>
+                ) : (
+                  <span className="text-zinc-500 font-semibold flex items-center gap-1 text-[10px]">
+                    <XCircle className="w-3 h-3" />
+                    Pending
+                  </span>
+                )}
+              </div>
+
+              {(canManageRoles || canDeleteUsers) && (
+                <div className="flex items-center gap-2 pt-1 border-t border-border/40">
+                  {canManageRoles && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSelectedUserForRole(item);
+                        setNewRole(item.role);
+                      }}
+                      className="flex-1 h-8 rounded-xl text-[11px] border-border/60"
+                    >
+                      <UserCog className="w-3.5 h-3.5 mr-1.5 text-primary" />
+                      Ubah Role
+                    </Button>
+                  )}
+                  {canDeleteUsers && item.role !== "admin" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setUserToDelete(item)}
+                      className="h-8 px-2.5 rounded-xl text-destructive hover:bg-destructive/10 text-[11px]"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Desktop & Tablet Table Container (>= sm screens) */}
+      <div className="hidden sm:block rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-slate-50/70 dark:bg-zinc-800/40">
@@ -259,22 +410,7 @@ export function AdminUsersTable() {
 
                     {/* Role badge */}
                     <TableCell className="py-3">
-                      <Badge
-                        variant="secondary"
-                        className={
-                          item.role === "admin"
-                            ? "bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none"
-                            : item.role === "dosen"
-                              ? "bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold border-none"
-                              : item.role === "mahasiswa"
-                                ? "bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold border-none"
-                                : item.role === "umum"
-                                  ? "bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold border-none"
-                                  : "bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-medium border-none"
-                        }
-                      >
-                        {item.role}
-                      </Badge>
+                      {getRoleBadge(item.role)}
                     </TableCell>
 
                     {/* ID & Affiliation */}
@@ -316,7 +452,7 @@ export function AdminUsersTable() {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 w-8 p-0 rounded-lg"
+                              className="h-8 w-8 p-0 rounded-lg cursor-pointer"
                             >
                               <MoreHorizontal className="w-4 h-4" />
                             </Button>
@@ -366,39 +502,39 @@ export function AdminUsersTable() {
             </TableBody>
           </Table>
         </div>
-
-        {/* Pagination Bar */}
-        {meta && meta.total_pages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-border/50 bg-slate-50/40 dark:bg-zinc-800/20 text-xs">
-            <span className="text-muted-foreground">
-              Menampilkan Halaman <strong>{meta.current_page}</strong> dari{" "}
-              <strong>{meta.total_pages}</strong> ({meta.total_items} data)
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!meta.has_prev || isLoading}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="h-8 px-2.5 rounded-lg border-border/60 text-xs"
-              >
-                <ChevronLeft className="w-3.5 h-3.5 mr-1" />
-                Sebelumnya
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!meta.has_next || isLoading}
-                onClick={() => setPage((p) => p + 1)}
-                className="h-8 px-2.5 rounded-lg border-border/60 text-xs"
-              >
-                Selanjutnya
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Pagination Bar */}
+      {meta && meta.total_pages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md text-xs shadow-xs">
+          <span className="text-muted-foreground text-center sm:text-left">
+            Menampilkan Halaman <strong>{meta.current_page}</strong> dari{" "}
+            <strong>{meta.total_pages}</strong> ({meta.total_items} pengguna)
+          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!meta.has_prev || isLoading}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="h-8 px-3 rounded-xl border-border/60 text-xs"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 mr-1" />
+              Sebelumnya
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!meta.has_next || isLoading}
+              onClick={() => setPage((p) => p + 1)}
+              className="h-8 px-3 rounded-xl border-border/60 text-xs"
+            >
+              Selanjutnya
+              <ChevronRight className="w-3.5 h-3.5 ml-1" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Dialog: Change User Role */}
       <Dialog
