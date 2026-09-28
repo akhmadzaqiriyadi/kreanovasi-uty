@@ -330,49 +330,49 @@ export function BookingNewFormPage() {
 
                 {/* Switcher Kategori Pemohon: Mahasiswa vs Dosen vs Non-Civitas */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-muted-foreground">
+                  <div className="flex flex-col xs:flex-row xs:items-center gap-2">
+                    <span className="text-xs font-semibold text-muted-foreground shrink-0">
                       Kategori Pemohon:
                     </span>
-                    <div className="inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-zinc-800 border border-border/60">
+                    <div className="grid grid-cols-3 sm:inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-zinc-800 border border-border/60">
                       <button
                         type="button"
                         onClick={() => handleRoleChange("mahasiswa")}
                         className={cn(
-                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          "flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
                           applicantRole === "mahasiswa"
                             ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
-                        <GraduationCap className="w-3.5 h-3.5" />
-                        Mahasiswa
+                        <GraduationCap className="w-3.5 h-3.5 shrink-0" />
+                        <span>Mahasiswa</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleRoleChange("dosen")}
                         className={cn(
-                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          "flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
                           applicantRole === "dosen"
                             ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
-                        <Briefcase className="w-3.5 h-3.5" />
-                        Dosen
+                        <Briefcase className="w-3.5 h-3.5 shrink-0" />
+                        <span>Dosen</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleRoleChange("umum")}
                         className={cn(
-                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          "flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
                           applicantRole === "umum"
                             ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
-                        <Building2 className="w-3.5 h-3.5" />
-                        Non-Civitas
+                        <Building2 className="w-3.5 h-3.5 shrink-0" />
+                        <span>Non-Civitas</span>
                       </button>
                     </div>
                   </div>

@@ -107,7 +107,7 @@ export function MobileDrawer() {
             {/* Mobile Navigation Links */}
             <nav
               aria-label="Navigasi Menu Mobile"
-              className="p-4 overflow-y-auto max-h-[calc(100vh-220px)] bg-background"
+              className="p-4 overflow-y-auto max-h-[calc(100dvh-220px)] bg-background"
             >
               <ul className="flex flex-col gap-1">
                 {navItems.map((item) => {
