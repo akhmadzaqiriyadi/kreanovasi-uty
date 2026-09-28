@@ -7,12 +7,15 @@ import {
   ArrowRight,
   Briefcase,
   Building2,
+  CalendarCheck,
   Calendar as CalendarIcon,
   CheckCircle2,
   Clock,
   FileText,
   GraduationCap,
   Loader2,
+  Lock,
+  LogIn,
   MapPin,
   ShieldCheck,
   User,
@@ -40,12 +43,15 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { normalizeUtyProdi, UTY_FACULTIES } from "@/config/uty-faculties";
 import { useNewBookingForm } from "@/hooks/use-new-booking-form";
 import { cn } from "@/lib/utils";
 
@@ -56,7 +62,6 @@ export function BookingNewFormPage() {
     handleRoleChange,
     activeProfile,
     rooms,
-    studyPrograms,
     timeSlots,
     availableEndTimes,
     useLoggedInProfile,
@@ -65,6 +70,8 @@ export function BookingNewFormPage() {
     handleSelectDate,
     isSubmitting,
     submissionSuccess,
+    isLoggedIn,
+    isAuthLoading,
     handleSubmit,
   } = useNewBookingForm();
 
@@ -72,6 +79,58 @@ export function BookingNewFormPage() {
   const activeRoomObj = rooms.find(
     (r) => r.id === selectedRoomId || r.slug === selectedRoomId,
   );
+
+  // Wajib Login Barrier
+  if (!isLoggedIn && !isAuthLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-28 pb-16 sm:pt-36 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-slate-50/60 to-background dark:via-zinc-950/40">
+        <div className="w-full max-w-lg my-auto">
+          <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900 text-center">
+            <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] to-blue-700 text-white">
+              <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center mx-auto mb-3 text-amber-300">
+                <Lock className="w-8 h-8" />
+              </div>
+              <CardTitle className="text-2xl font-extrabold text-white">
+                Wajib Masuk untuk Reservasi
+              </CardTitle>
+              <CardDescription className="text-blue-100 text-sm mt-1">
+                Layanan peminjaman ruangan dan fasilitas hub hanya dapat diakses
+                oleh civitas akademika atau mitra yang memiliki akun
+                terverifikasi.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 sm:p-8 space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Silakan masuk dengan akun SSO Kampus UTY atau akun terdaftar
+                Anda untuk melanjutkan pengisian formulir reservasi.
+              </p>
+              <div className="flex flex-col gap-3 pt-2">
+                <Button
+                  asChild
+                  className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 shadow-md"
+                >
+                  <Link href="/account?redirect=/booking/new">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Masuk ke Akun Anda
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full rounded-xl border-border py-6"
+                >
+                  <Link href="/booking">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Kembali ke Katalog Ruangan
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   // Jika sukses disubmit, tampilkan tampilan konfirmasi tiket permohonan yang terpusat rapi
   if (submissionSuccess) {
@@ -169,7 +228,17 @@ export function BookingNewFormPage() {
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <Button
                   asChild
-                  className="flex-1 h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold"
+                  className="flex-1 h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-md cursor-pointer"
+                >
+                  <Link href="/my-bookings">
+                    <CalendarCheck className="w-4 h-4 mr-2" />
+                    Lihat Booking Saya
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="flex-1 h-12 rounded-xl border-border text-foreground font-semibold hover:bg-slate-100 dark:hover:bg-zinc-800 cursor-pointer"
                 >
                   <Link href="/booking">
                     <ArrowLeft className="w-4 h-4 mr-2" />
@@ -456,20 +525,29 @@ export function BookingNewFormPage() {
                           render={({ field }) => (
                             <Select
                               onValueChange={field.onChange}
-                              value={field.value}
+                              value={
+                                normalizeUtyProdi(field.value) || undefined
+                              }
                             >
                               <SelectTrigger className="h-11 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-medium">
                                 <SelectValue placeholder="Pilih Program Studi" />
                               </SelectTrigger>
-                              <SelectContent className="rounded-xl max-h-60">
-                                {studyPrograms.map((p) => (
-                                  <SelectItem
-                                    key={p}
-                                    value={p}
-                                    className="text-xs sm:text-sm cursor-pointer"
-                                  >
-                                    {p}
-                                  </SelectItem>
+                              <SelectContent className="rounded-xl max-h-72">
+                                {UTY_FACULTIES.map((fac) => (
+                                  <SelectGroup key={fac.id}>
+                                    <SelectLabel className="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider bg-slate-100/80 dark:bg-zinc-800/80 sticky top-0 z-10">
+                                      {fac.name} ({fac.code})
+                                    </SelectLabel>
+                                    {fac.programs.map((p) => (
+                                      <SelectItem
+                                        key={p.id}
+                                        value={p.fullName}
+                                        className="text-xs sm:text-sm cursor-pointer pl-4"
+                                      >
+                                        {p.fullName}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectGroup>
                                 ))}
                               </SelectContent>
                             </Select>
@@ -528,7 +606,10 @@ export function BookingNewFormPage() {
                   {activeRoomObj && (
                     <p className="text-xs text-muted-foreground">
                       Kapasitas: {activeRoomObj.capacity} • Tipe:{" "}
-                      {activeRoomObj.type}
+                      {(activeRoomObj as { category?: string; type?: string })
+                        .category ||
+                        (activeRoomObj as { category?: string; type?: string })
+                          .type}
                     </p>
                   )}
                   {form.formState.errors.room && (

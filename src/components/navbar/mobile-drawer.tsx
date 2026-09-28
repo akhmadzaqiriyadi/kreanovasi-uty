@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bell,
   ChevronDown,
   ChevronRight,
   ExternalLink,
@@ -29,15 +30,17 @@ import {
 } from "@/components/ui/sheet";
 import { navItems, programItems } from "@/config/navigation";
 import { useAuth } from "@/context/auth-context";
+import { useNotification } from "@/context/notification-context";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "./brand-logo";
 import { NavNotifications } from "./nav-notifications";
-import { dummyUser, NavUserMenu } from "./nav-user-menu";
+import { dummyUser } from "./nav-user-menu";
 
 export function MobileDrawer() {
   const pathname = usePathname();
   const { isLoggedIn, user, logout, openLoginModal, openRegisterModal } =
     useAuth();
+  const { unreadCount } = useNotification();
   const [open, setOpen] = useState(false);
   const [mobileProgramOpen, setMobileProgramOpen] = useState(false);
 
@@ -58,20 +61,17 @@ export function MobileDrawer() {
   };
 
   return (
-    <div className="flex items-center gap-1 sm:gap-1.5 md:hidden">
-      <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9 rounded-full" />
+    <div className="flex items-center gap-1 sm:gap-1.5 lg:hidden">
+      <ThemeToggle className="h-8 w-8 sm:h-9 sm:w-9 rounded-full hidden sm:flex" />
 
       {isLoggedIn ? (
-        <>
-          <NavNotifications />
-          <NavUserMenu />
-        </>
+        <NavNotifications />
       ) : (
         <Button
           type="button"
           size="sm"
           onClick={openLoginModal}
-          className="h-8 rounded-lg px-2.5 text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
+          className="h-8 rounded-lg px-2 sm:px-2.5 text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
         >
           <LogIn className="w-3.5 h-3.5 mr-1" />
           <span>Masuk</span>
@@ -256,30 +256,41 @@ export function MobileDrawer() {
                   </Link>
                 )}
 
-                <div className="grid grid-cols-3 gap-1.5 text-xs">
+                <div className="grid grid-cols-4 gap-1 text-xs">
                   <Link
                     href="/my-bookings"
                     onClick={() => setOpen(false)}
-                    className="flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+                    className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
                   >
                     <History className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
-                    <span className="text-[11px]">Riwayat</span>
+                    <span className="text-[10px]">Riwayat</span>
+                  </Link>
+                  <Link
+                    href="/notifications"
+                    onClick={() => setOpen(false)}
+                    className="relative flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+                  >
+                    <Bell className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
+                    {unreadCount > 0 && (
+                      <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500" />
+                    )}
+                    <span className="text-[10px]">Notifikasi</span>
                   </Link>
                   <Link
                     href="/account"
                     onClick={() => setOpen(false)}
-                    className="flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+                    className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
                   >
                     <User className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
-                    <span className="text-[11px]">Akun</span>
+                    <span className="text-[10px]">Akun</span>
                   </Link>
                   <Link
                     href="/settings"
                     onClick={() => setOpen(false)}
-                    className="flex flex-col items-center justify-center gap-1 py-2 px-2 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
+                    className="flex flex-col items-center justify-center gap-1 py-2 px-1 rounded-xl border border-border bg-white dark:bg-zinc-800 font-semibold text-foreground hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors"
                   >
                     <Settings className="w-3.5 h-3.5 text-primary dark:text-blue-400" />
-                    <span className="text-[11px]">Setelan</span>
+                    <span className="text-[10px]">Setelan</span>
                   </Link>
                 </div>
 

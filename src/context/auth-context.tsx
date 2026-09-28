@@ -1,13 +1,21 @@
 "use client";
 
+import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import {
+  AUTH_QUERY_KEYS,
   mapBackendUserToProfile,
   useCurrentUserQuery,
   useLogoutMutation,
 } from "@/hooks/use-auth-mutations";
-import { getLocalAccessToken, setLocalTokens } from "@/lib/api-client";
+import {
+  getLocalAccessToken,
+  getLocalRefreshToken,
+  isJwtExpired,
+  setLocalTokens,
+  tryRefreshToken,
+} from "@/lib/api-client";
 import type { UserProfile } from "@/types/auth";
 
 export type { UserProfile };
@@ -53,6 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authModalTab, setAuthModalTab] = useState<"login" | "register">(
     "login",
   );
+  const queryClient = useQueryClient();
 
   // Query profile from backend if access token exists
   const {
@@ -72,18 +81,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     },
   });
 
-  // Handle expired or invalid token automatically
+  // Proactive session restore on mount:
+  // If user enters app with an existing refresh token, verify and refresh token silently so they don't have to re-login
+  useEffect(() => {
+    const restoreSession = async () => {
+      const accessToken = getLocalAccessToken();
+      const refreshToken = getLocalRefreshToken();
+
+      if (!refreshToken) return;
+
+      // If access token is missing or expired, call refresh token endpoint
+      if (!accessToken || isJwtExpired(accessToken)) {
+        const newAccessToken = await tryRefreshToken();
+        if (newAccessToken) {
+          queryClient.invalidateQueries({
+            queryKey: AUTH_QUERY_KEYS.currentUser,
+          });
+        } else {
+          // Token is truly expired/revoked
+          setUser(null);
+          try {
+            localStorage.removeItem("uch_user_profile");
+          } catch {
+            // ignore
+          }
+        }
+      }
+    };
+
+    restoreSession();
+  }, [queryClient]);
+
+  // Handle expired or invalid token gracefully
   useEffect(() => {
     if (isProfileError) {
-      setUser(null);
-      setLocalTokens(null, null);
-      try {
-        localStorage.removeItem("uch_user_profile");
-      } catch {
-        // ignore
+      const refreshToken = getLocalRefreshToken();
+      if (refreshToken) {
+        tryRefreshToken().then((newToken) => {
+          if (newToken) {
+            queryClient.invalidateQueries({
+              queryKey: AUTH_QUERY_KEYS.currentUser,
+            });
+          } else {
+            setUser(null);
+            setLocalTokens(null, null);
+            try {
+              localStorage.removeItem("uch_user_profile");
+            } catch {
+              // ignore
+            }
+          }
+        });
+      } else {
+        setUser(null);
+        setLocalTokens(null, null);
+        try {
+          localStorage.removeItem("uch_user_profile");
+        } catch {
+          // ignore
+        }
       }
     }
-  }, [isProfileError]);
+  }, [isProfileError, queryClient]);
 
   // Restore cached user profile or sync with backend user query
   useEffect(() => {
@@ -97,7 +156,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } else {
       const token = getLocalAccessToken();
-      if (token) {
+      const refreshToken = getLocalRefreshToken();
+      if (token || refreshToken) {
         try {
           const cached = localStorage.getItem("uch_user_profile");
           if (cached) {
@@ -121,7 +181,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [backendUser]);
 
-  const isLoggedIn = Boolean(user && getLocalAccessToken());
+  const isLoggedIn = Boolean(
+    user && (getLocalAccessToken() || getLocalRefreshToken()),
+  );
   const isAdmin = Boolean(isLoggedIn && user?.role === "admin");
 
   const can = (permission: string): boolean => {

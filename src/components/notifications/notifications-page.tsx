@@ -18,6 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { InteractivePagination } from "@/components/ui/pagination";
+import {
+  type AppNotification,
+  useNotification,
+} from "@/context/notification-context";
 import { cn } from "@/lib/utils";
 
 export interface SystemNotification {
@@ -117,13 +121,56 @@ const initialNotificationsList: SystemNotification[] = [
 ];
 
 export function NotificationsPage() {
-  const [notifications, setNotifications] = useState<SystemNotification[]>(
-    initialNotificationsList,
+  const {
+    notifications: liveNotifications,
+    permission,
+    isSupported,
+    isConnected,
+    requestPermission,
+    markAsRead,
+    markAllAsRead,
+  } = useNotification();
+
+  const [dismissedIds, setDismissedIds] = useState<string[]>([]);
+  const [readOverrides, setReadOverrides] = useState<Record<string, boolean>>(
+    {},
   );
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const pageSize = 4;
+
+  const combinedNotifications = useMemo<SystemNotification[]>(() => {
+    const liveItems: SystemNotification[] = liveNotifications.map(
+      (n: AppNotification) => ({
+        id: n.id,
+        category: n.type === "info" ? "system" : "booking",
+        title: n.title,
+        message: n.message,
+        timestamp: n.timeLabel || "Baru saja",
+        isRead:
+          readOverrides[n.id] !== undefined ? readOverrides[n.id] : n.read,
+        actionUrl: n.actionUrl || (n.bookingId ? "/my-bookings" : undefined),
+        actionLabel: n.bookingId ? "Lihat Tiket" : undefined,
+      }),
+    );
+
+    const fallbackItems: SystemNotification[] = initialNotificationsList.map(
+      (item) => ({
+        ...item,
+        isRead:
+          readOverrides[item.id] !== undefined
+            ? readOverrides[item.id]
+            : item.isRead,
+      }),
+    );
+
+    const combined = [
+      ...liveItems,
+      ...fallbackItems.filter((f) => !liveItems.some((l) => l.id === f.id)),
+    ];
+    return combined.filter((item) => !dismissedIds.includes(item.id));
+  }, [liveNotifications, readOverrides, dismissedIds]);
 
   const handleCategoryChange = (cat: string) => {
     setSelectedCategory(cat);
@@ -135,10 +182,12 @@ export function NotificationsPage() {
     setCurrentPage(1);
   };
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = useMemo(() => {
+    return combinedNotifications.filter((n) => !n.isRead).length;
+  }, [combinedNotifications]);
 
   const filteredNotifications = useMemo(() => {
-    return notifications.filter((item) => {
+    return combinedNotifications.filter((item) => {
       const matchCategory =
         selectedCategory === "all" || item.category === selectedCategory;
       const matchSearch =
@@ -146,7 +195,7 @@ export function NotificationsPage() {
         item.message.toLowerCase().includes(searchQuery.toLowerCase());
       return matchCategory && matchSearch;
     });
-  }, [notifications, selectedCategory, searchQuery]);
+  }, [combinedNotifications, selectedCategory, searchQuery]);
 
   const totalPages = Math.ceil(filteredNotifications.length / pageSize) || 1;
   const paginatedNotifications = useMemo(() => {
@@ -155,18 +204,26 @@ export function NotificationsPage() {
   }, [filteredNotifications, currentPage, pageSize]);
 
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+    markAllAsRead();
+    const overrides: Record<string, boolean> = {};
+    for (const n of combinedNotifications) {
+      overrides[n.id] = true;
+    }
+    setReadOverrides(overrides);
     toast.success("Semua notifikasi ditandai sebagai dibaca");
   };
 
   const handleToggleRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, isRead: !n.isRead } : n)),
-    );
+    const current = combinedNotifications.find((n) => n.id === id);
+    const nextRead = !current?.isRead;
+    if (nextRead) {
+      markAsRead(id);
+    }
+    setReadOverrides((prev) => ({ ...prev, [id]: nextRead }));
   };
 
   const handleDelete = (id: string) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    setDismissedIds((prev) => [...prev, id]);
     toast.success("Notifikasi dihapus");
   };
 
@@ -220,6 +277,42 @@ export function NotificationsPage() {
                     konfirmasi reservasi, dan aktivitas fasilitas UTY Creative
                     Hub.
                   </p>
+
+                  <div className="flex flex-wrap items-center gap-2 pt-2.5">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-xs text-[11px] font-semibold text-white border border-white/20">
+                      <span
+                        className={cn(
+                          "w-2 h-2 rounded-full",
+                          isConnected
+                            ? "bg-emerald-400 animate-pulse"
+                            : "bg-amber-400",
+                        )}
+                      />
+                      <span>
+                        {isConnected
+                          ? "Terhubung Langsung"
+                          : "Menghubungkan..."}
+                      </span>
+                    </div>
+
+                    {isSupported &&
+                      (permission === "granted" ? (
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 backdrop-blur-xs text-[11px] font-semibold text-emerald-100 border border-emerald-400/40">
+                          <Check className="w-3 h-3 text-emerald-300" />
+                          <span>Pemberitahuan Aktif</span>
+                        </div>
+                      ) : (
+                        <Button
+                          onClick={requestPermission}
+                          size="sm"
+                          variant="secondary"
+                          className="h-6 px-2.5 rounded-full text-[11px] font-bold bg-white/20 hover:bg-white/30 text-white border border-white/30 cursor-pointer"
+                        >
+                          <Bell className="w-3 h-3 mr-1" />
+                          Aktifkan Pemberitahuan
+                        </Button>
+                      ))}
+                  </div>
                 </div>
               </div>
 
@@ -252,7 +345,7 @@ export function NotificationsPage() {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  Semua ({notifications.length})
+                  Semua ({combinedNotifications.length})
                 </button>
                 <button
                   type="button"
@@ -265,7 +358,11 @@ export function NotificationsPage() {
                   )}
                 >
                   Peminjaman (
-                  {notifications.filter((n) => n.category === "booking").length}
+                  {
+                    combinedNotifications.filter(
+                      (n) => n.category === "booking",
+                    ).length
+                  }
                   )
                 </button>
                 <button
@@ -280,8 +377,9 @@ export function NotificationsPage() {
                 >
                   Jadwal & Agenda (
                   {
-                    notifications.filter((n) => n.category === "reminder")
-                      .length
+                    combinedNotifications.filter(
+                      (n) => n.category === "reminder",
+                    ).length
                   }
                   )
                 </button>
@@ -296,7 +394,11 @@ export function NotificationsPage() {
                   )}
                 >
                   Fasilitas & Sistem (
-                  {notifications.filter((n) => n.category === "system").length})
+                  {
+                    combinedNotifications.filter((n) => n.category === "system")
+                      .length
+                  }
+                  )
                 </button>
               </div>
 

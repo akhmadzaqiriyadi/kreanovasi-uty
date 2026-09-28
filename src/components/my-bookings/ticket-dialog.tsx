@@ -1,7 +1,16 @@
 "use client";
 
-import { Printer, QrCode, ShieldCheck } from "lucide-react";
+import {
+  CheckCircle2,
+  FileDown,
+  Loader2,
+  QrCode,
+  ShieldCheck,
+} from "lucide-react";
 import Image from "next/image";
+import { QRCodeSVG } from "qrcode.react";
+import { useState } from "react";
+import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,6 +20,7 @@ import {
   DialogFooter,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { downloadBookingTicketPdf } from "@/lib/pdf-generator";
 import type { BookingRecord } from "./my-bookings-page";
 
 interface TicketDialogProps {
@@ -24,10 +34,35 @@ export function TicketDialog({
   open,
   onOpenChange,
 }: TicketDialogProps) {
+  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+
   if (!booking) return null;
 
-  const handlePrint = () => {
-    window.print();
+  const isCompleted = booking.status === "completed";
+
+  const handleDownloadPdf = async () => {
+    setIsGeneratingPdf(true);
+    try {
+      await downloadBookingTicketPdf({
+        id: booking.id,
+        bookingCode: booking.bookingCode,
+        roomName: booking.roomName,
+        location: booking.location,
+        date: booking.date,
+        timeSlot: booking.timeSlot,
+        applicant: booking.applicant,
+        prodi: booking.prodi,
+        role: booking.role,
+        audience: booking.audience,
+        purpose: booking.purpose,
+        status: booking.status,
+      });
+      toast.success("Dokumen PDF A4 resmi berhasil diunduh!");
+    } catch {
+      toast.error("Gagal membuat dokumen PDF");
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   return (
@@ -55,32 +90,55 @@ export function TicketDialog({
               E-Tiket Resmi Peminjaman
             </DialogTitle>
             <DialogDescription className="text-blue-100 text-xs">
-              Tunjukkan tiket digital ini kepada petugas piket / laboran saat
-              tiba di lokasi.
+              Tunjukkan tiket digital ini kepada petugas piket / scan di pintu
+              ruangan saat tiba di lokasi.
             </DialogDescription>
 
             <div className="pt-2">
-              <Badge className="bg-emerald-500 hover:bg-emerald-500 text-white font-bold text-xs py-1 px-3 border-none shadow-md inline-flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                Disetujui & Terverifikasi
-              </Badge>
+              {isCompleted ? (
+                <Badge className="bg-blue-500 hover:bg-blue-500 text-white font-bold text-xs py-1 px-3 border-none shadow-md inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Presensi Check-In Selesai
+                </Badge>
+              ) : (
+                <Badge className="bg-emerald-500 hover:bg-emerald-500 text-white font-bold text-xs py-1 px-3 border-none shadow-md inline-flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  Disetujui & Siap Check-In
+                </Badge>
+              )}
             </div>
           </div>
         </div>
 
         {/* Ticket Body */}
         <div className="p-6 space-y-5 bg-background">
-          {/* Booking Code Barcode Block */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-zinc-800/60 border border-dashed border-border/80 text-center space-y-2">
-            <span className="text-[11px] font-semibold text-muted-foreground block">
-              KODE RESERVASI RESMI
-            </span>
-            <span className="text-2xl font-mono font-extrabold text-primary dark:text-blue-400 tracking-wider block">
-              {booking.bookingCode}
-            </span>
-            <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-              <QrCode className="w-4 h-4" />
-              <span>QR Code siap dipindai di pintu masuk</span>
+          {/* Booking Code Barcode & QR Block */}
+          <div className="p-5 rounded-2xl bg-slate-50 dark:bg-zinc-800/80 border border-dashed border-border/80 text-center flex flex-col items-center justify-center space-y-3 shadow-xs">
+            <div className="p-3 bg-white rounded-2xl shadow-xs border border-slate-100 dark:border-zinc-700 flex items-center justify-center">
+              <QRCodeSVG
+                value={booking.bookingCode}
+                size={135}
+                level="H"
+                includeMargin={false}
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest block">
+                KODE RESERVASI RESMI
+              </span>
+              <span className="text-xl font-mono font-extrabold text-primary dark:text-blue-400 tracking-wider block">
+                {booking.bookingCode}
+              </span>
+              {isCompleted ? (
+                <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold pt-1">
+                  ✓ Tiket telah diverifikasi check-in di ruangan
+                </p>
+              ) : (
+                <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium pt-1">
+                  <QrCode className="w-3.5 h-3.5" />
+                  <span>Arahkan ke scanner pintu atau meja admin</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -141,7 +199,7 @@ export function TicketDialog({
         </div>
 
         {/* Footer Actions */}
-        <DialogFooter className="p-4 bg-slate-50/70 dark:bg-zinc-800/40 border-t border-border/60 flex flex-row items-center justify-between sm:justify-between gap-2">
+        <DialogFooter className="p-4 bg-slate-50/70 dark:bg-zinc-800/40 border-t border-border/60 flex flex-wrap items-center justify-between gap-2">
           <Button
             type="button"
             variant="outline"
@@ -155,11 +213,16 @@ export function TicketDialog({
           <Button
             type="button"
             size="sm"
-            onClick={handlePrint}
+            onClick={handleDownloadPdf}
+            disabled={isGeneratingPdf}
             className="rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm cursor-pointer"
           >
-            <Printer className="w-3.5 h-3.5 mr-1.5" />
-            Cetak / Simpan PDF
+            {isGeneratingPdf ? (
+              <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <FileDown className="w-3.5 h-3.5 mr-1.5" />
+            )}
+            Unduh PDF Resmi (A4)
           </Button>
         </DialogFooter>
       </DialogContent>

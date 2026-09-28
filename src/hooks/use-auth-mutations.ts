@@ -5,7 +5,10 @@ import axios from "axios";
 import { toast } from "sonner";
 import apiClient, {
   getLocalAccessToken,
+  getLocalRefreshToken,
+  isJwtExpired,
   setLocalTokens,
+  tryRefreshToken,
 } from "@/lib/api-client";
 import type {
   ApiEnvelope,
@@ -189,16 +192,24 @@ export function useLogoutMutation(options?: { onSuccess?: () => void }) {
 // 4. Hook for Current User Profile Query
 export function useCurrentUserQuery() {
   const token = getLocalAccessToken();
+  const refreshToken = getLocalRefreshToken();
 
   return useQuery({
     queryKey: AUTH_QUERY_KEYS.currentUser,
     queryFn: async () => {
+      // If token is missing or expired, attempt proactive silent refresh before profile fetch
+      if (!token || isJwtExpired(token)) {
+        if (refreshToken) {
+          await tryRefreshToken();
+        }
+      }
       const response =
         await apiClient.get<ApiEnvelope<BackendUser>>("/auth/profile");
       return response.data.data;
     },
-    enabled: Boolean(token),
+    enabled: Boolean(token || refreshToken),
     staleTime: 5 * 60 * 1000,
+    retry: 1,
   });
 }
 

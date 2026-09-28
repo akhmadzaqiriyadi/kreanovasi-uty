@@ -1,5 +1,5 @@
 export interface RoomBookingStatus {
-  state: "available" | "in-use" | "reserved-soon";
+  state: "available" | "in-use" | "reserved-soon" | "maintenance";
   label: string;
   timeSlotInfo: string;
 }

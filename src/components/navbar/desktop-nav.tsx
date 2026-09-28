@@ -34,9 +34,9 @@ export function DesktopNav({ scrolled, ref }: DesktopNavProps) {
     <nav
       ref={ref}
       aria-label="Navigasi Utama"
-      className="hidden md:flex items-center space-x-1 lg:space-x-2 xl:space-x-3"
+      className="hidden lg:flex items-center space-x-1 xl:space-x-2"
     >
-      <ul className="flex items-center space-x-1 lg:space-x-2 xl:space-x-3">
+      <ul className="flex items-center space-x-1 xl:space-x-2">
         {navItems.map((item) => {
           const active = isActivePath(item.href);
           return (

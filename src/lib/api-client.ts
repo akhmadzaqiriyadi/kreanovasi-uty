@@ -109,6 +109,66 @@ apiClient.interceptors.request.use(
   },
 );
 
+export function isJwtExpired(
+  token: string | null,
+  bufferSeconds = 30,
+): boolean {
+  if (!token) return true;
+  try {
+    const parts = token.split(".");
+    if (parts.length < 2) return true;
+    const payload = JSON.parse(atob(parts[1]));
+    if (!payload.exp) return false;
+    return Date.now() >= payload.exp * 1000 - bufferSeconds * 1000;
+  } catch {
+    return true;
+  }
+}
+
+export async function tryRefreshToken(): Promise<string | null> {
+  const refreshToken = getLocalRefreshToken();
+  if (!refreshToken || typeof window === "undefined") {
+    return null;
+  }
+
+  // If a refresh is already in progress, wait for subscriber callback
+  if (_isRefreshing) {
+    return new Promise((resolve) => {
+      _refreshSubscribers.push((token: string) => {
+        resolve(token);
+      });
+    });
+  }
+
+  _isRefreshing = true;
+
+  try {
+    const response = await axios.post<ApiEnvelope<BackendAuthResponse>>(
+      "/api/v1/auth/refresh",
+      { refresh_token: refreshToken },
+      { headers: { "Content-Type": "application/json" } },
+    );
+
+    const newAccessToken = response.data?.data?.access_token;
+    const newRefreshToken = response.data?.data?.refresh_token;
+
+    if (newAccessToken) {
+      setLocalTokens(newAccessToken, newRefreshToken || refreshToken);
+      apiClient.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+      for (const callback of _refreshSubscribers) callback(newAccessToken);
+      _refreshSubscribers = [];
+      return newAccessToken;
+    }
+    return null;
+  } catch (_refreshError) {
+    setLocalTokens(null, null);
+    _refreshSubscribers = [];
+    return null;
+  } finally {
+    _isRefreshing = false;
+  }
+}
+
 // Response interceptor: Capture 401 errors and refresh token silently
 apiClient.interceptors.response.use(
   (response) => {
@@ -132,54 +192,12 @@ apiClient.interceptors.response.use(
     ) {
       originalRequest._retry = true;
 
-      const refreshToken = getLocalRefreshToken();
-      if (!refreshToken || typeof window === "undefined") {
-        setLocalTokens(null, null);
-        return Promise.reject(error);
+      const newAccessToken = await tryRefreshToken();
+      if (newAccessToken) {
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+        return apiClient(originalRequest);
       }
-
-      // If a refresh is already in progress, queue up requests
-      if (_isRefreshing) {
-        return new Promise((resolve) => {
-          _refreshSubscribers.push((token: string) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            resolve(apiClient(originalRequest));
-          });
-        });
-      }
-
-      _isRefreshing = true;
-
-      try {
-        // Perform silent token refresh via reverse proxy
-        const response = await axios.post<ApiEnvelope<BackendAuthResponse>>(
-          "/api/v1/auth/refresh",
-          { refresh_token: refreshToken },
-          { headers: { "Content-Type": "application/json" } },
-        );
-
-        const newAccessToken = response.data?.data?.access_token;
-        const newRefreshToken = response.data?.data?.refresh_token;
-
-        if (newAccessToken) {
-          setLocalTokens(newAccessToken, newRefreshToken || refreshToken);
-
-          // Update header and broadcast to subscribers
-          apiClient.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-          for (const callback of _refreshSubscribers) callback(newAccessToken);
-          _refreshSubscribers = [];
-
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return apiClient(originalRequest);
-        }
-      } catch (refreshError) {
-        // If refresh fails, clear token memory and reject request
-        setLocalTokens(null, null);
-        _refreshSubscribers = [];
-        return Promise.reject(refreshError);
-      } finally {
-        _isRefreshing = false;
-      }
+      return Promise.reject(error);
     }
 
     return Promise.reject(error);

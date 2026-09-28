@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bell,
   ChevronDown,
   History,
   LogOut,
@@ -20,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { defaultUser, useAuth } from "@/context/auth-context";
+import { useNotification } from "@/context/notification-context";
 import { cn } from "@/lib/utils";
 import type { UserProfile } from "@/types/auth";
 
@@ -27,6 +29,7 @@ export const dummyUser: UserProfile = defaultUser;
 
 export function NavUserMenu() {
   const { user, logout } = useAuth();
+  const { unreadCount } = useNotification();
   const currentUser = user || dummyUser;
 
   const handleLogout = () => {
@@ -162,6 +165,24 @@ export function NavUserMenu() {
             >
               <History className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
               <span>Booking Saya / Riwayat</span>
+            </Link>
+          </DropdownMenuItem>
+
+          {/* Pusat Notifikasi */}
+          <DropdownMenuItem asChild>
+            <Link
+              href="/notifications"
+              className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center justify-between"
+            >
+              <div className="flex items-center">
+                <Bell className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
+                <span>Pusat Notifikasi</span>
+              </div>
+              {unreadCount > 0 && (
+                <Badge className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0 border-none">
+                  {unreadCount}
+                </Badge>
+              )}
             </Link>
           </DropdownMenuItem>
 

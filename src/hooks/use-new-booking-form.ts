@@ -7,27 +7,19 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { bookingConfig } from "@/config/booking";
+import { studyPrograms } from "@/config/uty-faculties";
+import { useAuth } from "@/context/auth-context";
+import { useRooms } from "@/context/rooms-context";
+import {
+  useCreateBookingMutation,
+  useRoomsQuery,
+} from "@/hooks/use-booking-queries";
 import {
   type BookingFormValues,
   bookingFormSchema,
 } from "@/lib/validations/booking";
 
-export const studyPrograms = [
-  "Informatika",
-  "Sistem Informasi",
-  "Teknologi Informasi",
-  "Teknik Elektro",
-  "Teknik Sipil",
-  "Teknik Industri",
-  "Arsitektur",
-  "Manajemen",
-  "Akuntansi",
-  "Ilmu Komunikasi",
-  "Psikologi",
-  "Hubungan Internasional",
-  "Sastra Inggris",
-  "Hukum",
-];
+export { studyPrograms };
 
 export type ApplicantRole = "mahasiswa" | "dosen" | "umum";
 
@@ -38,9 +30,9 @@ export const mockProfiles = {
     name: "Akhmad Zaqi Riyadi",
     idNumber: "5210411234",
     idLabel: "NPM Mahasiswa",
-    prodi: "Informatika",
+    prodi: "S1 Informatika",
     email: "zaqi@students.uty.ac.id",
-    affiliation: "Mahasiswa Aktif UTY",
+    affiliation: "S1 Informatika - FST",
   },
   dosen: {
     role: "dosen" as const,
@@ -48,7 +40,7 @@ export const mockProfiles = {
     name: "Dr. Bambang Sutrisno, M.Kom.",
     idNumber: "0514088201",
     idLabel: "NIDN / NIK Dosen",
-    prodi: "Informatika",
+    prodi: "S1 Informatika",
     email: "bambang.sutrisno@staff.uty.ac.id",
     affiliation: "Dosen Tetap FST UTY",
   },
@@ -83,18 +75,40 @@ export interface BookingSubmissionSummary {
 export function useNewBookingForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, isLoggedIn, isAuthLoading } = useAuth();
+  const createBookingMutation = useCreateBookingMutation();
 
   const roomParam = searchParams.get("room") || "";
   const dateParam = searchParams.get("date") || "";
 
+  // Derive initial role from authenticated user
+  const initialRole: ApplicantRole = useMemo(() => {
+    if (user?.role === "dosen") return "dosen";
+    if (user?.role === "umum") return "umum";
+    return "mahasiswa";
+  }, [user?.role]);
+
   const [applicantRole, setApplicantRole] =
-    useState<ApplicantRole>("mahasiswa");
+    useState<ApplicantRole>(initialRole);
   const [useLoggedInProfile, setUseLoggedInProfile] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [submissionSuccess, setSubmissionSuccess] =
     useState<BookingSubmissionSummary | null>(null);
 
-  // Parse initial date from query params (if available from Schedule Navigator)
+  // Sync role if user loads late
+  useEffect(() => {
+    if (user?.role) {
+      const derived: ApplicantRole =
+        user.role === "dosen"
+          ? "dosen"
+          : user.role === "umum"
+            ? "umum"
+            : "mahasiswa";
+      setApplicantRole(derived);
+    }
+  }, [user?.role]);
+
+  // Parse initial date from query params
   const initialDateObj = useMemo(() => {
     if (!dateParam) return undefined;
     try {
@@ -112,11 +126,11 @@ export function useNewBookingForm() {
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
-      role: "mahasiswa",
+      role: initialRole,
       room: roomParam,
-      name: mockProfiles.mahasiswa.name,
-      npm: mockProfiles.mahasiswa.idNumber,
-      prodi: mockProfiles.mahasiswa.prodi,
+      name: user?.name || mockProfiles[initialRole].name,
+      npm: user?.idNumber || mockProfiles[initialRole].idNumber,
+      prodi: user?.affiliation || mockProfiles[initialRole].prodi,
       purpose: "",
       audience: 5,
       date: dateParam,
@@ -125,20 +139,39 @@ export function useNewBookingForm() {
     },
   });
 
-  // Handle switching applicant role (Mahasiswa <-> Dosen)
+  // Re-sync with actual logged-in user details if available
+  useEffect(() => {
+    if (user && useLoggedInProfile) {
+      if (user.name) form.setValue("name", user.name);
+      if (user.idNumber) form.setValue("npm", user.idNumber);
+      if (user.affiliation) form.setValue("prodi", user.affiliation);
+    }
+  }, [user, useLoggedInProfile, form]);
+
+  // Handle switching applicant role
   const handleRoleChange = useCallback(
     (newRole: ApplicantRole) => {
       setApplicantRole(newRole);
       form.setValue("role", newRole, { shouldValidate: true });
 
       if (useLoggedInProfile) {
-        const targetProfile = mockProfiles[newRole];
-        form.setValue("name", targetProfile.name, { shouldValidate: true });
-        form.setValue("npm", targetProfile.idNumber, { shouldValidate: true });
-        form.setValue("prodi", targetProfile.prodi, { shouldValidate: true });
+        if (user && user.role === newRole) {
+          form.setValue("name", user.name || "", { shouldValidate: true });
+          form.setValue("npm", user.idNumber || "", { shouldValidate: true });
+          form.setValue("prodi", user.affiliation || "", {
+            shouldValidate: true,
+          });
+        } else {
+          const targetProfile = mockProfiles[newRole];
+          form.setValue("name", targetProfile.name, { shouldValidate: true });
+          form.setValue("npm", targetProfile.idNumber, {
+            shouldValidate: true,
+          });
+          form.setValue("prodi", targetProfile.prodi, { shouldValidate: true });
+        }
       }
     },
-    [form, useLoggedInProfile],
+    [form, useLoggedInProfile, user],
   );
 
   // Sync if URL search params change
@@ -182,23 +215,25 @@ export function useNewBookingForm() {
     (checked: boolean) => {
       setUseLoggedInProfile(checked);
       if (checked) {
-        const profile = mockProfiles[applicantRole];
-        form.setValue("name", profile.name, {
-          shouldValidate: true,
-        });
-        form.setValue("npm", profile.idNumber, {
-          shouldValidate: true,
-        });
-        form.setValue("prodi", profile.prodi, {
-          shouldValidate: true,
-        });
+        if (user) {
+          form.setValue("name", user.name || "", { shouldValidate: true });
+          form.setValue("npm", user.idNumber || "", { shouldValidate: true });
+          form.setValue("prodi", user.affiliation || "", {
+            shouldValidate: true,
+          });
+        } else {
+          const profile = mockProfiles[applicantRole];
+          form.setValue("name", profile.name, { shouldValidate: true });
+          form.setValue("npm", profile.idNumber, { shouldValidate: true });
+          form.setValue("prodi", profile.prodi, { shouldValidate: true });
+        }
       } else {
         form.setValue("name", "");
         form.setValue("npm", "");
         form.setValue("prodi", "");
       }
     },
-    [applicantRole, form],
+    [applicantRole, form, user],
   );
 
   // Handle Calendar date selection
@@ -215,53 +250,164 @@ export function useNewBookingForm() {
     [form],
   );
 
-  const onSubmit = useCallback(async (values: BookingFormValues) => {
-    setIsSubmitting(true);
-    try {
-      // Simulasi request API dummy
-      await new Promise((resolve) => setTimeout(resolve, 800));
+  const { data: serverRooms = [] } = useRoomsQuery();
+  const { rooms: contextRooms, availableRooms, addBooking } = useRooms();
 
-      const matchedRoom = bookingConfig.rooms.find(
-        (r) => r.id === values.room || r.slug === values.room,
-      );
-      const roomName = matchedRoom?.name || values.room;
-      const isDosen = values.role === "dosen";
-
-      const summary: BookingSubmissionSummary = {
-        bookingId: `UCH-${Math.floor(100000 + Math.random() * 900000)}`,
-        roomName,
-        date: values.date,
-        timeSlot: `${values.startTime} - ${values.endTime} WIB`,
-        applicant: values.name,
-        role: values.role,
-        idNumber: values.npm,
-        idLabel: isDosen ? "NIDN / NIK" : "NPM",
-        prodi: values.prodi,
-        audience: values.audience,
-        purpose: values.purpose,
-      };
-
-      setSubmissionSuccess(summary);
-      toast.success("Permohonan Peminjaman Berhasil Diajukan!", {
-        description: `ID: ${summary.bookingId} untuk ruangan ${roomName}.`,
-        duration: 5000,
-      });
-    } catch {
-      toast.error("Gagal Mengajukan Peminjaman", {
-        description: "Terjadi kesalahan pada sistem. Silakan coba kembali.",
-      });
-    } finally {
-      setIsSubmitting(false);
+  const activeRoomsList = useMemo(() => {
+    if (serverRooms && serverRooms.length > 0) {
+      return serverRooms.map((r) => ({
+        id: r.id,
+        name: r.name,
+        slug: r.slug,
+        category: r.category,
+        capacity: `${r.capacity} Orang`,
+        location: r.location,
+        description: r.description,
+        features: Array.isArray(r.facilities)
+          ? r.facilities
+          : typeof r.facilities === "string"
+            ? JSON.parse(r.facilities || "[]")
+            : [],
+        imageUrl: r.image_url || "/images/coworking-space.jpg",
+        status: {
+          state: r.status,
+          label:
+            r.status === "available"
+              ? "Tersedia"
+              : r.status === "maintenance"
+                ? "Maintenance"
+                : "Dipesan",
+          timeSlotInfo: r.operational_hours || "08:00 - 21:00 WIB",
+        },
+      }));
     }
-  }, []);
+    return availableRooms.length > 0 ? availableRooms : contextRooms;
+  }, [serverRooms, availableRooms, contextRooms]);
+
+  const onSubmit = useCallback(
+    async (values: BookingFormValues) => {
+      if (!isLoggedIn) {
+        toast.error("Wajib Login", {
+          description:
+            "Silakan masuk ke akun Anda terlebih dahulu untuk mengajukan reservasi.",
+        });
+        router.push("/account?redirect=/booking/new");
+        return;
+      }
+
+      setIsSubmitting(true);
+      try {
+        const matchedRoom = activeRoomsList.find(
+          (r) => r.id === values.room || r.slug === values.room,
+        );
+        const roomName = matchedRoom?.name || values.room;
+        const roomId = matchedRoom?.id || values.room;
+        const isDosen = values.role === "dosen";
+
+        // Persist directly to backend database
+        const serverResult = await createBookingMutation.mutateAsync({
+          room_id: roomId,
+          room_name: roomName,
+          applicant_name: values.name,
+          applicant_role: values.role,
+          id_number: values.npm,
+          prodi: values.prodi,
+          purpose: values.purpose,
+          audience: Number(values.audience),
+          booking_date: values.date,
+          start_time: values.startTime,
+          end_time: values.endTime,
+        });
+
+        const generatedId =
+          serverResult?.id ||
+          `UCH-${Math.floor(100000 + Math.random() * 900000)}`;
+
+        const summary: BookingSubmissionSummary = {
+          bookingId: generatedId,
+          roomName,
+          date: values.date,
+          timeSlot: `${values.startTime} - ${values.endTime} WIB`,
+          applicant: values.name,
+          role: values.role,
+          idNumber: values.npm,
+          idLabel: isDosen ? "NIDN / NIK" : "NPM",
+          prodi: values.prodi,
+          audience: values.audience,
+          purpose: values.purpose,
+        };
+
+        // Also sync local context
+        addBooking({
+          id: generatedId,
+          roomId,
+          roomName,
+          applicantName: values.name,
+          applicantRole: values.role,
+          idNumber: values.npm,
+          prodi: values.prodi,
+          purpose: values.purpose,
+          audience: values.audience,
+          date: values.date,
+          startTime: values.startTime,
+          endTime: values.endTime,
+          status: "pending",
+        });
+
+        setSubmissionSuccess(summary);
+        toast.success("Permohonan Peminjaman Berhasil Diajukan!", {
+          description: `ID: ${summary.bookingId} untuk ruangan ${roomName}. Menunggu verifikasi admin.`,
+          duration: 5000,
+        });
+      } catch (err: unknown) {
+        let msg =
+          "Terjadi kesalahan saat memproses permohonan. Pastikan formulir terisi lengkap.";
+        if (err && typeof err === "object" && "response" in err) {
+          const res = (err as { response?: { data?: { message?: string } } })
+            .response;
+          if (res?.data?.message) msg = res.data.message;
+        }
+        toast.error("Gagal Mengajukan Peminjaman", {
+          description: msg,
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [isLoggedIn, activeRoomsList, createBookingMutation, addBooking, router],
+  );
 
   return {
     form,
     applicantRole,
+    activeProfile:
+      useLoggedInProfile && user
+        ? {
+            role: applicantRole,
+            roleLabel:
+              applicantRole === "dosen"
+                ? "Dosen / Pengajar"
+                : applicantRole === "umum"
+                  ? "Non-Civitas / Mitra"
+                  : "Mahasiswa",
+            name: user.name || mockProfiles[applicantRole].name,
+            idNumber:
+              user.idNumber || user.npm || mockProfiles[applicantRole].idNumber,
+            idLabel:
+              applicantRole === "dosen"
+                ? "NIDN / NIK Dosen"
+                : applicantRole === "umum"
+                  ? "NIK KTP Pemohon"
+                  : "NPM Mahasiswa",
+            prodi: user.affiliation || mockProfiles[applicantRole].prodi,
+            email: user.email || mockProfiles[applicantRole].email,
+            affiliation:
+              user.affiliation || mockProfiles[applicantRole].affiliation,
+          }
+        : mockProfiles[applicantRole],
     handleRoleChange,
-    activeProfile: mockProfiles[applicantRole],
     mockProfiles,
-    rooms: bookingConfig.rooms,
+    rooms: activeRoomsList,
     studyPrograms,
     timeSlots: bookingConfig.timeSlots,
     availableEndTimes,
@@ -269,9 +415,12 @@ export function useNewBookingForm() {
     handleToggleProfile,
     selectedDate,
     handleSelectDate,
-    isSubmitting,
+    isSubmitting: isSubmitting || createBookingMutation.isPending,
     submissionSuccess,
     router,
+    user,
+    isLoggedIn,
+    isAuthLoading,
     handleSubmit: form.handleSubmit(onSubmit),
   };
 }

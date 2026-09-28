@@ -2,6 +2,7 @@ import { ArrowRight, MapPin, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { RoomItem } from "@/config/rooms";
+import { getSafeImageUrl } from "@/lib/image-utils";
 import { cn } from "@/lib/utils";
 
 interface RoomCardProps {
@@ -24,7 +25,7 @@ export function RoomCard({ room, className }: RoomCardProps) {
         {/* Cover Image & Live Status Container */}
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
           <Image
-            src={room.coverImage}
+            src={getSafeImageUrl(room.coverImage)}
             alt={room.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

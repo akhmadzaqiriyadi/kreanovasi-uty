@@ -1,26 +1,45 @@
 "use client";
 
 import {
+  ArrowLeft,
   Calendar,
   CalendarDays,
   CheckCircle2,
   Clock,
   Download,
   History,
+  Loader2,
+  Lock,
+  LogIn,
   Plus,
+  QrCode,
+  RefreshCw,
   Search,
   Users,
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
+import { QrScannerModal } from "@/components/booking/qr-scanner-modal";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { InteractivePagination } from "@/components/ui/pagination";
+import { useAuth } from "@/context/auth-context";
+import {
+  type BackendBooking,
+  useCancelBookingMutation,
+  useMyBookingsQuery,
+} from "@/hooks/use-booking-queries";
+import { getSafeImageUrl } from "@/lib/image-utils";
 import { cn } from "@/lib/utils";
 import { TicketDialog } from "./ticket-dialog";
 
@@ -34,133 +53,42 @@ export interface BookingRecord {
   timeSlot: string;
   applicant: string;
   prodi: string;
-  role: "Mahasiswa" | "Dosen";
+  role: "Mahasiswa" | "Dosen" | "Umum";
   audience: number;
   purpose: string;
   status: "approved" | "pending" | "completed" | "cancelled";
 }
 
-const initialBookings: BookingRecord[] = [
-  {
-    id: "b-1",
-    bookingCode: "UCH-849201",
-    roomName: "Think Tank Meeting Room",
-    roomImage:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 2, Kampus 1 UTY",
-    date: "Senin, 14 September 2026",
-    timeSlot: "09:00 - 12:00 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 6,
-    purpose: "Rapat koordinasi tim riset proposal PKM AI dan robotika.",
-    status: "approved",
-  },
-  {
-    id: "b-2",
-    bookingCode: "UCH-392014",
-    roomName: "Multimedia & Podcast Studio",
-    roomImage:
-      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 3, Kampus 1 UTY",
-    date: "Jumat, 18 September 2026",
-    timeSlot: "13:00 - 16:00 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 4,
-    purpose: "Take recording podcast edukasi teknologi masa depan HMIF.",
-    status: "pending",
-  },
-  {
-    id: "b-3",
-    bookingCode: "UCH-105829",
-    roomName: "Coworking Space Hall",
-    roomImage:
-      "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 1, Kampus 1 UTY",
-    date: "Rabu, 10 September 2026",
-    timeSlot: "10:00 - 14:00 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 18,
-    purpose: "Workshop UI/UX Design System Collaboration bersama praktisi.",
-    status: "completed",
-  },
-  {
-    id: "b-4",
-    bookingCode: "UCH-582910",
-    roomName: "FastLab IoT & Hardware Station",
-    roomImage:
-      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 2, Kampus 1 UTY",
-    date: "Kamis, 24 September 2026",
-    timeSlot: "08:30 - 11:30 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 5,
-    purpose: "Pengujian sensor mikrokontroler ESP32 dan kalibrasi prototipe.",
-    status: "approved",
-  },
-  {
-    id: "b-5",
-    bookingCode: "UCH-772109",
-    roomName: "Think Tank Meeting Room",
-    roomImage:
-      "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 2, Kampus 1 UTY",
-    date: "Senin, 07 September 2026",
-    timeSlot: "13:00 - 15:30 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 8,
-    purpose: "Brainstorming finalisasi sprint feature aplikasi kampus.",
-    status: "completed",
-  },
-  {
-    id: "b-6",
-    bookingCode: "UCH-294018",
-    roomName: "Coworking Space Hall",
-    roomImage:
-      "https://images.unsplash.com/photo-1527192491265-7e15c55b1ed2?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 1, Kampus 1 UTY",
-    date: "Selasa, 01 September 2026",
-    timeSlot: "09:00 - 12:00 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 12,
-    purpose: "Jadwal dialihkan karena bentrok dengan kuliah umum tamu asing.",
-    status: "cancelled",
-  },
-  {
-    id: "b-7",
-    bookingCode: "UCH-901842",
-    roomName: "Multimedia & Podcast Studio",
-    roomImage:
-      "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&auto=format&fit=crop&q=80",
-    location: "Gedung Creative Hub Lt. 3, Kampus 1 UTY",
-    date: "Rabu, 30 September 2026",
-    timeSlot: "14:00 - 17:00 WIB",
-    applicant: "Akhmad Zaqi Riyadi",
-    prodi: "Informatika",
-    role: "Mahasiswa",
-    audience: 4,
-    purpose: "Shooting video showcase produk inovasi mahasiswa UCH.",
-    status: "pending",
-  },
-];
+const DEFAULT_ROOM_IMAGES: Record<string, string> = {
+  "coworking-space-hall": "/images/coworking-space.jpg",
+  "think-tank-meeting-room": "/images/think-tank-room.jpg",
+  "fastlab-prototyping-iot": "/images/prototyping-room.jpg",
+  "multimedia-podcast-studio": "/images/room1.jpeg",
+  "auditorium-pitching": "/images/room2.jpeg",
+  "komputasi-ai-vr": "/images/room3.jpeg",
+};
 
 export function MyBookingsPage() {
-  const [bookings, setBookings] = useState<BookingRecord[]>(initialBookings);
+  const { isLoggedIn, isAuthLoading } = useAuth();
+
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 3;
+  const pageSize = 5;
+
+  const {
+    data: bookingsData,
+    isLoading: isBookingsLoading,
+    refetch,
+    isFetching,
+  } = useMyBookingsQuery({
+    page: currentPage,
+    limit: pageSize,
+    status: activeFilter,
+    search: searchQuery,
+  });
+
+  const cancelMutation = useCancelBookingMutation();
 
   const handleFilterChange = (filter: string) => {
     setActiveFilter(filter);
@@ -172,36 +100,45 @@ export function MyBookingsPage() {
     setCurrentPage(1);
   };
 
-  const filteredBookings = useMemo(() => {
-    return bookings.filter((item) => {
-      const matchStatus =
-        activeFilter === "all" || item.status === activeFilter;
-      const matchSearch =
-        item.roomName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.bookingCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.purpose.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchStatus && matchSearch;
-    });
-  }, [bookings, activeFilter, searchQuery]);
+  const rawBookings: BackendBooking[] = bookingsData?.bookings || [];
+  const pagination = bookingsData?.pagination || {
+    page: 1,
+    limit: pageSize,
+    total_items: 0,
+    total_pages: 1,
+  };
 
-  const totalPages = Math.ceil(filteredBookings.length / pageSize) || 1;
-  const paginatedBookings = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredBookings.slice(start, start + pageSize);
-  }, [filteredBookings, currentPage, pageSize]);
+  const formattedBookings: BookingRecord[] = rawBookings.map((b) => ({
+    id: b.id,
+    bookingCode: b.id,
+    roomName: b.room_name,
+    roomImage: DEFAULT_ROOM_IMAGES[b.room_id] || "/images/coworking-space.jpg",
+    location: "Gedung UTY Creative Hub",
+    date: b.booking_date,
+    timeSlot: `${b.start_time} - ${b.end_time} WIB`,
+    applicant: b.applicant_name,
+    prodi: b.prodi || "Civitas UTY",
+    role:
+      b.applicant_role === "dosen"
+        ? "Dosen"
+        : b.applicant_role === "umum"
+          ? "Umum"
+          : "Mahasiswa",
+    audience: b.audience,
+    purpose: b.purpose,
+    status: (b.status as BookingRecord["status"]) || "pending",
+  }));
 
   const [selectedTicket, setSelectedTicket] = useState<BookingRecord | null>(
     null,
   );
   const [isTicketOpen, setIsTicketOpen] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
-  const handleCancelBooking = (id: string, code: string) => {
-    setBookings((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, status: "cancelled" } : b)),
-    );
-    toast.info("Reservasi Dibatalkan", {
-      description: `Permohonan peminjaman ${code} telah dibatalkan.`,
-    });
+  const handleCancelBooking = async (id: string, code: string) => {
+    if (confirm(`Apakah Anda yakin ingin membatalkan permohonan ${code}?`)) {
+      await cancelMutation.mutateAsync(id);
+    }
   };
 
   const handleDownloadTicket = (bookingItem: BookingRecord) => {
@@ -222,14 +159,14 @@ export function MyBookingsPage() {
         return (
           <Badge className="bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs">
             <Clock className="w-3.5 h-3.5" />
-            Menunggu Verifikasi
+            Menunggu Review
           </Badge>
         );
       case "completed":
         return (
-          <Badge className="bg-slate-100 dark:bg-zinc-800 text-muted-foreground border-border font-bold text-xs py-1 px-3 flex items-center gap-1.5">
+          <Badge className="bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            Selesai Digunakan
+            Presensi Selesai
           </Badge>
         );
       case "cancelled":
@@ -239,8 +176,65 @@ export function MyBookingsPage() {
             Dibatalkan
           </Badge>
         );
+      default:
+        return (
+          <Badge variant="outline" className="font-bold text-xs py-1 px-3">
+            {status}
+          </Badge>
+        );
     }
   };
+
+  // Wajib Login Barrier
+  if (!isLoggedIn && !isAuthLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-28 pb-16 sm:pt-36 sm:pb-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-slate-50/60 to-background dark:via-zinc-950/40">
+        <div className="w-full max-w-lg my-auto">
+          <Card className="rounded-3xl border border-border/80 shadow-xl overflow-hidden bg-white dark:bg-zinc-900 text-center">
+            <CardHeader className="p-6 sm:p-8 bg-gradient-to-r from-[#2E417A] to-blue-700 text-white">
+              <div className="w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center mx-auto mb-3 text-amber-300">
+                <Lock className="w-8 h-8" />
+              </div>
+              <CardTitle className="text-2xl font-extrabold text-white">
+                Wajib Masuk Akun
+              </CardTitle>
+              <CardDescription className="text-blue-100 text-sm mt-1">
+                Silakan masuk ke akun Anda untuk melihat jadwal dan riwayat
+                reservasi ruangan pribadi Anda.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-6 sm:p-8 space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Riwayat reservasi, status persetujuan fasilitas, dan tiket
+                digital hanya dapat diakses setelah melakukan otentikasi resmi.
+              </p>
+              <div className="flex flex-col gap-3 pt-2">
+                <Button
+                  asChild
+                  className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold py-6 shadow-md"
+                >
+                  <Link href="/account?redirect=/my-bookings">
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Masuk ke Akun Anda
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full rounded-xl border-border py-6"
+                >
+                  <Link href="/booking">
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    Lihat Katalog Ruangan
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-20 sm:pt-28 lg:pt-32 pb-12 sm:pb-20 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40">
@@ -265,15 +259,41 @@ export function MyBookingsPage() {
                 </div>
               </div>
 
-              <Button
-                asChild
-                className="rounded-xl sm:rounded-2xl font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md self-start sm:self-auto h-9 sm:h-11 px-4 sm:px-5 text-xs sm:text-sm cursor-pointer"
-              >
-                <Link href="/booking/new">
-                  <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
-                  Ajukan Peminjaman Baru
-                </Link>
-              </Button>
+              <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                <Button
+                  onClick={() => setIsScannerOpen(true)}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs h-9 sm:h-11 px-3.5 cursor-pointer flex items-center gap-1.5"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Scan Masuk Ruangan</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => refetch()}
+                  disabled={isFetching}
+                  className="rounded-xl border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs h-9 sm:h-11 px-3 cursor-pointer"
+                >
+                  <RefreshCw
+                    className={cn(
+                      "w-3.5 h-3.5 mr-1.5",
+                      isFetching && "animate-spin",
+                    )}
+                  />
+                  Segarkan
+                </Button>
+                <Button
+                  asChild
+                  className="rounded-xl sm:rounded-2xl font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md h-9 sm:h-11 px-4 sm:px-5 text-xs sm:text-sm cursor-pointer"
+                >
+                  <Link href="/booking/new">
+                    <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+                    Ajukan Baru
+                  </Link>
+                </Button>
+              </div>
             </div>
           </CardHeader>
 
@@ -284,31 +304,31 @@ export function MyBookingsPage() {
                 Total Pengajuan
               </span>
               <span className="text-lg sm:text-2xl font-extrabold text-foreground">
-                {bookings.length}
+                {pagination.total_items}
               </span>
             </div>
             <div className="p-2.5 sm:p-4 text-center">
               <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                Disetujui / Aktif
+                Halaman
               </span>
-              <span className="text-lg sm:text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">
-                {bookings.filter((b) => b.status === "approved").length}
+              <span className="text-lg sm:text-2xl font-extrabold text-primary dark:text-blue-400">
+                {pagination.page} / {pagination.total_pages}
               </span>
             </div>
             <div className="p-2.5 sm:p-4 text-center">
               <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                Menunggu Review
+                Data Per Halaman
               </span>
               <span className="text-lg sm:text-2xl font-extrabold text-amber-600 dark:text-amber-400">
-                {bookings.filter((b) => b.status === "pending").length}
+                {pageSize}
               </span>
             </div>
             <div className="p-2.5 sm:p-4 text-center">
               <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5">
-                Selesai Digunakan
+                Status Filter
               </span>
-              <span className="text-lg sm:text-2xl font-extrabold text-blue-600 dark:text-blue-400">
-                {bookings.filter((b) => b.status === "completed").length}
+              <span className="text-sm sm:text-base font-bold text-foreground capitalize">
+                {activeFilter === "all" ? "Semua Status" : activeFilter}
               </span>
             </div>
           </div>
@@ -327,20 +347,7 @@ export function MyBookingsPage() {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  Semua ({bookings.length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFilterChange("approved")}
-                  className={cn(
-                    "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
-                    activeFilter === "approved"
-                      ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
-                >
-                  Disetujui (
-                  {bookings.filter((b) => b.status === "approved").length})
+                  Semua
                 </button>
                 <button
                   type="button"
@@ -352,8 +359,19 @@ export function MyBookingsPage() {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  Menunggu (
-                  {bookings.filter((b) => b.status === "pending").length})
+                  Menunggu Review
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleFilterChange("approved")}
+                  className={cn(
+                    "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
+                    activeFilter === "approved"
+                      ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  Disetujui
                 </button>
                 <button
                   type="button"
@@ -365,8 +383,19 @@ export function MyBookingsPage() {
                       : "text-muted-foreground hover:text-foreground",
                   )}
                 >
-                  Selesai (
-                  {bookings.filter((b) => b.status === "completed").length})
+                  Selesai
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleFilterChange("cancelled")}
+                  className={cn(
+                    "px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all whitespace-nowrap cursor-pointer",
+                    activeFilter === "cancelled"
+                      ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  Dibatalkan
                 </button>
               </div>
 
@@ -375,7 +404,7 @@ export function MyBookingsPage() {
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Cari ID atau ruangan..."
+                  placeholder="Cari ID atau agenda..."
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                   className="pl-9 h-10 rounded-xl text-xs bg-slate-50 dark:bg-zinc-800/60 border-border"
@@ -385,7 +414,14 @@ export function MyBookingsPage() {
 
             {/* Bookings List Cards */}
             <div className="space-y-4">
-              {filteredBookings.length === 0 ? (
+              {isBookingsLoading ? (
+                <div className="flex flex-col items-center justify-center py-16">
+                  <Loader2 className="w-8 h-8 animate-spin text-primary mb-3" />
+                  <p className="text-sm font-semibold text-muted-foreground">
+                    Memuat riwayat reservasi Anda...
+                  </p>
+                </div>
+              ) : formattedBookings.length === 0 ? (
                 <div className="text-center py-16 px-4 rounded-2xl border border-dashed border-border/80 bg-slate-50/50 dark:bg-zinc-800/20">
                   <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center mx-auto mb-3 text-muted-foreground">
                     <Calendar className="w-6 h-6 opacity-40" />
@@ -400,7 +436,7 @@ export function MyBookingsPage() {
                   </p>
                 </div>
               ) : (
-                paginatedBookings.map((item) => (
+                formattedBookings.map((item) => (
                   <Card
                     key={item.id}
                     className="rounded-2xl border border-border/70 hover:border-primary/40 transition-all duration-300 overflow-hidden bg-white dark:bg-zinc-900 shadow-xs"
@@ -409,7 +445,7 @@ export function MyBookingsPage() {
                       {/* Image Thumbnail */}
                       <div className="relative w-full lg:w-56 h-40 lg:h-auto shrink-0 bg-slate-100 dark:bg-zinc-800">
                         <Image
-                          src={item.roomImage}
+                          src={getSafeImageUrl(item.roomImage)}
                           alt={item.roomName}
                           fill
                           sizes="(max-width: 1024px) 100vw, 224px"
@@ -479,14 +515,17 @@ export function MyBookingsPage() {
                           </span>
 
                           <div className="flex items-center gap-2">
-                            {item.status === "approved" && (
+                            {(item.status === "approved" ||
+                              item.status === "completed") && (
                               <Button
                                 size="sm"
                                 onClick={() => handleDownloadTicket(item)}
-                                className="h-8 rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer"
+                                className="h-8 rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground cursor-pointer shadow-xs"
                               >
                                 <Download className="w-3.5 h-3.5 mr-1.5" />
-                                Unduh E-Tiket
+                                {item.status === "completed"
+                                  ? "Bukti Presensi & Tiket"
+                                  : "Unduh E-Tiket"}
                               </Button>
                             )}
 
@@ -494,6 +533,7 @@ export function MyBookingsPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
+                                disabled={cancelMutation.isPending}
                                 onClick={() =>
                                   handleCancelBooking(item.id, item.bookingCode)
                                 }
@@ -512,13 +552,15 @@ export function MyBookingsPage() {
             </div>
 
             {/* Pagination Component */}
-            <InteractivePagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-              totalItems={filteredBookings.length}
-              pageSize={pageSize}
-            />
+            {pagination.total_pages > 1 && (
+              <InteractivePagination
+                currentPage={pagination.page}
+                totalPages={pagination.total_pages}
+                onPageChange={setCurrentPage}
+                totalItems={pagination.total_items}
+                pageSize={pageSize}
+              />
+            )}
           </CardContent>
         </Card>
 
@@ -527,6 +569,15 @@ export function MyBookingsPage() {
           booking={selectedTicket}
           open={isTicketOpen}
           onOpenChange={setIsTicketOpen}
+        />
+
+        {/* Modal Self Check-In QR Scanner */}
+        <QrScannerModal
+          mode="user"
+          open={isScannerOpen}
+          onOpenChange={setIsScannerOpen}
+          title="Scan QR Masuk Ruangan"
+          description="Pindai QR Code di pintu ruangan atau ketikkan kode ID ruangan / tiket untuk check-in mandiri."
         />
       </div>
     </div>

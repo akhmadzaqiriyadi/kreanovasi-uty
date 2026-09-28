@@ -81,7 +81,9 @@ test.describe("Authentication & Account E2E Flow", () => {
     await page.locator("#regEmail").fill("zaqi@students.uty.ac.id"); // existing email
     await page.locator("#regId").fill("5210411234");
     await page.locator("#regAffiliation").click();
-    await page.getByRole("option", { name: "Informatika" }).click();
+    await page
+      .getByRole("option", { name: "S1 Informatika", exact: true })
+      .click();
     await page.locator("#regPassword").fill("Password123!");
 
     await page.getByRole("button", { name: "Daftar Sekarang" }).click();
@@ -237,7 +239,7 @@ test.describe("Authentication & Account E2E Flow", () => {
       oldPassword: "Password123!",
       newPassword: "NewPassword456!",
       npm: "5210411555",
-      prodi: "Informatika",
+      prodi: "S1 Informatika",
     };
 
     // 1. Register new user
@@ -250,7 +252,9 @@ test.describe("Authentication & Account E2E Flow", () => {
     await page.locator("#regEmail").fill(dynamicUser.email);
     await page.locator("#regId").fill(dynamicUser.npm);
     await page.locator("#regAffiliation").click();
-    await page.getByRole("option", { name: "Informatika" }).click();
+    await page
+      .getByRole("option", { name: "S1 Informatika", exact: true })
+      .click();
     await page.locator("#regPassword").fill(dynamicUser.oldPassword);
     await page.getByRole("button", { name: "Daftar Sekarang" }).click();
 

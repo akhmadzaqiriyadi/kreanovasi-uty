@@ -34,16 +34,22 @@ import { PasswordInput } from "@/components/ui/password-input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  getFacultyByProgram,
+  normalizeUtyProdi,
+  UTY_FACULTIES,
+} from "@/config/uty-faculties";
 import { useAuth } from "@/context/auth-context";
 import {
   useChangePasswordMutation,
   useUpdateProfileMutation,
 } from "@/hooks/use-auth-mutations";
-import { studyPrograms } from "@/hooks/use-new-booking-form";
 import { cn } from "@/lib/utils";
 
 export function AccountPage() {
@@ -597,19 +603,35 @@ export function AccountPage() {
                       />
                     ) : (
                       <Select
-                        value={formData.prodi}
-                        onValueChange={(val) =>
-                          setFormData({ ...formData, prodi: val })
-                        }
+                        value={normalizeUtyProdi(formData.prodi) || undefined}
+                        onValueChange={(val) => {
+                          const matchedFac = getFacultyByProgram(val);
+                          setFormData({
+                            ...formData,
+                            prodi: val,
+                            ...(matchedFac ? { faculty: matchedFac.name } : {}),
+                          });
+                        }}
                       >
                         <SelectTrigger className="h-11 rounded-xl">
                           <SelectValue placeholder="Pilih Program Studi" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-xl max-h-60">
-                          {studyPrograms.map((p) => (
-                            <SelectItem key={p} value={p}>
-                              {p}
-                            </SelectItem>
+                        <SelectContent className="rounded-xl max-h-72">
+                          {UTY_FACULTIES.map((fac) => (
+                            <SelectGroup key={fac.id}>
+                              <SelectLabel className="px-2 py-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider bg-slate-100/80 dark:bg-zinc-800/80 sticky top-0 z-10">
+                                {fac.name} ({fac.code})
+                              </SelectLabel>
+                              {fac.programs.map((p) => (
+                                <SelectItem
+                                  key={p.id}
+                                  value={p.fullName}
+                                  className="text-xs cursor-pointer pl-4"
+                                >
+                                  {p.fullName}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
                           ))}
                         </SelectContent>
                       </Select>

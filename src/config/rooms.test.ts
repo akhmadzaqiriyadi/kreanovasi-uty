@@ -22,7 +22,9 @@ describe("roomsConfig", () => {
       expect(room.location).toBeDefined();
       expect(room.coverImage).toBeDefined();
       expect(room.facilities.length).toBeGreaterThanOrEqual(3);
-      expect(room.status.state).toMatch(/^(available|in-use|reserved-soon)$/);
+      expect(room.status.state).toMatch(
+        /^(available|in-use|reserved-soon|maintenance)$/,
+      );
       expect(room.status.label).toBeDefined();
       expect(room.status.timeSlotInfo).toBeDefined();
     }

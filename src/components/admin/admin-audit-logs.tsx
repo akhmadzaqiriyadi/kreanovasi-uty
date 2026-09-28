@@ -102,7 +102,7 @@ export function AdminAuditLogs() {
         <div className="flex items-center gap-2">
           <Activity className="w-4 h-4 text-primary" />
           <span className="text-xs font-semibold text-foreground">
-            Jejak Aktivitas & Keamanan Real-Time
+            Catatan Aktivitas & Keamanan Akun
           </span>
         </div>
         <Button
@@ -117,7 +117,86 @@ export function AdminAuditLogs() {
       </div>
 
       {/* Logs Table */}
-      <div className="rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md overflow-hidden shadow-xs">
+      {/* Mobile Audit Cards (< sm screens) */}
+      <div className="block sm:hidden space-y-3">
+        {isLoading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div
+              key={i}
+              className="p-4 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 space-y-2.5"
+            >
+              <div className="flex justify-between">
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-5 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-3 w-36" />
+            </div>
+          ))
+        ) : isError ? (
+          <div className="p-6 rounded-2xl bg-destructive/10 border border-destructive/20 text-center space-y-1">
+            <AlertCircle className="w-6 h-6 text-destructive mx-auto" />
+            <p className="text-xs font-bold text-foreground">
+              Gagal memuat log audit
+            </p>
+          </div>
+        ) : logs.length === 0 ? (
+          <div className="p-8 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 text-center space-y-2">
+            <FileText className="w-6 h-6 text-muted-foreground/50 mx-auto" />
+            <p className="text-xs text-muted-foreground">
+              Belum ada catatan log aktivitas
+            </p>
+          </div>
+        ) : (
+          logs.map((log) => {
+            const date = new Date(log.created_at);
+            const formattedDate = date.toLocaleString("id-ID", {
+              dateStyle: "short",
+              timeStyle: "short",
+            });
+
+            return (
+              <div
+                key={log.id}
+                className="p-3.5 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs space-y-2.5"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
+                    <Calendar className="w-3 h-3 text-primary/70" />
+                    <span>{formattedDate}</span>
+                  </div>
+                  {getActionBadge(log.action)}
+                </div>
+
+                <div className="flex items-center justify-between gap-2 pt-1 border-t border-border/40 text-xs">
+                  <div className="min-w-0 flex-1">
+                    <span className="font-mono font-bold text-foreground block truncate">
+                      {log.entity}
+                    </span>
+                    <span className="text-[11px] text-muted-foreground block truncate">
+                      {log.user_id
+                        ? `Aktor: ${log.user_id.slice(0, 8)}...`
+                        : "Sistem"}
+                    </span>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedLog(log)}
+                    className="h-7 px-2.5 rounded-lg text-xs shrink-0"
+                  >
+                    <Eye className="w-3 h-3 mr-1 text-primary" />
+                    Detail
+                  </Button>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Desktop & Tablet Logs Table (>= sm screens) */}
+      <div className="hidden sm:block rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader className="bg-slate-50/70 dark:bg-zinc-800/40">
@@ -259,39 +338,39 @@ export function AdminAuditLogs() {
             </TableBody>
           </Table>
         </div>
-
-        {/* Pagination Bar */}
-        {meta && meta.total_pages > 1 && (
-          <div className="flex items-center justify-between px-4 py-3 border-t border-border/50 bg-slate-50/40 dark:bg-zinc-800/20 text-xs">
-            <span className="text-muted-foreground">
-              Menampilkan Halaman <strong>{meta.current_page}</strong> dari{" "}
-              <strong>{meta.total_pages}</strong> ({meta.total_items} data)
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!meta.has_prev || isLoading}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="h-8 px-2.5 rounded-lg border-border/60 text-xs"
-              >
-                <ChevronLeft className="w-3.5 h-3.5 mr-1" />
-                Sebelumnya
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!meta.has_next || isLoading}
-                onClick={() => setPage((p) => p + 1)}
-                className="h-8 px-2.5 rounded-lg border-border/60 text-xs"
-              >
-                Selanjutnya
-                <ChevronRight className="w-3.5 h-3.5 ml-1" />
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
+
+      {/* Pagination Bar */}
+      {meta && meta.total_pages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 rounded-2xl border border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md text-xs shadow-xs">
+          <span className="text-muted-foreground text-center sm:text-left">
+            Menampilkan Halaman <strong>{meta.current_page}</strong> dari{" "}
+            <strong>{meta.total_pages}</strong> ({meta.total_items} data)
+          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!meta.has_prev || isLoading}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="h-8 px-2.5 rounded-xl border-border/60 text-xs"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 mr-1" />
+              Sebelumnya
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!meta.has_next || isLoading}
+              onClick={() => setPage((p) => p + 1)}
+              className="h-8 px-2.5 rounded-xl border-border/60 text-xs"
+            >
+              Selanjutnya
+              <ChevronRight className="w-3.5 h-3.5 ml-1" />
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Log Detail Dialog */}
       <Dialog

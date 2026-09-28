@@ -3,7 +3,9 @@
 import {
   Activity,
   ArrowLeft,
+  CalendarCheck,
   ChevronRight,
+  DoorOpen,
   Home,
   KeyRound,
   LayoutDashboard,
@@ -16,8 +18,10 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { AdminAuditLogs } from "@/components/admin/admin-audit-logs";
+import { AdminBookingsManager } from "@/components/admin/admin-bookings-manager";
 import { AdminOverview } from "@/components/admin/admin-overview";
 import { AdminRolesMatrix } from "@/components/admin/admin-roles-matrix";
+import { AdminRoomsManager } from "@/components/admin/admin-rooms-manager";
 import { AdminUsersTable } from "@/components/admin/admin-users-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -105,7 +109,7 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen pt-24 sm:pt-28 md:pt-32 pb-16 sm:pb-24 px-3.5 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
+    <div className="min-h-screen pt-28 sm:pt-32 md:pt-36 pb-16 sm:pb-24 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
       {/* Breadcrumb Navigation */}
       <nav
         aria-label="Breadcrumb navigasi admin"
@@ -189,41 +193,55 @@ export function AdminDashboardPage() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <div className="overflow-x-auto pb-1 scrollbar-none">
-          <TabsList className="flex w-full min-w-[340px] sm:min-w-0 sm:grid sm:grid-cols-4 h-auto p-1.5 rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md">
-            <TabsTrigger
-              value="overview"
-              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <LayoutDashboard className="w-4 h-4 text-primary shrink-0" />
-              <span>Ringkasan</span>
-            </TabsTrigger>
+        <TabsList className="flex items-center sm:grid sm:grid-cols-3 lg:grid-cols-6 w-full h-auto p-1.5 gap-1.5 rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs overflow-x-auto no-scrollbar">
+          <TabsTrigger
+            value="overview"
+            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span>Ringkasan</span>
+          </TabsTrigger>
 
-            <TabsTrigger
-              value="users"
-              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <Users className="w-4 h-4 text-primary shrink-0" />
-              <span>Pengguna</span>
-            </TabsTrigger>
+          <TabsTrigger
+            value="rooms"
+            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+          >
+            <DoorOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span>Ruangan</span>
+          </TabsTrigger>
 
-            <TabsTrigger
-              value="roles"
-              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <KeyRound className="w-4 h-4 text-primary shrink-0" />
-              <span>Matriks PBAC</span>
-            </TabsTrigger>
+          <TabsTrigger
+            value="bookings"
+            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+          >
+            <CalendarCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span>Reservasi</span>
+          </TabsTrigger>
 
-            <TabsTrigger
-              value="audit"
-              className="flex-1 rounded-xl py-2.5 px-3 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap"
-            >
-              <Activity className="w-4 h-4 text-primary shrink-0" />
-              <span>Audit Log</span>
-            </TabsTrigger>
-          </TabsList>
-        </div>
+          <TabsTrigger
+            value="users"
+            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+          >
+            <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span>Pengguna</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="roles"
+            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+          >
+            <KeyRound className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span>Matriks PBAC</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="audit"
+            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+          >
+            <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span>Audit Log</span>
+          </TabsTrigger>
+        </TabsList>
 
         {/* Tab 1: Overview */}
         <TabsContent
@@ -233,7 +251,23 @@ export function AdminDashboardPage() {
           <AdminOverview />
         </TabsContent>
 
-        {/* Tab 2: Users Management */}
+        {/* Tab 2: Rooms Management */}
+        <TabsContent
+          value="rooms"
+          className="outline-hidden focus:outline-hidden"
+        >
+          <AdminRoomsManager />
+        </TabsContent>
+
+        {/* Tab 3: Bookings Management */}
+        <TabsContent
+          value="bookings"
+          className="outline-hidden focus:outline-hidden"
+        >
+          <AdminBookingsManager />
+        </TabsContent>
+
+        {/* Tab 4: Users Management */}
         <TabsContent
           value="users"
           className="outline-hidden focus:outline-hidden"
@@ -241,7 +275,7 @@ export function AdminDashboardPage() {
           <AdminUsersTable />
         </TabsContent>
 
-        {/* Tab 3: Roles & Permissions Matrix */}
+        {/* Tab 5: Roles & Permissions Matrix */}
         <TabsContent
           value="roles"
           className="outline-hidden focus:outline-hidden"
@@ -249,7 +283,7 @@ export function AdminDashboardPage() {
           <AdminRolesMatrix />
         </TabsContent>
 
-        {/* Tab 4: Audit Logs */}
+        {/* Tab 6: Audit Logs */}
         <TabsContent
           value="audit"
           className="outline-hidden focus:outline-hidden"

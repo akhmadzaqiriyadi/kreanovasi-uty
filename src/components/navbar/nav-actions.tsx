@@ -19,7 +19,7 @@ export function NavActions({ ref }: NavActionsProps) {
     <nav
       ref={ref}
       aria-label="Aksi Cepat & Profil"
-      className="hidden md:flex items-center gap-2 lg:gap-2.5"
+      className="hidden lg:flex items-center gap-2 xl:gap-2.5"
     >
       <ThemeToggle className="h-9 w-9 rounded-full" />
 

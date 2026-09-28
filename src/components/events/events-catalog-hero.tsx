@@ -50,9 +50,7 @@ export function EventsCatalogHero() {
         <div className="max-w-3xl mx-auto text-center space-y-5 sm:space-y-6">
           <div className="space-y-1">
             <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight tracking-tight">
-              Agenda & Program
-            </h1>
-            <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+              Agenda & Program{" "}
               <span className="text-secondary">Kolaboratif Mahasiswa</span>
             </h1>
           </div>

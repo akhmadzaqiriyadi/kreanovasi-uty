@@ -1,12 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { GlobalLoadingBar } from "@/components/global-loading-bar";
+import { NotificationPermissionPrompt } from "@/components/notifications/notification-permission-prompt";
+import { PwaRegister } from "@/components/pwa-register";
 import { JsonLd } from "@/components/seo/json-ld";
 import { Toaster } from "@/components/ui/sonner";
 import { siteConfig } from "@/config/site";
 import { AuthProvider } from "@/context/auth-context";
+import { NotificationProvider } from "@/context/notification-context";
+import { RoomsProvider } from "@/context/rooms-context";
 import { QueryProvider } from "@/providers/query-provider";
 import { ThemeProvider } from "@/providers/theme-provider";
 
@@ -21,8 +25,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#09090b" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
+  applicationName: "UTY Creative Hub",
   title: {
     default: `${siteConfig.name} - Inovasi, Kolaborasi & Kreativitas`,
     template: `%s | ${siteConfig.name}`,
@@ -32,6 +47,24 @@ export const metadata: Metadata = {
   authors: [{ name: "UTY Creative Hub Team" }],
   creator: siteConfig.organization.name,
   publisher: siteConfig.organization.name,
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "UCH Apps",
+  },
   alternates: {
     canonical: siteConfig.url,
   },
@@ -104,10 +137,16 @@ export default function RootLayout({
         >
           <QueryProvider>
             <AuthProvider>
-              <GlobalLoadingBar />
-              {children}
-              <AuthModal />
-              <Toaster position="top-right" />
+              <NotificationProvider>
+                <RoomsProvider>
+                  <PwaRegister />
+                  <NotificationPermissionPrompt />
+                  <GlobalLoadingBar />
+                  {children}
+                  <AuthModal />
+                  <Toaster position="top-right" />
+                </RoomsProvider>
+              </NotificationProvider>
             </AuthProvider>
           </QueryProvider>
         </ThemeProvider>

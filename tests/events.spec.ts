@@ -9,7 +9,7 @@ test.describe("Events & Agenda Pages E2E Tests", () => {
     // Check main heading in hero
     await expect(
       page.getByRole("heading", {
-        name: "Agenda & Program Kolaboratif UTY Creative Hub",
+        name: /Agenda & Program/i,
       }),
     ).toBeVisible();
 

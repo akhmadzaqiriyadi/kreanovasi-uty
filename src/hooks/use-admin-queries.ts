@@ -234,6 +234,45 @@ export function useUpdateUserRoleMutation() {
   });
 }
 
+export interface UpdateUserPayload {
+  userId: string;
+  name: string;
+  email: string;
+  role: string;
+  id_number?: string;
+  affiliation?: string;
+  is_verified?: boolean;
+}
+
+/**
+ * Mutation: Full update of user information by administrator
+ */
+export function useUpdateUserMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: UpdateUserPayload) => {
+      const { userId, ...data } = payload;
+      const response = await apiClient.put<ApiEnvelope<BackendUser>>(
+        `/users/${userId}`,
+        data,
+      );
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      toast.success(`Data pengguna "${variables.name}" berhasil diperbarui!`);
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "auditLogs"] });
+    },
+    onError: (error) => {
+      const msg = axios.isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Gagal memperbarui data pengguna";
+      toast.error(msg);
+    },
+  });
+}
+
 /**
  * Mutation: Delete or deactivate user
  */
@@ -324,6 +363,100 @@ export function useRevokePermissionMutation() {
       const msg = axios.isAxiosError(error)
         ? error.response?.data?.message || error.message
         : "Gagal mencabut izin dari role";
+      toast.error(msg);
+    },
+  });
+}
+
+/**
+ * Mutation: Create a new user from Admin Dashboard
+ */
+export function useCreateUserMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      name: string;
+      email: string;
+      password?: string;
+      role: string;
+      id_number?: string;
+      affiliation?: string;
+    }) => {
+      const response = await apiClient.post<ApiEnvelope<BackendUser>>(
+        "/users",
+        payload,
+      );
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(
+        `Pengguna "${data.data?.name || "Baru"}" berhasil ditambahkan!`,
+      );
+      queryClient.invalidateQueries({ queryKey: ["admin", "users"] });
+      queryClient.invalidateQueries({ queryKey: ["admin", "auditLogs"] });
+    },
+    onError: (error) => {
+      const msg = axios.isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Gagal menambahkan pengguna baru";
+      toast.error(msg);
+    },
+  });
+}
+
+/**
+ * Mutation: Create a new custom role
+ */
+export function useCreateRoleMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: {
+      id: string;
+      name: string;
+      description?: string;
+    }) => {
+      const response = await apiClient.post<ApiEnvelope<unknown>>(
+        "/roles",
+        payload,
+      );
+      return response.data;
+    },
+    onSuccess: (_, variables) => {
+      toast.success(`Role baru "${variables.name}" berhasil dibuat!`);
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.roles });
+    },
+    onError: (error) => {
+      const msg = axios.isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Gagal membuat role baru";
+      toast.error(msg);
+    },
+  });
+}
+
+/**
+ * Mutation: Delete a custom role
+ */
+export function useDeleteRoleMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (roleId: string) => {
+      const response = await apiClient.delete<ApiEnvelope<unknown>>(
+        `/roles/${roleId}`,
+      );
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Role berhasil dihapus!");
+      queryClient.invalidateQueries({ queryKey: ADMIN_QUERY_KEYS.roles });
+    },
+    onError: (error) => {
+      const msg = axios.isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Gagal menghapus role";
       toast.error(msg);
     },
   });

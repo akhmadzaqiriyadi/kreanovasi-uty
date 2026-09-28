@@ -1,9 +1,17 @@
 "use client";
 
-import { Bell, Calendar, CheckCircle2, Clock, Sparkles } from "lucide-react";
+import {
+  Bell,
+  CheckCircle2,
+  Clock,
+  DoorOpen,
+  Info,
+  Sparkles,
+  Trash2,
+  XCircle,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,93 +19,48 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  type AppNotification,
+  useNotifications,
+} from "@/context/notification-context";
 import { cn } from "@/lib/utils";
 
-export interface NotificationItem {
-  id: string;
-  title: string;
-  message: string;
-  time: string;
-  read: boolean;
-  type: "success" | "reminder" | "warning" | "info";
-}
-
-const initialNotifications: NotificationItem[] = [
-  {
-    id: "notif-1",
-    title: "Peminjaman Disetujui",
-    message: "Permohonan Ruang Think Tank (14 Sep) telah disetujui admin UCH.",
-    time: "10 menit lalu",
-    read: false,
-    type: "success",
-  },
-  {
-    id: "notif-2",
-    title: "Pengingat Jadwal",
-    message:
-      "Workshop UI/UX Design System dimulai besok pukul 09:00 WIB di Coworking Space.",
-    time: "2 jam lalu",
-    read: false,
-    type: "reminder",
-  },
-  {
-    id: "notif-3",
-    title: "Menunggu Verifikasi",
-    message:
-      "Pengajuan Ruang Multimedia & Podcast sedang dalam antrean review tim fasilitas.",
-    time: "5 jam lalu",
-    read: false,
-    type: "warning",
-  },
-  {
-    id: "notif-4",
-    title: "Fasilitas Baru Tersedia",
-    message:
-      "Perangkat 3D Printer & VR Headset terbaru kini siap dipinjam di Creative Hub.",
-    time: "1 hari lalu",
-    read: true,
-    type: "info",
-  },
-];
-
 export function NavNotifications() {
-  const [notifications, setNotifications] =
-    useState<NotificationItem[]>(initialNotifications);
+  const { notifications, unreadCount, markAsRead, markAllAsRead, clearAll } =
+    useNotifications();
   const [isOpen, setIsOpen] = useState(false);
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  const handleMarkAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    toast.success("Semua notifikasi ditandai sebagai sudah dibaca");
-  };
-
-  const handleItemClick = (item: NotificationItem) => {
+  const handleItemClick = (item: AppNotification) => {
     if (!item.read) {
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === item.id ? { ...n, read: true } : n)),
-      );
+      markAsRead(item.id);
     }
-    toast.info(item.title, {
-      description: item.message,
-    });
+    if (item.actionUrl) {
+      setIsOpen(false);
+      window.location.href = item.actionUrl;
+    }
   };
 
-  const getNotificationIcon = (type: NotificationItem["type"]) => {
+  const getNotificationIcon = (type: AppNotification["type"]) => {
     switch (type) {
-      case "success":
+      case "booking_approved":
         return (
           <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
             <CheckCircle2 className="w-4 h-4" />
           </div>
         );
-      case "reminder":
+      case "booking_rejected":
         return (
-          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-            <Calendar className="w-4 h-4" />
+          <div className="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-950/70 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+            <XCircle className="w-4 h-4" />
           </div>
         );
-      case "warning":
+      case "booking_checked_in":
+        return (
+          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+            <DoorOpen className="w-4 h-4" />
+          </div>
+        );
+      case "booking_created":
         return (
           <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
             <Clock className="w-4 h-4" />
@@ -144,7 +107,9 @@ export function NavNotifications() {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-border/60 bg-slate-50/70 dark:bg-zinc-800/40">
           <div className="flex items-center gap-2">
-            <h4 className="text-sm font-bold text-foreground">Notifikasi</h4>
+            <h4 className="text-sm font-bold text-foreground">
+              Notifikasi Terbaru
+            </h4>
             {unreadCount > 0 && (
               <Badge
                 variant="secondary"
@@ -154,22 +119,41 @@ export function NavNotifications() {
               </Badge>
             )}
           </div>
-          {unreadCount > 0 && (
-            <button
-              type="button"
-              onClick={handleMarkAllAsRead}
-              className="text-[11px] font-semibold text-primary dark:text-blue-400 hover:underline cursor-pointer"
-            >
-              Tandai dibaca
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {unreadCount > 0 && (
+              <button
+                type="button"
+                onClick={markAllAsRead}
+                className="text-[11px] font-semibold text-primary dark:text-blue-400 hover:underline cursor-pointer"
+              >
+                Tandai dibaca
+              </button>
+            )}
+            {notifications.length > 0 && (
+              <button
+                type="button"
+                onClick={clearAll}
+                className="text-[11px] text-muted-foreground hover:text-destructive transition-colors cursor-pointer"
+                title="Bersihkan riwayat notifikasi"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Notifications List */}
         <div className="max-h-80 overflow-y-auto divide-y divide-border/40">
           {notifications.length === 0 ? (
-            <div className="py-8 text-center text-xs text-muted-foreground">
-              Tidak ada notifikasi
+            <div className="py-10 text-center space-y-1.5 px-4">
+              <Info className="w-6 h-6 text-muted-foreground/40 mx-auto" />
+              <p className="text-xs font-semibold text-foreground">
+                Belum ada notifikasi
+              </p>
+              <p className="text-[11px] text-muted-foreground max-w-xs mx-auto">
+                Pembaruan permohonan ruangan dan status akun akan langsung
+                tampil di sini.
+              </p>
             </div>
           ) : (
             notifications.map((item) => (
@@ -197,7 +181,7 @@ export function NavNotifications() {
                       {item.title}
                     </p>
                     <span className="text-[10px] text-muted-foreground whitespace-nowrap">
-                      {item.time}
+                      {item.timeLabel}
                     </span>
                   </div>
                   <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
@@ -214,15 +198,24 @@ export function NavNotifications() {
         </div>
 
         {/* Footer */}
-        <div className="p-2 border-t border-border/60 bg-slate-50/50 dark:bg-zinc-800/30 text-center">
+        <div className="p-2 border-t border-border/60 bg-slate-50/50 dark:bg-zinc-800/30 grid grid-cols-2 gap-1 text-center">
           <Button
             asChild
             variant="ghost"
             size="sm"
             onClick={() => setIsOpen(false)}
-            className="w-full text-xs font-semibold text-primary dark:text-blue-400 hover:bg-primary/10 h-8 rounded-lg"
+            className="w-full text-[11px] font-semibold text-primary dark:text-blue-400 hover:bg-primary/10 h-7 rounded-lg"
           >
-            <Link href="/notifications">Lihat Semua Aktivitas</Link>
+            <Link href="/notifications">Pusat Notifikasi</Link>
+          </Button>
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(false)}
+            className="w-full text-[11px] font-semibold text-muted-foreground hover:text-foreground hover:bg-slate-100 dark:hover:bg-zinc-800 h-7 rounded-lg"
+          >
+            <Link href="/my-bookings">Riwayat Booking</Link>
           </Button>
         </div>
       </PopoverContent>

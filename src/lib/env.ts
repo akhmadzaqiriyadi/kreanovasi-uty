@@ -13,7 +13,7 @@ const parsed = envSchema.safeParse({
 
 if (!parsed.success) {
   console.error(
-    "❌ Invalid environment variables configuration:",
+    "[ENV ERROR] Invalid environment variables configuration:",
     parsed.error.format(),
   );
   throw new Error("Invalid environment variables");
