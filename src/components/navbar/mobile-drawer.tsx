@@ -97,8 +97,9 @@ export function MobileDrawer() {
           <div>
             <SheetHeader className="text-left border-b border-border/50 p-4 bg-background">
               <SheetTitle asChild>
-                <div className="flex items-center">
+                <div className="flex items-center justify-between w-full pr-8">
                   <BrandLogo onClick={() => setOpen(false)} />
+                  <ThemeToggle className="h-8 w-8 rounded-full" />
                 </div>
               </SheetTitle>
             </SheetHeader>

@@ -58,7 +58,7 @@ export function AboutStory({ storyRef }: AboutStoryProps) {
         {/* CTA Actions */}
         <nav
           aria-label="Aksi Tentang Kami"
-          className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-2"
+          className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3 pt-2"
         >
           {actions.map((action) => {
             const isPrimary = action.variant === "primary";
@@ -71,6 +71,7 @@ export function AboutStory({ storyRef }: AboutStoryProps) {
                     variant: isPrimary ? "default" : "outline",
                     size: "default",
                   }),
+                  "w-full sm:w-auto justify-center",
                   isPrimary
                     ? "h-11 px-5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shadow-xs transition-all active:scale-[0.98] touch-manipulation flex items-center gap-2"
                     : "h-11 px-5 border-2 border-primary/30 dark:border-primary/50 text-primary dark:text-blue-200 hover:bg-accent font-semibold rounded-xl transition-all active:scale-[0.98] touch-manipulation",

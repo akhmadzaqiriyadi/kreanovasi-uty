@@ -193,53 +193,53 @@ export function AdminDashboardPage() {
         onValueChange={setActiveTab}
         className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0"
       >
-        <TabsList className="flex items-center sm:grid sm:grid-cols-3 lg:grid-cols-6 w-full max-w-full h-auto p-1 sm:p-1.5 gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs overflow-x-auto no-scrollbar">
+        <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-full max-w-full h-auto p-1 sm:p-1.5 gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs">
           <TabsTrigger
             value="overview"
-            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
           >
             <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Ringkasan</span>
+            <span className="truncate">Ringkasan</span>
           </TabsTrigger>
 
           <TabsTrigger
             value="rooms"
-            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
           >
             <DoorOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Ruangan</span>
+            <span className="truncate">Ruangan</span>
           </TabsTrigger>
 
           <TabsTrigger
             value="bookings"
-            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
           >
             <CalendarCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Reservasi</span>
+            <span className="truncate">Reservasi</span>
           </TabsTrigger>
 
           <TabsTrigger
             value="users"
-            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer truncate"
           >
             <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Pengguna</span>
+            <span className="truncate">Pengguna</span>
           </TabsTrigger>
 
           <TabsTrigger
             value="roles"
-            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
           >
             <KeyRound className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Matriks PBAC</span>
+            <span className="truncate">PBAC</span>
           </TabsTrigger>
 
           <TabsTrigger
             value="audit"
-            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
           >
             <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
-            <span>Audit Log</span>
+            <span className="truncate">Audit</span>
           </TabsTrigger>
         </TabsList>
 

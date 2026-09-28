@@ -126,8 +126,8 @@ export function BookingScheduleNavigator({
           </div>
 
           {/* 7-Day Selector Bar */}
-          <div className="p-3 sm:p-5 lg:p-6">
-            <div className="grid grid-cols-7 gap-1.5 sm:gap-3">
+          <div className="p-2 sm:p-5 lg:p-6">
+            <div className="grid grid-cols-7 gap-1 sm:gap-3">
               {weekDays.map((day) => {
                 const isSelected = isSameDay(day, selectedDate);
                 const isDayToday = isSameDay(day, new Date());
@@ -139,9 +139,9 @@ export function BookingScheduleNavigator({
                     type="button"
                     onClick={() => selectDate(day)}
                     className={cn(
-                      "relative h-20 sm:h-24 rounded-xl sm:rounded-2xl transition-all duration-200 text-center flex flex-col items-center justify-center gap-1 cursor-pointer select-none",
+                      "relative h-18 sm:h-24 rounded-xl sm:rounded-2xl transition-all duration-200 text-center flex flex-col items-center justify-center gap-0.5 sm:gap-1 cursor-pointer select-none",
                       isSelected
-                        ? "bg-gradient-to-br from-[#2E417A] to-blue-700 text-white shadow-md transform scale-[1.03] ring-2 ring-primary/30 z-10"
+                        ? "bg-gradient-to-br from-[#2E417A] to-blue-700 text-white shadow-md transform scale-[1.02] ring-2 ring-primary/30 z-10"
                         : "bg-slate-50 dark:bg-zinc-800/60 hover:bg-slate-100 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-border/40",
                       isSunday && !isSelected && "opacity-75",
                     )}
@@ -151,7 +151,7 @@ export function BookingScheduleNavigator({
                     {isDayToday && (
                       <span
                         className={cn(
-                          "absolute top-2 right-2 w-2 h-2 rounded-full",
+                          "absolute top-1.5 right-1.5 sm:top-2 sm:right-2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full",
                           isSelected
                             ? "bg-amber-400 ring-2 ring-blue-800"
                             : "bg-primary dark:bg-blue-400",
@@ -162,7 +162,7 @@ export function BookingScheduleNavigator({
 
                     <span
                       className={cn(
-                        "text-xs sm:text-sm font-semibold uppercase tracking-wider",
+                        "text-[10px] xs:text-xs sm:text-sm font-semibold uppercase tracking-tight sm:tracking-wider",
                         isSelected
                           ? "text-blue-100"
                           : isSunday
@@ -173,7 +173,7 @@ export function BookingScheduleNavigator({
                       {format(day, "EEE", { locale: id })}
                     </span>
 
-                    <span className="text-base sm:text-xl lg:text-2xl font-black">
+                    <span className="text-sm xs:text-base sm:text-xl lg:text-2xl font-black">
                       {format(day, "d")}
                     </span>
                   </button>

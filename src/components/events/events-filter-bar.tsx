@@ -54,14 +54,14 @@ export function EventsFilterBar({
         </div>
 
         {/* Location Type Selector */}
-        <div className="flex items-center gap-1.5 p-1 bg-muted/60 rounded-xl border border-border/50 shrink-0">
+        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-1.5 p-1 bg-muted/60 rounded-xl border border-border/50 w-full sm:w-auto">
           <button
             type="button"
             onClick={() => onTypeChange("all")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all",
+              "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
               selectedType === "all"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-bold"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -71,9 +71,9 @@ export function EventsFilterBar({
             type="button"
             onClick={() => onTypeChange("offline")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all",
+              "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
               selectedType === "offline"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-bold"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >
@@ -83,9 +83,9 @@ export function EventsFilterBar({
             type="button"
             onClick={() => onTypeChange("hybrid")}
             className={cn(
-              "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all",
+              "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
               selectedType === "hybrid"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-bold"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >

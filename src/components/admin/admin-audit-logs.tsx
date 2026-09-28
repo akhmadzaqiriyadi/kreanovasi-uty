@@ -462,11 +462,13 @@ export function AdminAuditLogs() {
                 className="p-3.5 rounded-2xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs space-y-2.5"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
-                    <Calendar className="w-3 h-3 text-primary/70" />
+                  <div className="flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground shrink-0">
+                    <Calendar className="w-3 h-3 text-primary/70 shrink-0" />
                     <span>{formattedDate}</span>
                   </div>
-                  {getActionBadge(log.action)}
+                  <div className="min-w-0 truncate text-right">
+                    {getActionBadge(log.action)}
+                  </div>
                 </div>
 
                 <div className="flex items-center justify-between gap-2 pt-1 border-t border-border/40 text-xs">

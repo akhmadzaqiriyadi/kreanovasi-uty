@@ -54,31 +54,31 @@ export function BookingRoomCards({
           </p>
 
           {/* Availability Filter Tabs */}
-          <div className="inline-flex p-1.5 rounded-2xl bg-slate-100 dark:bg-zinc-800/80 border border-border/60 shadow-xs">
+          <div className="inline-flex max-w-full flex-wrap sm:flex-nowrap justify-center p-1 sm:p-1.5 rounded-2xl bg-slate-100 dark:bg-zinc-800/80 border border-border/60 shadow-xs gap-1">
             <button
               type="button"
               onClick={() => setFilterMode("available")}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer",
+                "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer",
                 filterMode === "available"
                   ? "bg-white dark:bg-zinc-900 text-emerald-600 dark:text-emerald-400 shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <CheckCircle className="w-3.5 h-3.5" />
+              <CheckCircle className="w-3.5 h-3.5 shrink-0" />
               <span>Hanya Tersedia ({availableRooms.length})</span>
             </button>
             <button
               type="button"
               onClick={() => setFilterMode("all")}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer",
+                "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer",
                 filterMode === "all"
                   ? "bg-white dark:bg-zinc-900 text-primary dark:text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              <Filter className="w-3.5 h-3.5" />
+              <Filter className="w-3.5 h-3.5 shrink-0" />
               <span>Semua Ruangan ({rooms.length})</span>
             </button>
           </div>

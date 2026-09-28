@@ -427,7 +427,7 @@ export function AccountPage() {
                 type="button"
                 onClick={() => setActiveTab("profile")}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
+                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0",
                   activeTab === "profile"
                     ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                     : "text-muted-foreground hover:text-foreground",
@@ -440,7 +440,7 @@ export function AccountPage() {
                 type="button"
                 onClick={() => setActiveTab("academic")}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
+                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0",
                   activeTab === "academic"
                     ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                     : "text-muted-foreground hover:text-foreground",
@@ -461,7 +461,7 @@ export function AccountPage() {
                 type="button"
                 onClick={() => setActiveTab("stats")}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
+                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0",
                   activeTab === "stats"
                     ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                     : "text-muted-foreground hover:text-foreground",
@@ -474,7 +474,7 @@ export function AccountPage() {
                 type="button"
                 onClick={() => setActiveTab("security")}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap",
+                  "flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0",
                   activeTab === "security"
                     ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                     : "text-muted-foreground hover:text-foreground",
