@@ -109,7 +109,7 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen pt-20 sm:pt-28 md:pt-32 pb-16 sm:pb-24 px-2.5 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-4 sm:space-y-8">
+    <div className="min-h-screen w-full max-w-7xl mx-auto pt-20 sm:pt-28 md:pt-32 pb-16 sm:pb-24 px-2.5 sm:px-6 lg:px-8 space-y-4 sm:space-y-8 overflow-x-hidden">
       {/* Breadcrumb Navigation */}
       <nav
         aria-label="Breadcrumb navigasi admin"
@@ -191,7 +191,7 @@ export function AdminDashboardPage() {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="space-y-4 sm:space-y-6"
+        className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0"
       >
         <TabsList className="flex items-center sm:grid sm:grid-cols-3 lg:grid-cols-6 w-full max-w-full h-auto p-1 sm:p-1.5 gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs overflow-x-auto no-scrollbar">
           <TabsTrigger
