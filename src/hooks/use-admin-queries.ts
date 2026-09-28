@@ -95,8 +95,8 @@ export const ADMIN_QUERY_KEYS = {
   }) => ["admin", "users", params] as const,
   roles: ["admin", "roles"] as const,
   permissions: ["admin", "permissions"] as const,
-  auditLogs: (page?: number, limit?: number) =>
-    ["admin", "auditLogs", page, limit] as const,
+  auditLogs: (page?: number, limit?: number, action?: string) =>
+    ["admin", "auditLogs", page, limit, action] as const,
   systemHealth: ["admin", "systemHealth"] as const,
 };
 
@@ -162,14 +162,18 @@ export function useAdminPermissionsQuery() {
 /**
  * Hook to fetch paginated audit activity logs
  */
-export function useAdminAuditLogsQuery(page = 1, limit = 10) {
+export function useAdminAuditLogsQuery(page = 1, limit = 10, action?: string) {
   return useQuery({
-    queryKey: ADMIN_QUERY_KEYS.auditLogs(page, limit),
+    queryKey: ADMIN_QUERY_KEYS.auditLogs(page, limit, action),
     queryFn: async () => {
       const response = await apiClient.get<ApiEnvelope<AuditLogsResponse>>(
         "/audit-logs",
         {
-          params: { page, limit },
+          params: {
+            page,
+            limit,
+            action: action && action !== "all" ? action : undefined,
+          },
         },
       );
       return response.data.data;
