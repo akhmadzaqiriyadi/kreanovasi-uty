@@ -109,7 +109,7 @@ export function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen pt-28 sm:pt-32 md:pt-36 pb-16 sm:pb-24 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6 sm:space-y-8">
+    <div className="min-h-screen pt-20 sm:pt-28 md:pt-32 pb-16 sm:pb-24 px-2.5 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-4 sm:space-y-8">
       {/* Breadcrumb Navigation */}
       <nav
         aria-label="Breadcrumb navigasi admin"
@@ -127,44 +127,44 @@ export function AdminDashboardPage() {
       </nav>
 
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 sm:p-6 rounded-3xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs">
-        <div className="space-y-1.5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 p-3.5 sm:p-6 rounded-2xl sm:rounded-3xl bg-white/70 dark:bg-zinc-900/60 border border-border/60 backdrop-blur-md shadow-xs">
+        <div className="space-y-1 sm:space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
-              className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 font-bold text-[10px] sm:text-[11px] px-2.5 py-0.5"
+              className="bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 font-bold text-[10px] sm:text-[11px] px-2 sm:px-2.5 py-0.5"
             >
               <ShieldCheck className="w-3.5 h-3.5 mr-1" />
               Pusat Kendali Sistem
             </Badge>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-[11px] sm:text-xs text-muted-foreground">
               • UTY Creative Hub
             </span>
           </div>
 
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-foreground">
+          <h1 className="text-lg sm:text-2xl md:text-3xl font-black tracking-tight text-foreground">
             Dashboard Administrator
           </h1>
-          <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+          <p className="text-[11px] sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
             Manajemen pengguna terpadu, konfigurasi matriks wewenang granular
             (PBAC), dan monitoring kesehatan infrastruktur backend.
           </p>
         </div>
 
         {/* User Identity & Shortcuts */}
-        <div className="flex items-center justify-between sm:justify-end gap-3 pt-3 md:pt-0 border-t md:border-t-0 border-border/50">
+        <div className="flex items-center justify-between sm:justify-end gap-2.5 sm:gap-3 pt-2.5 md:pt-0 border-t md:border-t-0 border-border/50">
           <div className="text-left md:text-right">
-            <div className="text-xs font-bold text-foreground truncate max-w-[180px]">
+            <div className="text-xs font-bold text-foreground truncate max-w-[140px] sm:max-w-[180px]">
               {user?.name}
             </div>
-            <div className="text-[11px] text-muted-foreground truncate max-w-[180px]">
+            <div className="text-[10px] sm:text-[11px] text-muted-foreground truncate max-w-[140px] sm:max-w-[180px]">
               {user?.email}
             </div>
           </div>
 
           <Badge
             variant="secondary"
-            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none px-3 py-1 text-xs capitalize shrink-0"
+            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none px-2.5 py-1 text-[11px] sm:text-xs capitalize shrink-0"
           >
             {user?.role === "admin" ? "Super Admin" : user?.role}
           </Badge>
@@ -191,12 +191,12 @@ export function AdminDashboardPage() {
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
-        className="space-y-6"
+        className="space-y-4 sm:space-y-6"
       >
-        <TabsList className="flex items-center sm:grid sm:grid-cols-3 lg:grid-cols-6 w-full h-auto p-1.5 gap-1.5 rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs overflow-x-auto no-scrollbar">
+        <TabsList className="flex items-center sm:grid sm:grid-cols-3 lg:grid-cols-6 w-full max-w-full h-auto p-1 sm:p-1.5 gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs overflow-x-auto no-scrollbar">
           <TabsTrigger
             value="overview"
-            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
           >
             <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span>Ringkasan</span>
@@ -204,7 +204,7 @@ export function AdminDashboardPage() {
 
           <TabsTrigger
             value="rooms"
-            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
           >
             <DoorOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span>Ruangan</span>
@@ -212,7 +212,7 @@ export function AdminDashboardPage() {
 
           <TabsTrigger
             value="bookings"
-            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
           >
             <CalendarCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span>Reservasi</span>
@@ -220,7 +220,7 @@ export function AdminDashboardPage() {
 
           <TabsTrigger
             value="users"
-            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
           >
             <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span>Pengguna</span>
@@ -228,7 +228,7 @@ export function AdminDashboardPage() {
 
           <TabsTrigger
             value="roles"
-            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
           >
             <KeyRound className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span>Matriks PBAC</span>
@@ -236,7 +236,7 @@ export function AdminDashboardPage() {
 
           <TabsTrigger
             value="audit"
-            className="shrink-0 sm:shrink rounded-xl py-2.5 px-3 sm:px-2 text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
+            className="shrink-0 sm:shrink rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-2.5 sm:px-2 text-[11px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer whitespace-nowrap sm:whitespace-normal sm:truncate"
           >
             <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span>Audit Log</span>

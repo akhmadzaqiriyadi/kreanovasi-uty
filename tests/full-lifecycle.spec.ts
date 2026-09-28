@@ -118,8 +118,9 @@ test.describe("Full End-to-End Lifecycle: Registration to Booking, Approval, Che
     const userMenuBtn = page.getByRole("button", { name: "Menu Pengguna" });
     await expect(userMenuBtn).toBeVisible({ timeout: 12000 });
 
-    // Navigate to /booking/new with preselected room and date
-    const bookingDate = new Date(Date.now() + 86400000 * 3)
+    // Navigate to /booking/new with preselected room and unique future date
+    const randomDays = 7 + Math.floor(Math.random() * 25);
+    const bookingDate = new Date(Date.now() + 86400000 * randomDays)
       .toISOString()
       .split("T")[0];
     await page.goto(
@@ -141,20 +142,6 @@ test.describe("Full End-to-End Lifecycle: Registration to Booking, Approval, Che
     await purposeInput.fill(
       `Workshop Kolaborasi Mahasiswa Informatika ${timestamp} - Implementasi AI dan Startup`,
     );
-
-    // Pick date via calendar trigger button
-    const dateButton = page.getByRole("button", {
-      name: /Pilih tanggal booking/i,
-    });
-    if (await dateButton.isVisible()) {
-      await dateButton.click();
-      const dayButton = page
-        .locator("button.rdp-day_button:not([disabled])")
-        .first();
-      if (await dayButton.isVisible()) {
-        await dayButton.click();
-      }
-    }
 
     // Submit the form
     const submitBtn = page.getByRole("button", {

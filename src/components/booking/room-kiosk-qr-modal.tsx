@@ -60,12 +60,12 @@ export function RoomKioskQrModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden rounded-3xl border border-border/80 shadow-2xl bg-white dark:bg-zinc-900">
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md p-0 overflow-hidden max-h-[92dvh] flex flex-col rounded-2xl sm:rounded-3xl border border-border/80 shadow-2xl bg-white dark:bg-zinc-900">
         {/* Header Banner */}
-        <div className="p-6 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white text-center relative overflow-hidden">
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white text-center relative overflow-hidden shrink-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)]" />
 
-          <div className="relative z-10 space-y-2">
+          <div className="relative z-10 space-y-1.5 sm:space-y-2">
             <div className="flex items-center justify-center gap-2 mb-1">
               <Image
                 src="/images/uch.png"
@@ -79,7 +79,7 @@ export function RoomKioskQrModal({
               </span>
             </div>
 
-            <DialogTitle className="text-xl font-extrabold text-white">
+            <DialogTitle className="text-lg sm:text-xl font-extrabold text-white">
               QR Presensi Masuk Ruangan
             </DialogTitle>
             <DialogDescription className="text-blue-100 text-xs">
@@ -97,7 +97,7 @@ export function RoomKioskQrModal({
         </div>
 
         {/* QR Body */}
-        <div className="p-6 space-y-5 bg-background text-center">
+        <div className="p-4 sm:p-6 space-y-4 sm:space-y-5 bg-background text-center overflow-y-auto flex-1">
           <div className="p-6 rounded-2xl bg-slate-50 dark:bg-zinc-800/80 border-2 border-dashed border-primary/30 flex flex-col items-center justify-center space-y-4 shadow-sm">
             <div className="p-4 bg-white rounded-2xl shadow-md border border-slate-100 dark:border-zinc-700 flex items-center justify-center">
               <QRCodeSVG

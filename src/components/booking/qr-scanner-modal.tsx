@@ -220,21 +220,21 @@ export function QrScannerModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden rounded-3xl border border-border/80 shadow-2xl bg-white dark:bg-zinc-900">
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md p-0 overflow-hidden max-h-[92dvh] flex flex-col rounded-2xl sm:rounded-3xl border border-border/80 shadow-2xl bg-white dark:bg-zinc-900">
         {/* Header */}
-        <DialogHeader className="p-6 pb-4 bg-gradient-to-r from-[#2E417A] to-blue-700 text-white relative">
+        <DialogHeader className="p-4 sm:p-6 sm:pb-4 bg-gradient-to-r from-[#2E417A] to-blue-700 text-white relative shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center text-amber-300 shadow-xs">
-              <QrCode className="w-5 h-5" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center text-amber-300 shadow-xs shrink-0">
+              <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <DialogTitle className="text-lg font-black text-white">
+              <DialogTitle className="text-base sm:text-lg font-black text-white">
                 {title ||
                   (mode === "admin"
                     ? "Pemindai QR Check-In Admin"
                     : "Scan QR Masuk Ruangan")}
               </DialogTitle>
-              <DialogDescription className="text-blue-100 text-xs mt-0.5">
+              <DialogDescription className="text-blue-100 text-[11px] sm:text-xs mt-0.5">
                 {description ||
                   (mode === "admin"
                     ? "Pindai tiket QR mahasiswa / tamu untuk memvalidasi presensi."
@@ -244,7 +244,7 @@ export function QrScannerModal({
           </div>
         </DialogHeader>
 
-        <div className="p-6 space-y-4">
+        <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
           {/* Verified Success Card */}
           {verifiedBooking ? (
             <div className="p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">

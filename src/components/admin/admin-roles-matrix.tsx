@@ -484,7 +484,7 @@ export function AdminRolesMatrix() {
 
       {/* Dialog: Tambah Role Baru */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-md rounded-3xl p-6">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base sm:text-lg font-black text-foreground flex items-center gap-2">
               <ShieldPlus className="w-5 h-5 text-primary" />
@@ -571,7 +571,7 @@ export function AdminRolesMatrix() {
         open={Boolean(roleToDelete)}
         onOpenChange={(open) => !open && setRoleToDelete(null)}
       >
-        <DialogContent className="max-w-md rounded-3xl p-6">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mb-2">
               <AlertCircle className="w-6 h-6" />

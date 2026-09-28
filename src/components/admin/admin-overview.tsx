@@ -49,9 +49,9 @@ export function AdminOverview() {
   const _isCacheUp = healthData?.dependencies.cache.status === "UP";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Top Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Users */}
         <Card className="border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md shadow-xs hover:border-primary/40 transition-all">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -170,9 +170,9 @@ export function AdminOverview() {
       {/* Live System Diagnostics & Infrastructure Details */}
       <Card className="border-border/60 bg-white/70 dark:bg-zinc-900/60 backdrop-blur-md shadow-xs">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-primary/10 text-primary">
+              <div className="p-2 rounded-xl bg-primary/10 text-primary shrink-0">
                 <Server className="w-5 h-5" />
               </div>
               <div>
@@ -187,7 +187,7 @@ export function AdminOverview() {
             </div>
             <Badge
               variant="outline"
-              className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs px-2.5 py-0.5"
+              className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-xs px-2.5 py-0.5 w-fit"
             >
               <CheckCircle2 className="w-3.5 h-3.5 mr-1" />
               Sistem Sehat (UP)

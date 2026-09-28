@@ -377,7 +377,7 @@ export function AdminAuditLogs() {
         open={Boolean(selectedLog)}
         onOpenChange={(open) => !open && setSelectedLog(null)}
       >
-        <DialogContent className="sm:max-w-lg rounded-2xl">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base font-bold flex items-center gap-2">
               <Shield className="w-5 h-5 text-primary" />

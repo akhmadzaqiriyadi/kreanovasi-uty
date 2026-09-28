@@ -613,7 +613,7 @@ export function AdminRoomsManager() {
           }
         }}
       >
-        <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-xl max-h-[90dvh] overflow-y-auto rounded-2xl sm:rounded-3xl p-4 sm:p-6">
           <DialogHeader>
             <DialogTitle className="text-lg font-black text-foreground">
               {editingRoom ? "Edit Informasi Ruangan" : "Tambah Ruangan Baru"}
@@ -940,7 +940,7 @@ export function AdminRoomsManager() {
         open={Boolean(deletingRoom)}
         onOpenChange={(open) => !open && setDeletingRoom(null)}
       >
-        <DialogContent className="max-w-md rounded-3xl p-6">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md rounded-2xl sm:rounded-3xl p-4 sm:p-6">
           <DialogHeader>
             <div className="w-12 h-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mb-2">
               <AlertCircle className="w-6 h-6" />

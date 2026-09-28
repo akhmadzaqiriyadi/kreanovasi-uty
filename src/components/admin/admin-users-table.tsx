@@ -862,7 +862,7 @@ export function AdminUsersTable() {
         open={Boolean(selectedUserForRole)}
         onOpenChange={(open) => !open && setSelectedUserForRole(null)}
       >
-        <DialogContent className="sm:max-w-md rounded-2xl">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-md rounded-2xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base font-bold flex items-center gap-2">
               <UserCog className="w-5 h-5 text-primary" />
@@ -970,7 +970,7 @@ export function AdminUsersTable() {
 
       {/* Dialog: Create New User (Full Conditional Fields) */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-lg rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base sm:text-lg font-black text-foreground flex items-center gap-2">
               <UserPlus className="w-5 h-5 text-primary" />
@@ -1220,7 +1220,7 @@ export function AdminUsersTable() {
 
       {/* Dialog: Edit User (Full Adaptive Fields & Verification) */}
       <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent className="max-w-lg rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base sm:text-lg font-black text-foreground flex items-center gap-2">
               <Pencil className="w-5 h-5 text-primary" />

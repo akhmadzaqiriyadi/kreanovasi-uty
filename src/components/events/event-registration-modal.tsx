@@ -78,7 +78,7 @@ export function EventRegistrationModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg p-6 sm:p-7 rounded-2xl">
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full sm:max-w-lg p-4 sm:p-7 rounded-2xl sm:rounded-3xl max-h-[90dvh] overflow-y-auto">
         {!isSuccess ? (
           <>
             <DialogHeader className="space-y-2">

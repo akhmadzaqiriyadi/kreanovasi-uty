@@ -169,11 +169,11 @@ export function AuthModal() {
       open={authModalOpen}
       onOpenChange={(open) => !open && closeAuthModal()}
     >
-      <DialogContent className="max-w-md p-0 overflow-hidden rounded-3xl border border-border/80 shadow-2xl bg-white dark:bg-zinc-900">
+      <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md p-0 overflow-hidden max-h-[92dvh] flex flex-col rounded-2xl sm:rounded-3xl border border-border/80 shadow-2xl bg-white dark:bg-zinc-900">
         {/* Header Branding */}
-        <div className="p-6 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white text-center relative overflow-hidden">
+        <div className="p-4 sm:p-6 bg-gradient-to-r from-[#2E417A] via-blue-800 to-blue-700 text-white text-center relative overflow-hidden shrink-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.15),transparent)]" />
-          <div className="relative z-10 space-y-2">
+          <div className="relative z-10 space-y-1.5 sm:space-y-2">
             <div className="flex items-center justify-center gap-2 mb-1">
               <Image
                 src="/images/uch.png"
@@ -187,7 +187,7 @@ export function AuthModal() {
               </span>
             </div>
 
-            <DialogTitle className="text-xl font-extrabold text-white">
+            <DialogTitle className="text-lg sm:text-xl font-extrabold text-white">
               {authModalTab === "login"
                 ? "Masuk ke Akun Anda"
                 : "Pendaftaran Akun Baru"}
@@ -201,13 +201,13 @@ export function AuthModal() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="px-6 py-4 bg-background">
+        <div className="px-4 sm:px-6 py-2.5 sm:py-3.5 bg-background shrink-0 border-b border-border/40">
           <div className="grid grid-cols-2 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60">
             <button
               type="button"
               onClick={() => setAuthModalTab("login")}
               className={cn(
-                "inline-flex items-center justify-center h-9 text-xs font-bold rounded-lg transition-all cursor-pointer text-center",
+                "inline-flex items-center justify-center h-8 sm:h-9 text-xs font-bold rounded-lg transition-all cursor-pointer text-center",
                 authModalTab === "login"
                   ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -219,7 +219,7 @@ export function AuthModal() {
               type="button"
               onClick={() => setAuthModalTab("register")}
               className={cn(
-                "inline-flex items-center justify-center h-9 text-xs font-bold rounded-lg transition-all cursor-pointer text-center",
+                "inline-flex items-center justify-center h-8 sm:h-9 text-xs font-bold rounded-lg transition-all cursor-pointer text-center",
                 authModalTab === "register"
                   ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                   : "text-muted-foreground hover:text-foreground",
@@ -231,7 +231,7 @@ export function AuthModal() {
         </div>
 
         {/* Form Body */}
-        <div className="px-6 pb-6 pt-1">
+        <div className="px-4 sm:px-6 pb-5 pt-3 overflow-y-auto flex-1">
           {authModalTab === "login" ? (
             /* --- TAB MASUK --- */
             <form onSubmit={handleLoginSubmit} className="space-y-4">

@@ -291,7 +291,7 @@ export function AdminBookingsManager() {
           />
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full sm:w-auto">
           <Filter className="w-4 h-4 text-muted-foreground hidden sm:block" />
           <Select
             value={statusFilter}
@@ -645,7 +645,7 @@ export function AdminBookingsManager() {
         open={Boolean(selectedBookingForAction)}
         onOpenChange={(open) => !open && setSelectedBookingForAction(null)}
       >
-        <DialogContent className="max-w-md rounded-3xl p-6">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-h-[90dvh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-base font-black text-foreground">
               {selectedBookingForAction?.type === "approve"
@@ -703,7 +703,7 @@ export function AdminBookingsManager() {
         open={Boolean(deletingBookingId)}
         onOpenChange={(open) => !open && setDeletingBookingId(null)}
       >
-        <DialogContent className="max-w-sm rounded-3xl p-6 text-center">
+        <DialogContent className="w-[calc(100vw-1.5rem)] sm:w-full max-w-sm rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-center max-h-[90dvh] overflow-y-auto">
           <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto mb-3">
             <Trash2 className="w-6 h-6" />
           </div>
