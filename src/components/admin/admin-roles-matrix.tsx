@@ -213,7 +213,7 @@ export function AdminRolesMatrix() {
       {/* Mobile PBAC View (< md screens) */}
       <div className="block md:hidden space-y-4">
         {/* Role Selector Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-1">
+        <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none w-full min-w-0 max-w-full pb-1">
           {isLoading
             ? Array.from({ length: 3 }).map((_, i) => (
                 <Skeleton key={i} className="h-9 w-24 rounded-xl shrink-0" />

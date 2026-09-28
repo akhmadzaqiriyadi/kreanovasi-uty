@@ -332,9 +332,9 @@ export function NotificationsPage() {
 
           <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
             {/* Search and Filters */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 min-w-0">
               {/* Filter Tabs */}
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto min-w-0 max-w-full scrollbar-none">
                 <button
                   type="button"
                   onClick={() => handleCategoryChange("all")}

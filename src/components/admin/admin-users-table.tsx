@@ -331,14 +331,14 @@ export function AdminUsersTable() {
 
     if (role === "admin") {
       return (
-        <div className="flex flex-col items-start gap-0.5">
+        <div className="flex flex-col items-end sm:items-start shrink-0 gap-0.5">
           <Badge
             variant="secondary"
-            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none text-[11px]"
+            className="bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold border-none text-[11px] shrink-0 whitespace-nowrap"
           >
             {cfg.label}
           </Badge>
-          <span className="text-[10px] text-purple-600/80 dark:text-purple-400/80 font-medium">
+          <span className="text-[10px] text-purple-600/80 dark:text-purple-400/80 font-medium shrink-0 whitespace-nowrap">
             {cfg.categoryLabel}
           </span>
         </div>
@@ -346,14 +346,14 @@ export function AdminUsersTable() {
     }
     if (role === "dosen") {
       return (
-        <div className="flex flex-col items-start gap-0.5">
+        <div className="flex flex-col items-end sm:items-start shrink-0 gap-0.5">
           <Badge
             variant="secondary"
-            className="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold border-none text-[11px]"
+            className="bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold border-none text-[11px] shrink-0 whitespace-nowrap"
           >
             {cfg.label}
           </Badge>
-          <span className="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 font-medium">
+          <span className="text-[10px] text-emerald-600/80 dark:text-emerald-400/80 font-medium shrink-0 whitespace-nowrap">
             {cfg.categoryLabel}
           </span>
         </div>
@@ -361,14 +361,14 @@ export function AdminUsersTable() {
     }
     if (role === "mahasiswa") {
       return (
-        <div className="flex flex-col items-start gap-0.5">
+        <div className="flex flex-col items-end sm:items-start shrink-0 gap-0.5">
           <Badge
             variant="secondary"
-            className="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold border-none text-[11px]"
+            className="bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold border-none text-[11px] shrink-0 whitespace-nowrap"
           >
             {cfg.label}
           </Badge>
-          <span className="text-[10px] text-blue-600/80 dark:text-blue-400/80 font-medium">
+          <span className="text-[10px] text-blue-600/80 dark:text-blue-400/80 font-medium shrink-0 whitespace-nowrap">
             {cfg.categoryLabel}
           </span>
         </div>
@@ -376,14 +376,14 @@ export function AdminUsersTable() {
     }
     if (role === "umum") {
       return (
-        <div className="flex flex-col items-start gap-0.5">
+        <div className="flex flex-col items-end sm:items-start shrink-0 gap-0.5">
           <Badge
             variant="secondary"
-            className="bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold border-none text-[11px]"
+            className="bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold border-none text-[11px] shrink-0 whitespace-nowrap"
           >
             {cfg.label}
           </Badge>
-          <span className="text-[10px] text-amber-600/80 dark:text-amber-400/80 font-medium">
+          <span className="text-[10px] text-amber-600/80 dark:text-amber-400/80 font-medium shrink-0 whitespace-nowrap">
             {cfg.categoryLabel}
           </span>
         </div>
@@ -392,7 +392,7 @@ export function AdminUsersTable() {
     return (
       <Badge
         variant="secondary"
-        className="bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-medium border-none capitalize text-[11px]"
+        className="bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-medium border-none capitalize text-[11px] shrink-0 whitespace-nowrap"
       >
         {role}
       </Badge>

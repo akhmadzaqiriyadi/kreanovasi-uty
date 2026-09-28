@@ -16,7 +16,7 @@ export function EventDetailHeader({ event }: EventDetailHeaderProps) {
   return (
     <header
       aria-label={`Header agenda ${event.title}`}
-      className="relative w-full pt-24 pb-12 sm:pt-28 sm:pb-16 md:pt-32 md:pb-18 overflow-hidden"
+      className="relative w-full pt-24 pb-12 sm:pt-28 sm:pb-16 md:pt-32 md:pb-20 overflow-hidden"
     >
       {/* Background layers matching booking & hub brand theme */}
       <div

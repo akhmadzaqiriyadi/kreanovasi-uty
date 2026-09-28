@@ -150,35 +150,38 @@ export function MyBookingsPage() {
     switch (status) {
       case "approved":
         return (
-          <Badge className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs">
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            Disetujui & Terjadwal
+          <Badge className="bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap">
+            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+            Disetujui
           </Badge>
         );
       case "pending":
         return (
-          <Badge className="bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs">
-            <Clock className="w-3.5 h-3.5" />
+          <Badge className="bg-amber-100 dark:bg-amber-950/80 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap">
+            <Clock className="w-3.5 h-3.5 shrink-0" />
             Menunggu Review
           </Badge>
         );
       case "completed":
         return (
-          <Badge className="bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs">
-            <CheckCircle2 className="w-3.5 h-3.5" />
+          <Badge className="bg-blue-100 dark:bg-blue-950/80 text-blue-700 dark:text-blue-300 border-blue-300 dark:border-blue-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shadow-2xs shrink-0 whitespace-nowrap">
+            <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
             Presensi Selesai
           </Badge>
         );
       case "cancelled":
         return (
-          <Badge className="bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5">
-            <XCircle className="w-3.5 h-3.5" />
+          <Badge className="bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-700 font-bold text-xs py-1 px-3 flex items-center gap-1.5 shrink-0 whitespace-nowrap">
+            <XCircle className="w-3.5 h-3.5 shrink-0" />
             Dibatalkan
           </Badge>
         );
       default:
         return (
-          <Badge variant="outline" className="font-bold text-xs py-1 px-3">
+          <Badge
+            variant="outline"
+            className="font-bold text-xs py-1 px-3 shrink-0 whitespace-nowrap"
+          >
             {status}
           </Badge>
         );
@@ -335,8 +338,8 @@ export function MyBookingsPage() {
 
           <CardContent className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
             {/* Filter Controls */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 min-w-0">
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto overflow-x-auto min-w-0 max-w-full scrollbar-none">
                 <button
                   type="button"
                   onClick={() => handleFilterChange("all")}
