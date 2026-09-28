@@ -21,6 +21,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { QrScannerModal } from "@/components/booking/qr-scanner-modal";
@@ -51,7 +52,6 @@ import {
   type BackendRoom,
   useAdminCheckInMutation,
   useAllBookingsQuery,
-  useCreateBookingMutation,
   useDeleteBookingMutation,
   useRoomsQuery,
   useUpdateBookingStatusMutation,
@@ -83,7 +83,6 @@ export function AdminBookingsManager() {
 
   const updateStatusMutation = useUpdateBookingStatusMutation();
   const deleteBookingMutation = useDeleteBookingMutation();
-  const createBookingMutation = useCreateBookingMutation();
   const adminCheckInMutation = useAdminCheckInMutation();
 
   const bookings: BackendBooking[] = allBookingsData?.bookings || [];
@@ -110,23 +109,6 @@ export function AdminBookingsManager() {
     null,
   );
 
-  // Manual new reservation dialog
-  const [isManualBookingOpen, setIsManualBookingOpen] = useState(false);
-  const [manualForm, setManualForm] = useState({
-    roomId: serverRooms[0]?.id || "coworking-space-hall",
-    applicantName: "",
-    applicantRole: "mahasiswa" as "mahasiswa" | "dosen" | "umum",
-    idNumber: "",
-    prodi: "Informatika",
-    purpose: "",
-    audience: 10,
-    date: new Date().toISOString().split("T")[0],
-    startTime: "09:00",
-    endTime: "11:00",
-    status: "approved" as "approved" | "pending",
-    notes: "Dibuat langsung oleh Administrator UCH",
-  });
-
   const handleOpenActionDialog = (
     booking: BackendBooking,
     type: "approve" | "reject",
@@ -152,38 +134,6 @@ export function AdminBookingsManager() {
     setSelectedBookingForAction(null);
   };
 
-  const handleCreateManualBooking = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!manualForm.applicantName.trim()) {
-      toast.error("Nama pemohon wajib diisi");
-      return;
-    }
-
-    const matchedRoom = serverRooms.find((r) => r.id === manualForm.roomId);
-    const roomName = matchedRoom?.name || "Ruangan Kampus";
-
-    try {
-      await createBookingMutation.mutateAsync({
-        room_id: manualForm.roomId,
-        room_name: roomName,
-        applicant_name: manualForm.applicantName,
-        applicant_role: manualForm.applicantRole,
-        id_number: manualForm.idNumber || "5210410000",
-        prodi: manualForm.prodi,
-        purpose: manualForm.purpose || "Kegiatan internal kampus",
-        audience: manualForm.audience,
-        booking_date: manualForm.date,
-        start_time: manualForm.startTime,
-        end_time: manualForm.endTime,
-      });
-
-      toast.success(`Reservasi untuk ruangan "${roomName}" berhasil dibuat!`);
-      setIsManualBookingOpen(false);
-    } catch {
-      // error handled by mutation
-    }
-  };
-
   const handleConfirmDelete = async () => {
     if (deletingBookingId) {
       await deleteBookingMutation.mutateAsync(deletingBookingId);
@@ -192,32 +142,35 @@ export function AdminBookingsManager() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header & Main Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white/80 dark:bg-zinc-900/80 border border-border/70 backdrop-blur-md shadow-xs">
-        <div className="space-y-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-4 sm:p-5 lg:p-6 rounded-2xl sm:rounded-3xl bg-white/80 dark:bg-zinc-900/80 border border-border/70 backdrop-blur-md shadow-xs">
+        <div className="space-y-0.5 sm:space-y-1">
           <div className="flex items-center gap-2">
-            <CalendarClock className="w-5 h-5 text-primary" />
-            <h2 className="text-lg sm:text-xl font-black text-foreground tracking-tight">
+            <CalendarClock className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
+            <h2 className="text-base sm:text-lg md:text-xl font-black text-foreground tracking-tight">
               Persetujuan & Manajemen Reservasi
             </h2>
           </div>
-          <p className="text-xs sm:text-sm text-muted-foreground">
+          <p className="text-[11px] sm:text-xs text-muted-foreground">
             Verifikasi pengajuan peminjaman ruangan dari civitas dan mitra,
             terbitkan persetujuan, atau buat jadwal reservasi langsung.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto shrink-0">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto shrink-0">
           <Button
             variant="outline"
             size="sm"
             onClick={() => refetch()}
             disabled={isFetching}
-            className="rounded-xl border-border bg-white dark:bg-zinc-900 text-xs h-10 px-3 cursor-pointer"
+            className="rounded-xl border-border bg-white dark:bg-zinc-900 text-[11px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-3 cursor-pointer"
           >
             <RefreshCw
-              className={cn("w-3.5 h-3.5 mr-1.5", isFetching && "animate-spin")}
+              className={cn(
+                "w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-1.5",
+                isFetching && "animate-spin",
+              )}
             />
             Segarkan
           </Button>
@@ -226,10 +179,10 @@ export function AdminBookingsManager() {
             variant="outline"
             size="sm"
             onClick={() => setIsAdminScannerOpen(true)}
-            className="rounded-xl border-primary/30 bg-blue-50/60 dark:bg-blue-950/40 text-primary dark:text-blue-400 font-bold text-xs h-10 px-3.5 cursor-pointer shadow-xs hover:bg-blue-100/70"
+            className="rounded-xl border-primary/30 bg-blue-50/60 dark:bg-blue-950/40 text-primary dark:text-blue-400 font-bold text-[11px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-3.5 cursor-pointer shadow-xs hover:bg-blue-100/70"
           >
-            <QrCode className="w-4 h-4 mr-1.5 text-primary" />
-            Scan QR Check-In
+            <QrCode className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 text-primary" />
+            Scan QR
           </Button>
 
           <Button
@@ -254,68 +207,70 @@ export function AdminBookingsManager() {
               setSelectedKioskRoom(target);
               setIsKioskModalOpen(true);
             }}
-            className="rounded-xl border-border bg-white dark:bg-zinc-900 text-xs h-10 px-3.5 cursor-pointer hover:border-primary/40"
+            className="rounded-xl border-border bg-white dark:bg-zinc-900 text-[11px] sm:text-xs h-8 sm:h-9 px-2.5 sm:px-3.5 cursor-pointer hover:border-primary/40"
           >
-            <Monitor className="w-4 h-4 mr-1.5 text-muted-foreground" />
-            QR Kiosk Pintu
+            <Monitor className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5 text-muted-foreground" />
+            QR Kiosk
           </Button>
 
           <Button
-            onClick={() => setIsManualBookingOpen(true)}
-            className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground text-xs h-10 px-4 shadow-sm cursor-pointer"
+            asChild
+            className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground text-[11px] sm:text-xs h-8 sm:h-9 px-3 sm:px-4 shadow-sm cursor-pointer"
           >
-            <Plus className="w-4 h-4 mr-1.5" />
-            Buat Reservasi Baru
+            <Link href="/booking/new">
+              <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
+              Buat Reservasi Baru
+            </Link>
           </Button>
         </div>
       </div>
 
       {/* Metrics Banner */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="p-3 sm:p-4 lg:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-0.5 sm:space-y-1">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-muted-foreground block">
             Total Reservasi
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-foreground">
+          <div className="text-lg sm:text-2xl lg:text-3xl font-black text-foreground">
             {pagination.total_items}
           </div>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[10px] sm:text-[11px] text-muted-foreground">
             Semua data di database
           </span>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 block">
+        <div className="p-3 sm:p-4 lg:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-0.5 sm:space-y-1">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 block">
             Filter Status
           </span>
-          <div className="text-xl sm:text-2xl font-black text-foreground capitalize">
+          <div className="text-base sm:text-xl lg:text-2xl font-black text-foreground capitalize truncate">
             {statusFilter === "all" ? "Semua Status" : statusFilter}
           </div>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[10px] sm:text-[11px] text-muted-foreground">
             Pilihan filter aktif
           </span>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
+        <div className="p-3 sm:p-4 lg:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-0.5 sm:space-y-1">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 block">
             Halaman Aktif
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400">
+          <div className="text-lg sm:text-2xl lg:text-3xl font-black text-emerald-600 dark:text-emerald-400">
             {pagination.page} / {pagination.total_pages}
           </div>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[10px] sm:text-[11px] text-muted-foreground">
             Navigasi pagination
           </span>
         </div>
 
-        <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block">
+        <div className="p-3 sm:p-4 lg:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-border/70 shadow-xs space-y-0.5 sm:space-y-1">
+          <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 block">
             Limit Halaman
           </span>
-          <div className="text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">
+          <div className="text-lg sm:text-2xl lg:text-3xl font-black text-blue-600 dark:text-blue-400">
             {pageSize} baris
           </div>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[10px] sm:text-[11px] text-muted-foreground">
             Data server-side
           </span>
         </div>
@@ -412,7 +367,7 @@ export function AdminBookingsManager() {
               <div
                 key={b.id}
                 className={cn(
-                  "p-5 rounded-3xl bg-white dark:bg-zinc-900 border transition-all duration-200 shadow-xs space-y-4",
+                  "p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border transition-all duration-200 shadow-xs space-y-3 sm:space-y-4",
                   isPending
                     ? "border-amber-400/60 dark:border-amber-500/40 bg-amber-50/10"
                     : isCompleted
@@ -423,13 +378,16 @@ export function AdminBookingsManager() {
                 )}
               >
                 {/* Top Bar: Room + Status + ID */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border/60">
-                  <div className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4 text-primary shrink-0" />
-                    <span className="font-black text-sm text-foreground">
+                <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 pb-2.5 sm:pb-3 border-b border-border/60">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+                    <span className="font-black text-xs sm:text-sm text-foreground">
                       {b.room_name}
                     </span>
-                    <Badge variant="outline" className="text-[10px] font-mono">
+                    <Badge
+                      variant="outline"
+                      className="text-[9px] sm:text-[10px] font-mono"
+                    >
                       {b.id}
                     </Badge>
                     <button
@@ -563,7 +521,7 @@ export function AdminBookingsManager() {
                     </div>
 
                     {/* Actions */}
-                    <div className="flex items-center justify-end gap-1.5 pt-1">
+                    <div className="flex flex-wrap items-center justify-start sm:justify-end gap-1.5 pt-2 border-t border-border/40 sm:border-0 sm:pt-1">
                       {isPending && (
                         <>
                           <Button
@@ -737,187 +695,6 @@ export function AdminBookingsManager() {
                 : "Konfirmasi Tolak"}
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Manual Booking Creation Modal */}
-      <Dialog open={isManualBookingOpen} onOpenChange={setIsManualBookingOpen}>
-        <DialogContent className="max-w-lg rounded-3xl p-6 max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-base font-black text-foreground">
-              Tambah Reservasi Ruangan Langsung
-            </DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground">
-              Jadwalkan permohonan peminjaman ruangan secara manual untuk
-              kegiatan internal atau mitra kampus.
-            </DialogDescription>
-          </DialogHeader>
-
-          <form onSubmit={handleCreateManualBooking} className="space-y-4 pt-2">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold">Pilih Ruangan</Label>
-              <Select
-                value={manualForm.roomId}
-                onValueChange={(val) =>
-                  setManualForm({ ...manualForm, roomId: val })
-                }
-              >
-                <SelectTrigger className="rounded-xl text-xs">
-                  <SelectValue placeholder="Pilih Ruangan" />
-                </SelectTrigger>
-                <SelectContent>
-                  {serverRooms.map((r) => (
-                    <SelectItem key={r.id} value={r.id}>
-                      {r.name} ({r.capacity} Orang)
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">Nama Pemohon</Label>
-                <Input
-                  required
-                  placeholder="Nama Lengkap"
-                  value={manualForm.applicantName}
-                  onChange={(e) =>
-                    setManualForm({
-                      ...manualForm,
-                      applicantName: e.target.value,
-                    })
-                  }
-                  className="rounded-xl text-xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">Kategori Pemohon</Label>
-                <Select
-                  value={manualForm.applicantRole}
-                  onValueChange={(val: "mahasiswa" | "dosen" | "umum") =>
-                    setManualForm({ ...manualForm, applicantRole: val })
-                  }
-                >
-                  <SelectTrigger className="rounded-xl text-xs">
-                    <SelectValue placeholder="Kategori" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="mahasiswa">Mahasiswa</SelectItem>
-                    <SelectItem value="dosen">Dosen / Tendik</SelectItem>
-                    <SelectItem value="umum">Non-Civitas / Mitra</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">NPM / NIDN / NIK</Label>
-                <Input
-                  placeholder="Nomor Identitas"
-                  value={manualForm.idNumber}
-                  onChange={(e) =>
-                    setManualForm({ ...manualForm, idNumber: e.target.value })
-                  }
-                  className="rounded-xl text-xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">
-                  Program Studi / Unit
-                </Label>
-                <Input
-                  placeholder="Prodi / Instansi"
-                  value={manualForm.prodi}
-                  onChange={(e) =>
-                    setManualForm({ ...manualForm, prodi: e.target.value })
-                  }
-                  className="rounded-xl text-xs"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">Tanggal</Label>
-                <Input
-                  type="date"
-                  required
-                  value={manualForm.date}
-                  onChange={(e) =>
-                    setManualForm({ ...manualForm, date: e.target.value })
-                  }
-                  className="rounded-xl text-xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">Mulai</Label>
-                <Input
-                  type="time"
-                  required
-                  value={manualForm.startTime}
-                  onChange={(e) =>
-                    setManualForm({
-                      ...manualForm,
-                      startTime: e.target.value,
-                    })
-                  }
-                  className="rounded-xl text-xs"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label className="text-xs font-bold">Selesai</Label>
-                <Input
-                  type="time"
-                  required
-                  value={manualForm.endTime}
-                  onChange={(e) =>
-                    setManualForm({ ...manualForm, endTime: e.target.value })
-                  }
-                  className="rounded-xl text-xs"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1.5">
-              <Label className="text-xs font-bold">Agenda & Keperluan</Label>
-              <Textarea
-                required
-                placeholder="Jelaskan tujuan peminjaman ruangan..."
-                value={manualForm.purpose}
-                onChange={(e) =>
-                  setManualForm({ ...manualForm, purpose: e.target.value })
-                }
-                className="rounded-xl text-xs min-h-[70px]"
-              />
-            </div>
-
-            <DialogFooter className="pt-3 gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsManualBookingOpen(false)}
-                className="rounded-xl text-xs"
-              >
-                Batal
-              </Button>
-              <Button
-                type="submit"
-                disabled={createBookingMutation.isPending}
-                className="rounded-xl text-xs font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
-              >
-                {createBookingMutation.isPending && (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                )}
-                Simpan Jadwal Reservasi
-              </Button>
-            </DialogFooter>
-          </form>
         </DialogContent>
       </Dialog>
 

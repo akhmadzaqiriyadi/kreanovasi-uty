@@ -12,6 +12,7 @@ import { useAuth } from "@/context/auth-context";
 import { useRooms } from "@/context/rooms-context";
 import {
   useCreateBookingMutation,
+  useOccupiedSlotsQuery,
   useRoomsQuery,
 } from "@/hooks/use-booking-queries";
 import {
@@ -192,23 +193,79 @@ export function useNewBookingForm() {
     }
   }, [roomParam, dateParam, form]);
 
+  const { data: serverRooms = [] } = useRoomsQuery();
+  const { rooms: contextRooms, availableRooms, addBooking } = useRooms();
+
+  const selectedRoom = form.watch("room");
+  const selectedDateStr = form.watch("date");
   const selectedStartTime = form.watch("startTime");
 
-  // Dynamic available end times based on selected start time
+  const matchedRoom = useMemo(() => {
+    return serverRooms.find(
+      (r) => r.id === selectedRoom || r.slug === selectedRoom,
+    );
+  }, [serverRooms, selectedRoom]);
+
+  const targetRoomId = matchedRoom?.id || selectedRoom;
+
+  const { data: occupiedBookings = [], isLoading: isOccupiedLoading } =
+    useOccupiedSlotsQuery(targetRoomId, selectedDateStr);
+
+  const isStartTimeOccupied = useCallback(
+    (slotTime: string) => {
+      return occupiedBookings.some(
+        (b) => slotTime >= b.start_time && slotTime < b.end_time,
+      );
+    },
+    [occupiedBookings],
+  );
+
+  const isIntervalConflicting = useCallback(
+    (start: string, end: string) => {
+      return occupiedBookings.some(
+        (b) => start < b.end_time && end > b.start_time,
+      );
+    },
+    [occupiedBookings],
+  );
+
+  // Dynamic available end times based on selected start time and conflict check
   const availableEndTimes = useMemo(() => {
     if (!selectedStartTime) return bookingConfig.timeSlots;
-    return bookingConfig.timeSlots.filter((time) => time > selectedStartTime);
-  }, [selectedStartTime]);
+    const candidates = bookingConfig.timeSlots.filter(
+      (time) => time > selectedStartTime,
+    );
+    return candidates.filter(
+      (endTime) => !isIntervalConflicting(selectedStartTime, endTime),
+    );
+  }, [selectedStartTime, isIntervalConflicting]);
 
   useEffect(() => {
     const currentEnd = form.getValues("endTime");
-    if (currentEnd && currentEnd <= selectedStartTime) {
+    if (
+      !currentEnd ||
+      currentEnd <= selectedStartTime ||
+      isIntervalConflicting(selectedStartTime, currentEnd)
+    ) {
       const nextSlot = availableEndTimes[0];
       if (nextSlot) {
         form.setValue("endTime", nextSlot, { shouldValidate: true });
       }
     }
-  }, [selectedStartTime, availableEndTimes, form]);
+  }, [selectedStartTime, availableEndTimes, isIntervalConflicting, form]);
+
+  useEffect(() => {
+    if (occupiedBookings.length > 0 && selectedStartTime) {
+      if (isStartTimeOccupied(selectedStartTime)) {
+        const firstAvailable = bookingConfig.timeSlots.find(
+          (t) => !isStartTimeOccupied(t),
+        );
+        if (firstAvailable) {
+          form.setValue("startTime", firstAvailable, { shouldValidate: true });
+        }
+      }
+    }
+  }, [occupiedBookings, selectedStartTime, isStartTimeOccupied, form]);
 
   // Handle toggle profile login
   const handleToggleProfile = useCallback(
@@ -249,9 +306,6 @@ export function useNewBookingForm() {
     },
     [form],
   );
-
-  const { data: serverRooms = [] } = useRoomsQuery();
-  const { rooms: contextRooms, availableRooms, addBooking } = useRooms();
 
   const activeRoomsList = useMemo(() => {
     if (serverRooms && serverRooms.length > 0) {
@@ -411,6 +465,10 @@ export function useNewBookingForm() {
     studyPrograms,
     timeSlots: bookingConfig.timeSlots,
     availableEndTimes,
+    occupiedBookings,
+    isOccupiedLoading,
+    isStartTimeOccupied,
+    isIntervalConflicting,
     useLoggedInProfile,
     handleToggleProfile,
     selectedDate,

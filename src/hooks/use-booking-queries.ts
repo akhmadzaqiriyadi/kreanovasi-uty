@@ -102,6 +102,22 @@ export function useRoomQuery(id: string) {
   });
 }
 
+export function useOccupiedSlotsQuery(roomId?: string, date?: string) {
+  return useQuery({
+    queryKey: ["rooms", roomId, "occupied-slots", date],
+    queryFn: async () => {
+      if (!roomId || !date) return [];
+      const res = await apiClient.get<ApiEnvelope<BackendBooking[]>>(
+        `/rooms/${roomId}/occupied-slots`,
+        { params: { date } },
+      );
+      return res.data?.data || [];
+    },
+    enabled: Boolean(roomId && date),
+    staleTime: 10 * 1000,
+  });
+}
+
 export function useCreateRoomMutation() {
   const queryClient = useQueryClient();
   return useMutation({

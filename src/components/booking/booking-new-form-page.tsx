@@ -64,6 +64,8 @@ export function BookingNewFormPage() {
     rooms,
     timeSlots,
     availableEndTimes,
+    occupiedBookings,
+    isStartTimeOccupied,
     useLoggedInProfile,
     handleToggleProfile,
     selectedDate,
@@ -702,6 +704,32 @@ export function BookingNewFormPage() {
                   )}
                 </div>
 
+                {/* STATUS KETERSEDIAAN / JADWAL TERISI */}
+                {occupiedBookings.length > 0 && (
+                  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-amber-800 dark:text-amber-300">
+                      <Clock className="w-3.5 h-3.5 shrink-0" />
+                      Jadwal Ruangan Terisi pada Tanggal Ini:
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {occupiedBookings.map((b) => (
+                        <Badge
+                          key={b.id}
+                          variant="outline"
+                          className="bg-amber-100/80 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 border-amber-300 dark:border-amber-700/60 text-[10px] sm:text-[11px] font-semibold py-0.5 px-2"
+                        >
+                          {b.start_time} - {b.end_time} WIB (
+                          {b.status === "approved" ? "Disetujui" : "Selesai"})
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground">
+                      Jam di atas telah terisi dan terkunci otomatis untuk
+                      mencegah bentrok reservasi.
+                    </p>
+                  </div>
+                )}
+
                 {/* JAM MULAI & SELESAI MENGGUNAKAN DROPDOWN COMPONENT */}
                 <div className="space-y-2">
                   <Label className="text-xs sm:text-sm font-bold text-foreground/90 flex items-center gap-2">
@@ -709,7 +737,7 @@ export function BookingNewFormPage() {
                     Rentang Waktu Pelaksanaan{" "}
                     <span className="text-rose-500">*</span>
                   </Label>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {/* Jam Mulai */}
                     <div>
                       <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
@@ -723,19 +751,28 @@ export function BookingNewFormPage() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="h-12 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-bold">
+                            <SelectTrigger className="h-11 sm:h-12 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-bold">
                               <SelectValue placeholder="Mulai" />
                             </SelectTrigger>
                             <SelectContent className="rounded-xl">
-                              {timeSlots.map((time) => (
-                                <SelectItem
-                                  key={`start-${time}`}
-                                  value={time}
-                                  className="text-xs sm:text-sm cursor-pointer"
-                                >
-                                  {time} WIB
-                                </SelectItem>
-                              ))}
+                              {timeSlots.map((time) => {
+                                const isOccupied = isStartTimeOccupied(time);
+                                return (
+                                  <SelectItem
+                                    key={`start-${time}`}
+                                    value={time}
+                                    disabled={isOccupied}
+                                    className={cn(
+                                      "text-xs sm:text-sm cursor-pointer",
+                                      isOccupied &&
+                                        "opacity-50 text-muted-foreground line-through",
+                                    )}
+                                  >
+                                    {time} WIB{" "}
+                                    {isOccupied ? "(Sudah Dipesan)" : ""}
+                                  </SelectItem>
+                                );
+                              })}
                             </SelectContent>
                           </Select>
                         )}
@@ -760,7 +797,7 @@ export function BookingNewFormPage() {
                             onValueChange={field.onChange}
                             value={field.value}
                           >
-                            <SelectTrigger className="h-12 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-bold">
+                            <SelectTrigger className="h-11 sm:h-12 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-bold">
                               <SelectValue placeholder="Selesai" />
                             </SelectTrigger>
                             <SelectContent className="rounded-xl">
@@ -780,6 +817,12 @@ export function BookingNewFormPage() {
                       {form.formState.errors.endTime && (
                         <p className="text-[11px] text-rose-500 font-medium mt-1">
                           {form.formState.errors.endTime.message}
+                        </p>
+                      )}
+                      {availableEndTimes.length === 0 && (
+                        <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium mt-1">
+                          Slot setelah jam ini sudah dipesan orang lain. Pilih
+                          jam mulai lain.
                         </p>
                       )}
                     </div>

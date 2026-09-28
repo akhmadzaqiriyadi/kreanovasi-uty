@@ -118,8 +118,13 @@ test.describe("Full End-to-End Lifecycle: Registration to Booking, Approval, Che
     const userMenuBtn = page.getByRole("button", { name: "Menu Pengguna" });
     await expect(userMenuBtn).toBeVisible({ timeout: 12000 });
 
-    // Navigate to /booking/new with preselected room
-    await page.goto("/booking/new?room=think-tank-meeting-room");
+    // Navigate to /booking/new with preselected room and date
+    const bookingDate = new Date(Date.now() + 86400000 * 3)
+      .toISOString()
+      .split("T")[0];
+    await page.goto(
+      `/booking/new?room=think-tank-meeting-room&date=${bookingDate}`,
+    );
 
     // The form should be visible
     await expect(

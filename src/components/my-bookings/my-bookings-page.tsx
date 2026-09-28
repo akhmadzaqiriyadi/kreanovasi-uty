@@ -248,10 +248,10 @@ export function MyBookingsPage() {
                   <History className="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg sm:text-2xl lg:text-3xl font-extrabold text-white">
+                  <CardTitle className="text-base sm:text-xl lg:text-2xl font-black text-white">
                     Booking Saya & Riwayat Peminjaman
                   </CardTitle>
-                  <p className="text-blue-100 text-xs sm:text-sm mt-0.5 sm:mt-1 leading-relaxed max-w-xl">
+                  <p className="text-blue-100 text-[11px] sm:text-xs md:text-sm mt-0.5 sm:mt-1 leading-relaxed max-w-xl">
                     Pantau status verifikasi, unduh e-tiket resmi peminjaman,
                     dan kelola jadwal penggunaan fasilitas UTY Creative Hub
                     Anda.
@@ -259,26 +259,26 @@ export function MyBookingsPage() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 self-start sm:self-auto">
                 <Button
                   onClick={() => setIsScannerOpen(true)}
                   variant="outline"
                   size="sm"
-                  className="rounded-xl border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs h-9 sm:h-11 px-3.5 cursor-pointer flex items-center gap-1.5"
+                  className="rounded-xl border-white/20 bg-white/10 hover:bg-white/20 text-white text-[11px] sm:text-xs h-8 sm:h-10 px-2.5 sm:px-3.5 cursor-pointer flex items-center gap-1.5"
                 >
                   <QrCode className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Scan Masuk Ruangan</span>
+                  <span>Scan Masuk</span>
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => refetch()}
                   disabled={isFetching}
-                  className="rounded-xl border-white/20 bg-white/10 hover:bg-white/20 text-white text-xs h-9 sm:h-11 px-3 cursor-pointer"
+                  className="rounded-xl border-white/20 bg-white/10 hover:bg-white/20 text-white text-[11px] sm:text-xs h-8 sm:h-10 px-2.5 sm:px-3 cursor-pointer"
                 >
                   <RefreshCw
                     className={cn(
-                      "w-3.5 h-3.5 mr-1.5",
+                      "w-3 h-3 sm:w-3.5 sm:h-3.5 mr-1 sm:mr-1.5",
                       isFetching && "animate-spin",
                     )}
                   />
@@ -286,10 +286,10 @@ export function MyBookingsPage() {
                 </Button>
                 <Button
                   asChild
-                  className="rounded-xl sm:rounded-2xl font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md h-9 sm:h-11 px-4 sm:px-5 text-xs sm:text-sm cursor-pointer"
+                  className="rounded-xl font-bold bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-md h-8 sm:h-10 px-3 sm:px-4 text-[11px] sm:text-xs cursor-pointer"
                 >
                   <Link href="/booking/new">
-                    <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1.5" />
+                    <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 sm:mr-1.5" />
                     Ajukan Baru
                   </Link>
                 </Button>
@@ -458,7 +458,7 @@ export function MyBookingsPage() {
                       </div>
 
                       {/* Main Details */}
-                      <div className="p-5 sm:p-6 flex-1 flex flex-col justify-between gap-4">
+                      <div className="p-3.5 sm:p-5 lg:p-6 flex-1 flex flex-col justify-between gap-3 sm:gap-4">
                         <div className="space-y-3">
                           <div className="flex flex-wrap items-center justify-between gap-2">
                             <div className="flex items-center gap-2.5">

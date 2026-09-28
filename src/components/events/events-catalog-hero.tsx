@@ -47,15 +47,15 @@ export function EventsCatalogHero() {
         </nav>
 
         {/* Header Titles matching Booking / About page pattern */}
-        <div className="max-w-3xl mx-auto text-center space-y-5 sm:space-y-6">
+        <div className="max-w-3xl mx-auto text-center space-y-3.5 sm:space-y-6">
           <div className="space-y-1">
-            <h1 className="text-3xl xs:text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight tracking-tight">
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-primary-foreground leading-tight tracking-tight">
               Agenda & Program{" "}
               <span className="text-secondary">Kolaboratif Mahasiswa</span>
             </h1>
           </div>
 
-          <p className="text-sm sm:text-base lg:text-lg text-primary-foreground/75 leading-relaxed max-w-2xl mx-auto font-medium">
+          <p className="text-xs sm:text-sm md:text-base text-primary-foreground/80 leading-relaxed max-w-2xl mx-auto font-medium">
             Ikuti berbagai seminar teknologi, workshop hands-on FastLab, klinik
             proposal PKM, dan demo pitching bersama mentor terbaik di UTY
             Creative Hub.
