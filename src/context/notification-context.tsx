@@ -39,7 +39,12 @@ interface NotificationContextType {
   permission: NotificationPermission;
   isSupported: boolean;
   isConnected: boolean;
+  isPushSubscribed: boolean;
+  isIOS: boolean;
+  isStandalone: boolean;
   requestPermission: () => Promise<NotificationPermission>;
+  subscribeToPush: () => Promise<boolean>;
+  unsubscribeFromPush: () => Promise<boolean>;
   markAsRead: (id: string) => void;
   markAllAsRead: () => void;
   clearAll: () => void;
@@ -52,6 +57,18 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
 
 const STORAGE_KEY = "uch_realtime_notifications";
 const READ_IDS_STORAGE_KEY = "uch_read_notification_ids";
+
+function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+  const rawData = window.atob(base64);
+  const buffer = new ArrayBuffer(rawData.length);
+  const outputArray = new Uint8Array(buffer);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
 
 function playNotificationSound() {
   if (typeof window === "undefined") return;
@@ -115,6 +132,9 @@ export function NotificationProvider({
     useState<NotificationPermission>("default");
   const [isSupported, setIsSupported] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [isPushSubscribed, setIsPushSubscribed] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const addNotificationRef = useRef<
@@ -128,6 +148,28 @@ export function NotificationProvider({
       setIsSupported(supported);
       if (supported) {
         setPermission(Notification.permission);
+      }
+
+      const iosDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      setIsIOS(iosDevice);
+      const standaloneMode =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        ("standalone" in window.navigator &&
+          Boolean(
+            (window.navigator as unknown as { standalone: boolean }).standalone,
+          ));
+      setIsStandalone(standaloneMode);
+
+      // Check existing service worker push subscription
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.ready
+          .then((reg) => {
+            return reg.pushManager.getSubscription();
+          })
+          .then((sub) => {
+            setIsPushSubscribed(Boolean(sub));
+          })
+          .catch(() => {});
       }
 
       try {
@@ -152,6 +194,93 @@ export function NotificationProvider({
     }
   }, []);
 
+  const subscribeToPush = useCallback(async () => {
+    if (
+      typeof window === "undefined" ||
+      !("serviceWorker" in navigator) ||
+      !("PushManager" in window)
+    ) {
+      return false;
+    }
+
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      if (!reg) return false;
+
+      // 1. Fetch VAPID public key
+      const vapidRes = await apiClient.get<
+        ApiEnvelope<{ vapid_public_key: string }>
+      >("/notifications/vapid-key");
+      const vapidKey = vapidRes.data?.data?.vapid_public_key;
+      if (!vapidKey) return false;
+
+      // 2. Subscribe via PushManager
+      let subscription = await reg.pushManager.getSubscription();
+      if (!subscription) {
+        subscription = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey:
+            urlBase64ToUint8Array(vapidKey) as unknown as BufferSource,
+        });
+      }
+
+      // 3. Register to backend
+      if (subscription && user) {
+        const rawSub = subscription.toJSON();
+        await apiClient.post("/notifications/subscribe", {
+          endpoint: subscription.endpoint,
+          keys: {
+            p256dh: rawSub.keys?.p256dh,
+            auth: rawSub.keys?.auth,
+          },
+        });
+        setIsPushSubscribed(true);
+        return true;
+      }
+    } catch (err) {
+      console.warn("Push subscription failed:", err);
+    }
+    return false;
+  }, [user]);
+
+  const unsubscribeFromPush = useCallback(async () => {
+    if (
+      typeof window === "undefined" ||
+      !("serviceWorker" in navigator) ||
+      !("PushManager" in window)
+    ) {
+      return false;
+    }
+
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const subscription = await reg.pushManager.getSubscription();
+      if (subscription) {
+        await apiClient.post("/notifications/unsubscribe", {
+          endpoint: subscription.endpoint,
+        });
+        await subscription.unsubscribe();
+        setIsPushSubscribed(false);
+        return true;
+      }
+    } catch (err) {
+      console.warn("Push unsubscribe failed:", err);
+    }
+    return false;
+  }, []);
+
+  // Auto-subscribe to Web Push if permission is granted and user is logged in
+  useEffect(() => {
+    if (
+      user &&
+      typeof window !== "undefined" &&
+      "Notification" in window &&
+      Notification.permission === "granted"
+    ) {
+      subscribeToPush();
+    }
+  }, [user?.id, subscribeToPush]);
+
   const requestPermission = useCallback(async () => {
     if (typeof window === "undefined" || !("Notification" in window)) {
       return "denied" as NotificationPermission;
@@ -160,16 +289,25 @@ export function NotificationProvider({
       const perm = await Notification.requestPermission();
       setPermission(perm);
       if (perm === "granted") {
-        toast.success("Notifikasi PWA Berhasil Diaktifkan", {
+        toast.success("Notifikasi Berhasil Diaktifkan", {
           description:
-            "Anda akan menerima pembaruan instan status pemesanan ruangan dan check-in.",
+            "Anda akan menerima pemberitahuan langsung bahkan saat aplikasi sedang ditutup.",
         });
+        await subscribeToPush();
+
+        if (isIOS && !isStandalone) {
+          toast.info("Tips Layar Kunci iPhone", {
+            description:
+              "Ketuk tombol 'Share' Safari lalu 'Tambahkan ke Layar Utama' (Add to Home Screen) agar notifikasi muncul saat HP terkunci.",
+            duration: 8000,
+          });
+        }
       }
       return perm;
     } catch {
       return "denied" as NotificationPermission;
     }
-  }, []);
+  }, [subscribeToPush, isIOS, isStandalone]);
 
   const addNotification = useCallback(
     (item: Omit<AppNotification, "id" | "timeLabel">) => {
@@ -619,7 +757,12 @@ export function NotificationProvider({
         permission,
         isSupported,
         isConnected,
+        isPushSubscribed,
+        isIOS,
+        isStandalone,
         requestPermission,
+        subscribeToPush,
+        unsubscribeFromPush,
         markAsRead,
         markAllAsRead,
         clearAll,

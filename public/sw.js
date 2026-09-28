@@ -1,4 +1,4 @@
-const CACHE_NAME = "uch-pwa-v1";
+const CACHE_NAME = "uch-pwa-v2";
 const ASSETS_TO_CACHE = [
   "/",
   "/manifest.webmanifest",
@@ -69,5 +69,73 @@ self.addEventListener("fetch", (event) => {
 
       return cachedResponse || fetchPromise;
     }),
+  );
+});
+
+// Web Push Notifications Event Listener (Background delivery even when app is closed)
+self.addEventListener("push", (event) => {
+  let data = {
+    title: "Creative Hub UCH",
+    message: "Ada pembaruan status peminjaman ruangan.",
+    url: "/my-bookings",
+  };
+
+  if (event.data) {
+    try {
+      data = event.data.json();
+    } catch {
+      data.message = event.data.text();
+    }
+  }
+
+  const title = data.title || "Creative Hub UCH";
+  const body = data.message || data.body || "Pembaruan status reservasi.";
+  const url = data.url || "/my-bookings";
+
+  const options = {
+    body: body,
+    icon: "/icons/icon-192x192.png",
+    badge: "/icons/icon-192x192.png",
+    vibrate: [200, 100, 200],
+    tag: data.bookingId ? `booking-${data.bookingId}` : "uch-notification",
+    renotify: true,
+    data: {
+      url: url,
+      timestamp: data.timestamp || Date.now(),
+    },
+    actions: [
+      {
+        action: "open",
+        title: "Buka",
+      },
+    ],
+  };
+
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Click notification handler (Focus existing window or open new window)
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  const targetUrl = event.notification.data?.url || "/my-bookings";
+
+  event.waitUntil(
+    clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((windowClients) => {
+        for (const client of windowClients) {
+          if ("focus" in client) {
+            client.focus();
+            if ("navigate" in client) {
+              return client.navigate(targetUrl);
+            }
+            return client;
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow(targetUrl);
+        }
+      }),
   );
 });
