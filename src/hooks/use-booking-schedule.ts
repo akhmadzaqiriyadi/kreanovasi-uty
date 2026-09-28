@@ -151,7 +151,7 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
 
       return {
         state: "available_partial",
-        label: `${roomBookings.length} Sesi Terisi (Tersedia Sebagian)`,
+        label: `${roomBookings.length} Sesi Terisi`,
         badgeClass:
           "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200 dark:border-blue-800",
         bookings: roomBookings,

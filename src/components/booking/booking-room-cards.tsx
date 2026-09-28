@@ -35,9 +35,10 @@ export function BookingRoomCards({
 
   return (
     <section
+      id="rooms-catalog"
       ref={sectionRef}
       aria-labelledby="rooms-heading"
-      className="w-full py-12 sm:py-16 bg-background"
+      className="w-full py-12 sm:py-16 scroll-mt-24 sm:scroll-mt-28 bg-background"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-8 sm:space-y-12">
         {/* Section Header */}

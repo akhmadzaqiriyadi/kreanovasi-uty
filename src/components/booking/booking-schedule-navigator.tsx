@@ -54,7 +54,7 @@ export function BookingScheduleNavigator({
       id="schedule-navigator"
       ref={sectionRef}
       aria-labelledby="schedule-heading"
-      className="w-full py-12 sm:py-16 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40"
+      className="w-full py-12 sm:py-16 scroll-mt-24 sm:scroll-mt-28 bg-gradient-to-b from-background via-slate-50/50 to-background dark:via-zinc-950/40"
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl space-y-10">
         {/* Section Header */}
@@ -244,48 +244,53 @@ export function BookingScheduleNavigator({
               >
                 <div>
                   {/* Card Header with Room Info & Status Badge */}
-                  <div className="p-5 sm:p-6 border-b border-border/50 bg-slate-50/70 dark:bg-zinc-800/30 flex items-start justify-between gap-3">
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-11 h-11 rounded-2xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-blue-300 shrink-0">
+                  <div className="p-4 sm:p-6 border-b border-border/50 bg-slate-50/70 dark:bg-zinc-800/30 space-y-2.5">
+                    {/* Top Row: Type and Status Badge */}
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-[11px] font-bold text-secondary uppercase tracking-wider truncate">
+                        {room.type}
+                      </span>
+
+                      {/* Status Badge */}
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold shrink-0 shadow-2xs whitespace-nowrap",
+                          availability.badgeClass,
+                        )}
+                      >
+                        {availability.state === "available_full" && (
+                          <CheckCircle className="w-3.5 h-3.5" />
+                        )}
+                        {availability.state === "available_partial" && (
+                          <Clock className="w-3.5 h-3.5" />
+                        )}
+                        {(availability.state === "occupied_full" ||
+                          availability.state === "closed") && (
+                          <AlertCircle className="w-3.5 h-3.5" />
+                        )}
+                        <span>{availability.label}</span>
+                      </span>
+                    </div>
+
+                    {/* Room Info */}
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-blue-300 shrink-0 mt-0.5 shadow-2xs">
                         <Building className="w-5 h-5" />
                       </div>
-                      <div>
-                        <span className="text-[11px] font-bold text-secondary uppercase tracking-wider block mb-0.5">
-                          {room.type}
-                        </span>
-                        <h4 className="text-lg sm:text-xl font-bold text-foreground">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-base sm:text-xl font-bold text-foreground leading-snug">
                           {room.name}
                         </h4>
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                          <span className="inline-flex items-center gap-1">
-                            <Users className="w-3.5 h-3.5" />
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground mt-1 font-medium">
+                          <span className="inline-flex items-center gap-1 shrink-0">
+                            <Users className="w-3.5 h-3.5 text-primary/70" />
                             {room.capacity}
                           </span>
-                          <span>•</span>
-                          <span>{room.location}</span>
+                          <span className="shrink-0">•</span>
+                          <span className="truncate">{room.location}</span>
                         </div>
                       </div>
                     </div>
-
-                    {/* Status Badge */}
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shrink-0",
-                        availability.badgeClass,
-                      )}
-                    >
-                      {availability.state === "available_full" && (
-                        <CheckCircle className="w-3.5 h-3.5" />
-                      )}
-                      {availability.state === "available_partial" && (
-                        <Clock className="w-3.5 h-3.5" />
-                      )}
-                      {(availability.state === "occupied_full" ||
-                        availability.state === "closed") && (
-                        <AlertCircle className="w-3.5 h-3.5" />
-                      )}
-                      {availability.label}
-                    </span>
                   </div>
 
                   {/* Schedule Sessions on this Date */}
