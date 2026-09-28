@@ -276,11 +276,19 @@ export function NotificationProvider({
 
       const token = getLocalAccessToken();
       const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const host = window.location.hostname;
-      // Connect to backend port 8080 or custom WS URL
+      const isLocalhost =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1";
+
+      // If local dev environment, connect to local backend port 8080.
+      // In production/staging (campus domain or VPS IP), connect directly via window.location.host.
+      const hostWithPort = isLocalhost
+        ? `${window.location.hostname}:8080`
+        : window.location.host;
+
       const wsUrl =
         process.env.NEXT_PUBLIC_WS_URL ||
-        `${wsProtocol}//${host}:8080/api/v1/ws${token ? `?token=${encodeURIComponent(token)}` : ""}`;
+        `${wsProtocol}//${hostWithPort}/api/v1/ws${token ? `?token=${encodeURIComponent(token)}` : ""}`;
 
       try {
         const ws = new WebSocket(wsUrl);
