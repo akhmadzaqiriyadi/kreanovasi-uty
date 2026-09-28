@@ -90,7 +90,7 @@ export function DesktopNav({ scrolled, ref }: DesktopNavProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="start"
-              className="w-64 glass-panel border-border/50 p-1.5 space-y-1"
+              className="w-72 max-w-[calc(100vw-2rem)] glass-panel border-border/50 p-1.5 space-y-1"
             >
               {programItems.map((item) => {
                 if (item.disabled) {
@@ -111,12 +111,12 @@ export function DesktopNav({ scrolled, ref }: DesktopNavProps) {
                       href={item.href}
                       target={item.external ? "_blank" : undefined}
                       rel={item.external ? "noopener noreferrer" : undefined}
-                      className="flex items-center justify-between w-full px-3 py-2 text-xs md:text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                      className="flex items-center justify-between gap-2 w-full px-3 py-2 text-xs md:text-sm font-medium rounded-md hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer text-left"
                     >
-                      <span>{item.label}</span>
+                      <span className="leading-snug">{item.label}</span>
                       {item.external && (
                         <ExternalLink
-                          className="h-3.5 w-3.5 text-muted-foreground"
+                          className="h-3.5 w-3.5 text-muted-foreground shrink-0"
                           aria-hidden="true"
                         />
                       )}

@@ -586,19 +586,21 @@ export function BookingNewFormPage() {
                         <SelectTrigger className="h-12 rounded-xl border border-border bg-white dark:bg-zinc-800 text-xs sm:text-sm font-medium">
                           <SelectValue placeholder="Pilih ruangan yang ingin dipinjam" />
                         </SelectTrigger>
-                        <SelectContent className="rounded-xl">
+                        <SelectContent className="rounded-xl max-w-[calc(100vw-2rem)]">
                           {rooms.map((room) => (
                             <SelectItem
                               key={room.id}
                               value={room.id}
                               className="py-2.5 text-xs sm:text-sm cursor-pointer"
                             >
-                              <span className="font-bold text-foreground">
-                                {room.name}
-                              </span>{" "}
-                              <span className="text-muted-foreground text-xs">
-                                ({room.capacity} • {room.location})
-                              </span>
+                              <div className="flex flex-col text-left">
+                                <span className="font-bold text-foreground leading-tight">
+                                  {room.name}
+                                </span>
+                                <span className="text-muted-foreground text-[11px] mt-0.5">
+                                  {room.capacity} • {room.location}
+                                </span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>

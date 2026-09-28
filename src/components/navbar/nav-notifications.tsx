@@ -102,7 +102,7 @@ export function NavNotifications() {
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-80 sm:w-96 p-0 rounded-2xl shadow-2xl border-border/80 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md overflow-hidden"
+        className="w-[calc(100vw-2rem)] max-w-sm sm:w-96 p-0 rounded-2xl shadow-2xl border-border/80 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md overflow-hidden"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3.5 border-b border-border/60 bg-slate-50/70 dark:bg-zinc-800/40">

@@ -203,6 +203,12 @@
     overflow: hidden !important;
   }
 
+  /* Mencegah dropdown, select, dan popover Radix melebar melewati batas layar mobile */
+  [data-radix-popper-content-wrapper] {
+    max-width: calc(100vw - 1rem) !important;
+    box-sizing: border-box !important;
+  }
+
   /* Modern scrollbar styling */
   ::-webkit-scrollbar {
     width: 8px;

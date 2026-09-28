@@ -70,7 +70,7 @@ export function NavUserMenu() {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-64 p-1.5 rounded-2xl shadow-2xl border-border/80 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md"
+        className="w-64 max-w-[calc(100vw-2rem)] p-1.5 rounded-2xl shadow-2xl border-border/80 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md"
       >
         {/* User Identity Header */}
         <div className="p-3 bg-slate-50/70 dark:bg-zinc-800/40 rounded-xl mb-1 border border-border/50">
