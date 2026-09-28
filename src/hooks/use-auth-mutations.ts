@@ -171,6 +171,25 @@ export function useLogoutMutation(options?: { onSuccess?: () => void }) {
 
   return useMutation({
     mutationFn: async () => {
+      // 1. Unregister Web Push on logout so background pushes stop for this user
+      if (typeof window !== "undefined" && "serviceWorker" in navigator) {
+        try {
+          const reg = await navigator.serviceWorker.ready;
+          const sub = await reg.pushManager.getSubscription();
+          if (sub) {
+            await apiClient
+              .post("/notifications/unsubscribe", {
+                endpoint: sub.endpoint,
+              })
+              .catch(() => {});
+            await sub.unsubscribe().catch(() => {});
+          }
+        } catch {
+          // ignore push unsubscribe failure
+        }
+      }
+
+      // 2. Call backend logout
       try {
         await apiClient.post("/auth/logout");
       } catch {

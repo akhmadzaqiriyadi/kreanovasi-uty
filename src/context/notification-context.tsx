@@ -55,8 +55,13 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
   undefined,
 );
 
-const STORAGE_KEY = "uch_realtime_notifications";
-const READ_IDS_STORAGE_KEY = "uch_read_notification_ids";
+function getUserStorageKey(userId?: string) {
+  return userId ? `uch_notifications_${userId}` : null;
+}
+
+function getUserReadIdsKey(userId?: string) {
+  return userId ? `uch_read_ids_${userId}` : null;
+}
 
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -172,27 +177,52 @@ export function NotificationProvider({
           .catch(() => {});
       }
 
-      try {
-        const storedReadIds = localStorage.getItem(READ_IDS_STORAGE_KEY);
-        if (storedReadIds) {
-          setReadIds(JSON.parse(storedReadIds));
-        }
-
-        const cached = localStorage.getItem(STORAGE_KEY);
-        if (cached) {
-          const parsed = JSON.parse(cached) as AppNotification[];
-          setNotifications(
-            parsed.map((n) => ({
-              ...n,
-              timeLabel: formatRelativeTime(n.timestamp),
-            })),
-          );
-        }
-      } catch {
-        // ignore parse error
-      }
     }
   }, []);
+
+  // Synchronize notifications per authenticated user (prevents leakage across logout / account switch)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Clean up old legacy un-scoped key if present
+    localStorage.removeItem("uch_realtime_notifications");
+    localStorage.removeItem("uch_read_notification_ids");
+
+    if (!user) {
+      // User is logged out: completely clear in-memory notifications
+      setNotifications([]);
+      setReadIds([]);
+      return;
+    }
+
+    const storageKey = getUserStorageKey(user.id);
+    const readIdsKey = getUserReadIdsKey(user.id);
+    if (!storageKey || !readIdsKey) return;
+
+    try {
+      const storedReadIds = localStorage.getItem(readIdsKey);
+      if (storedReadIds) {
+        setReadIds(JSON.parse(storedReadIds));
+      } else {
+        setReadIds([]);
+      }
+
+      const cached = localStorage.getItem(storageKey);
+      if (cached) {
+        const parsed = JSON.parse(cached) as AppNotification[];
+        setNotifications(
+          parsed.map((n) => ({
+            ...n,
+            timeLabel: formatRelativeTime(n.timestamp),
+          })),
+        );
+      } else {
+        setNotifications([]);
+      }
+    } catch {
+      // ignore parse error
+    }
+  }, [user?.id]);
 
   const subscribeToPush = useCallback(async () => {
     if (
@@ -328,9 +358,10 @@ export function NotificationProvider({
             ),
         );
         const updated = [newNotif, ...filtered].slice(0, 40);
-        if (typeof window !== "undefined") {
+        if (typeof window !== "undefined" && user?.id) {
           try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+            const key = getUserStorageKey(user.id);
+            if (key) localStorage.setItem(key, JSON.stringify(updated));
           } catch {
             // ignore
           }
@@ -408,41 +439,50 @@ export function NotificationProvider({
     addNotificationRef.current = addNotification;
   }, [addNotification]);
 
-  const markAsRead = useCallback((id: string) => {
-    setReadIds((prev) => {
-      const updated = prev.includes(id) ? prev : [...prev, id];
-      if (typeof window !== "undefined") {
-        try {
-          localStorage.setItem(READ_IDS_STORAGE_KEY, JSON.stringify(updated));
-        } catch {
-          // ignore
+  const markAsRead = useCallback(
+    (id: string) => {
+      setReadIds((prev) => {
+        const updated = prev.includes(id) ? prev : [...prev, id];
+        if (typeof window !== "undefined" && user?.id) {
+          try {
+            const key = getUserReadIdsKey(user.id);
+            if (key) localStorage.setItem(key, JSON.stringify(updated));
+          } catch {
+            // ignore
+          }
         }
-      }
-      return updated;
-    });
+        return updated;
+      });
 
-    setNotifications((prev) => {
-      const updated = prev.map((n) => (n.id === id ? { ...n, read: true } : n));
-      if (typeof window !== "undefined") {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-        } catch {
-          // ignore
+      setNotifications((prev) => {
+        const updated = prev.map((n) =>
+          n.id === id ? { ...n, read: true } : n,
+        );
+        if (typeof window !== "undefined" && user?.id) {
+          try {
+            const key = getUserStorageKey(user.id);
+            if (key) localStorage.setItem(key, JSON.stringify(updated));
+          } catch {
+            // ignore
+          }
         }
-      }
-      return updated;
-    });
-  }, []);
+        return updated;
+      });
+    },
+    [user?.id],
+  );
 
   const markAllAsRead = useCallback(() => {
     setNotifications((prev) => {
       const updated = prev.map((n) => ({ ...n, read: true }));
       const allIds = prev.map((n) => n.id);
       setReadIds(allIds);
-      if (typeof window !== "undefined") {
+      if (typeof window !== "undefined" && user?.id) {
         try {
-          localStorage.setItem(READ_IDS_STORAGE_KEY, JSON.stringify(allIds));
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+          const readKey = getUserReadIdsKey(user.id);
+          const notifKey = getUserStorageKey(user.id);
+          if (readKey) localStorage.setItem(readKey, JSON.stringify(allIds));
+          if (notifKey) localStorage.setItem(notifKey, JSON.stringify(updated));
         } catch {
           // ignore
         }
@@ -450,19 +490,20 @@ export function NotificationProvider({
       return updated;
     });
     toast.success("Semua notifikasi telah ditandai sudah dibaca");
-  }, []);
+  }, [user?.id]);
 
   const clearAll = useCallback(() => {
     setNotifications([]);
-    if (typeof window !== "undefined") {
+    if (typeof window !== "undefined" && user?.id) {
       try {
-        localStorage.removeItem(STORAGE_KEY);
+        const notifKey = getUserStorageKey(user.id);
+        if (notifKey) localStorage.removeItem(notifKey);
       } catch {
         // ignore
       }
     }
     toast.info("Riwayat notifikasi telah dibersihkan");
-  }, []);
+  }, [user?.id]);
 
   // Synchronize actual booking statuses from backend into notifications
   useEffect(() => {
@@ -471,10 +512,12 @@ export function NotificationProvider({
     let isMounted = true;
 
     async function syncBookingsNotifications() {
+      if (!user) return;
       try {
-        const storedReadIds: string[] = JSON.parse(
-          localStorage.getItem(READ_IDS_STORAGE_KEY) || "[]",
-        );
+        const readIdsKey = getUserReadIdsKey(user.id);
+        const storedReadIds: string[] = readIdsKey
+          ? JSON.parse(localStorage.getItem(readIdsKey) || "[]")
+          : [];
 
         const synthesized: AppNotification[] = [];
 
@@ -560,14 +603,19 @@ export function NotificationProvider({
 
         if (isMounted && synthesized.length > 0) {
           setNotifications((prev) => {
-            // Merge synthesized with existing real-time notifications
+            // Source of truth is synthesized from this user's actual database bookings
             const combinedMap = new Map<string, AppNotification>();
             for (const item of synthesized) {
               combinedMap.set(item.id, item);
             }
+            // Only preserve in-memory notifications that match this user's bookings
             for (const item of prev) {
-              // Real-time notifications take precedence or preserve state
-              combinedMap.set(item.id, item);
+              if (
+                item.bookingId &&
+                synthesized.some((s) => s.bookingId === item.bookingId)
+              ) {
+                combinedMap.set(item.id, item);
+              }
             }
 
             const merged = Array.from(combinedMap.values())
@@ -578,10 +626,13 @@ export function NotificationProvider({
               )
               .slice(0, 40);
 
-            try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-            } catch {
-              // ignore
+            if (user?.id && typeof window !== "undefined") {
+              try {
+                const key = getUserStorageKey(user.id);
+                if (key) localStorage.setItem(key, JSON.stringify(merged));
+              } catch {
+                // ignore
+              }
             }
             return merged;
           });
