@@ -14,32 +14,31 @@ export interface ProgramItem {
  * Global navigation configurations
  */
 export const navItems: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
-  { label: "Booking", href: "/booking" },
+  { label: "Beranda", href: "/" },
+  { label: "Ruangan", href: "/booking" },
+  { label: "Booking Saya", href: "/my-bookings" },
+  { label: "Event", href: "/events" },
   { label: "Artikel", href: "/articles" },
-  { label: "Events", href: "/events" },
+  { label: "Tentang", href: "/about" },
 ];
 
 export const programItems: ProgramItem[] = [
   {
-    label: "Pendampingan Kreativitas Mahasiswa",
+    label: "Pendampingan Kreativitas Mahasiswa (PKM)",
     href: "https://bit.ly/PKMCornerUTY",
     external: true,
   },
   {
-    label: "Sentra Kekayaan Intelektual",
+    label: "Sentra Kekayaan Intelektual (HKI)",
     href: "https://sentra-hki.uty.ac.id/",
     external: true,
   },
   {
-    label: "Hilirisasi Riset",
-    href: "#",
-    disabled: true,
+    label: "Inkubasi & Startup Pitch Fest",
+    href: "/events",
   },
   {
     label: "UTY Fastlab Academy",
-    href: "/fastlab",
-    external: true,
+    href: "/articles/eksplorasi-iot-dan-smart-hardware-di-fastlab-academy",
   },
 ];

@@ -72,6 +72,33 @@ for (const vp of VIEWPORTS) {
           overflowInfo.hasOverflow,
           `Page ${p.path} has horizontal overflow: ${JSON.stringify(overflowInfo)}`,
         ).toBe(false);
+
+        // Verify footer is rendered and fully visible (no opacity: 0 bug)
+        const footerLocator = page.locator("#site-footer");
+        await expect(footerLocator).toBeVisible();
+
+        const footerInfo = await page.evaluate(() => {
+          const footer = document.querySelector("#site-footer");
+          if (!footer) return { exists: false, opacity: 0, childrenCount: 0 };
+          const style = window.getComputedStyle(footer);
+          const grid = footer.querySelector(".grid");
+          return {
+            exists: true,
+            opacity: parseFloat(style.opacity || "1"),
+            childrenCount: grid ? grid.children.length : 0,
+          };
+        });
+        expect(footerInfo.exists, `Footer missing on page ${p.path}`).toBe(
+          true,
+        );
+        expect(
+          footerInfo.opacity,
+          `Footer opacity < 0.9 on page ${p.path}`,
+        ).toBeGreaterThan(0.9);
+        expect(
+          footerInfo.childrenCount,
+          `Footer columns missing on page ${p.path}`,
+        ).toBe(4);
       });
     }
 

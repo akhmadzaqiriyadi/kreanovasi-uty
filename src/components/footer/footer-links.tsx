@@ -1,20 +1,20 @@
 import Link from "next/link";
 
 const quickLinks = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About Us" },
-  { href: "/programs", label: "Programs" },
-  { href: "/articles", label: "News" },
-  { href: "/events", label: "Events" },
-  { href: "/booking", label: "Book Space" },
+  { href: "/", label: "Beranda" },
+  { href: "/booking", label: "Peminjaman Ruangan" },
+  { href: "/my-bookings", label: "Booking Saya" },
+  { href: "/events", label: "Event & Workshop" },
+  { href: "/articles", label: "Berita & Inovasi" },
+  { href: "/about", label: "Tentang UTY Creative Hub" },
 ];
 
 const programLinks = [
-  { href: "/programs/workshops", label: "Workshops & Training" },
-  { href: "/programs/startup", label: "Startup Incubation" },
-  { href: "/programs/mentorship", label: "Mentorship" },
-  { href: "/programs/competition", label: "Competition" },
-  { href: "/programs/community", label: "Community Events" },
+  { href: "/events", label: "Workshop & Pelatihan" },
+  { href: "/events", label: "Inkubasi & Startup Pitch" },
+  { href: "/events", label: "Klinik Proposal PKM" },
+  { href: "/articles", label: "Riset & Karya Inovasi" },
+  { href: "/booking", label: "Fasilitas Coworking & FastLab" },
 ];
 
 export function FooterQuickLinks() {
@@ -27,7 +27,7 @@ export function FooterQuickLinks() {
         id="footer-quicklinks-title"
         className="text-sm sm:text-base font-bold text-primary tracking-tight"
       >
-        Quick Links
+        Menu Navigasi
       </h3>
       <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm">
         {quickLinks.map((link) => (
@@ -55,7 +55,7 @@ export function FooterProgramLinks() {
         id="footer-programs-title"
         className="text-sm sm:text-base font-bold text-primary tracking-tight"
       >
-        Our Programs
+        Program Unggulan
       </h3>
       <ul className="space-y-2 sm:space-y-2.5 text-xs sm:text-sm">
         {programLinks.map((program) => (
