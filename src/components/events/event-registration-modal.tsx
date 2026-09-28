@@ -196,13 +196,13 @@ export function EventRegistrationModal({
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-border/50">
+              <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-border/50">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => onOpenChange(false)}
-                  className="rounded-xl text-xs h-9 px-4"
+                  className="rounded-xl text-xs h-9 px-4 cursor-pointer"
                 >
                   Batal
                 </Button>
@@ -210,7 +210,7 @@ export function EventRegistrationModal({
                   type="submit"
                   disabled={isSubmitting}
                   size="sm"
-                  className="rounded-xl text-xs h-9 px-5 gap-1.5"
+                  className="rounded-xl text-xs h-9 px-5 gap-1.5 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>
