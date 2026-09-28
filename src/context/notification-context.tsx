@@ -10,7 +10,9 @@ import {
 } from "react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/auth-context";
-import { getLocalAccessToken } from "@/lib/api-client";
+import type { BookingListResponse } from "@/hooks/use-booking-queries";
+import apiClient, { getLocalAccessToken } from "@/lib/api-client";
+import type { ApiEnvelope } from "@/types/auth";
 
 export interface AppNotification {
   id: string;
@@ -49,6 +51,7 @@ const NotificationContext = createContext<NotificationContextType | undefined>(
 );
 
 const STORAGE_KEY = "uch_realtime_notifications";
+const READ_IDS_STORAGE_KEY = "uch_read_notification_ids";
 
 function playNotificationSound() {
   if (typeof window === "undefined") return;
@@ -107,14 +110,18 @@ export function NotificationProvider({
 }) {
   const { user, isAdmin } = useAuth();
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
+  const [_readIds, setReadIds] = useState<string[]>([]);
   const [permission, setPermission] =
     useState<NotificationPermission>("default");
   const [isSupported, setIsSupported] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const addNotificationRef = useRef<
+    (item: Omit<AppNotification, "id" | "timeLabel">) => void
+  >(() => {});
 
-  // Initialize notifications from localStorage
+  // Initialize notifications & read IDs from localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       const supported = "Notification" in window;
@@ -124,6 +131,11 @@ export function NotificationProvider({
       }
 
       try {
+        const storedReadIds = localStorage.getItem(READ_IDS_STORAGE_KEY);
+        if (storedReadIds) {
+          setReadIds(JSON.parse(storedReadIds));
+        }
+
         const cached = localStorage.getItem(STORAGE_KEY);
         if (cached) {
           const parsed = JSON.parse(cached) as AppNotification[];
@@ -136,18 +148,6 @@ export function NotificationProvider({
         }
       } catch {
         // ignore parse error
-      }
-    }
-  }, []);
-
-  // Save notifications to localStorage on changes
-  const saveNotifications = useCallback((items: AppNotification[]) => {
-    setNotifications(items);
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(items.slice(0, 30)));
-      } catch {
-        // ignore storage errors
       }
     }
   }, []);
@@ -179,7 +179,26 @@ export function NotificationProvider({
         timeLabel: "Baru saja",
       };
 
-      saveNotifications([newNotif, ...notifications]);
+      setNotifications((prev) => {
+        // Filter out same booking + type duplicate
+        const filtered = prev.filter(
+          (p) =>
+            !(
+              p.bookingId &&
+              p.bookingId === item.bookingId &&
+              p.type === item.type
+            ),
+        );
+        const updated = [newNotif, ...filtered].slice(0, 40);
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+          } catch {
+            // ignore
+          }
+        }
+        return updated;
+      });
 
       // Play soft chime sound
       playNotificationSound();
@@ -243,27 +262,203 @@ export function NotificationProvider({
         }
       }
     },
-    [notifications, saveNotifications],
+    [],
   );
 
-  const markAsRead = useCallback(
-    (id: string) => {
-      saveNotifications(
-        notifications.map((n) => (n.id === id ? { ...n, read: true } : n)),
-      );
-    },
-    [notifications, saveNotifications],
-  );
+  // Keep addNotificationRef updated for WebSocket callbacks
+  useEffect(() => {
+    addNotificationRef.current = addNotification;
+  }, [addNotification]);
+
+  const markAsRead = useCallback((id: string) => {
+    setReadIds((prev) => {
+      const updated = prev.includes(id) ? prev : [...prev, id];
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(READ_IDS_STORAGE_KEY, JSON.stringify(updated));
+        } catch {
+          // ignore
+        }
+      }
+      return updated;
+    });
+
+    setNotifications((prev) => {
+      const updated = prev.map((n) => (n.id === id ? { ...n, read: true } : n));
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch {
+          // ignore
+        }
+      }
+      return updated;
+    });
+  }, []);
 
   const markAllAsRead = useCallback(() => {
-    saveNotifications(notifications.map((n) => ({ ...n, read: true })));
+    setNotifications((prev) => {
+      const updated = prev.map((n) => ({ ...n, read: true }));
+      const allIds = prev.map((n) => n.id);
+      setReadIds(allIds);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(READ_IDS_STORAGE_KEY, JSON.stringify(allIds));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch {
+          // ignore
+        }
+      }
+      return updated;
+    });
     toast.success("Semua notifikasi telah ditandai sudah dibaca");
-  }, [notifications, saveNotifications]);
+  }, []);
 
   const clearAll = useCallback(() => {
-    saveNotifications([]);
+    setNotifications([]);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // ignore
+      }
+    }
     toast.info("Riwayat notifikasi telah dibersihkan");
-  }, [saveNotifications]);
+  }, []);
+
+  // Synchronize actual booking statuses from backend into notifications
+  useEffect(() => {
+    if (!user || typeof window === "undefined") return;
+
+    let isMounted = true;
+
+    async function syncBookingsNotifications() {
+      try {
+        const storedReadIds: string[] = JSON.parse(
+          localStorage.getItem(READ_IDS_STORAGE_KEY) || "[]",
+        );
+
+        const synthesized: AppNotification[] = [];
+
+        // 1. Fetch user's own bookings
+        try {
+          const res = await apiClient.get<ApiEnvelope<BookingListResponse>>(
+            "/my-bookings?limit=25",
+          );
+          const bookings = res.data?.data?.bookings || [];
+
+          for (const b of bookings) {
+            let type: AppNotification["type"] = "info";
+            let title = "Pembaruan Reservasi";
+            let message = `Status reservasi ruangan ${b.room_name} adalah ${b.status}.`;
+
+            if (b.status === "approved") {
+              type = "booking_approved";
+              title = "Pemesanan Disetujui!";
+              message = `Pemesanan ${b.room_name} (${b.booking_date}, ${b.start_time}-${b.end_time} WIB) telah disetujui oleh Admin UCH.`;
+            } else if (b.status === "rejected") {
+              type = "booking_rejected";
+              title = "Pemesanan Ditolak";
+              message = `Pemesanan ${b.room_name} (${b.booking_date}) ditolak.${b.admin_notes ? ` Alasan: ${b.admin_notes}` : ""}`;
+            } else if (b.status === "completed") {
+              type = "booking_checked_in";
+              title = "Presensi Selesai (Check-In)";
+              message = `Presensi reservasi ${b.room_name} (ID: ${b.id}) berhasil diverifikasi di ruangan.`;
+            } else if (b.status === "pending") {
+              type = "booking_created";
+              title = "Menunggu Verifikasi Admin";
+              message = `Permohonan reservasi ${b.room_name} (${b.booking_date}) sedang ditinjau pengelola UCH.`;
+            }
+
+            const notifId = `db-booking-${b.id}-${b.status}`;
+            const isRead = storedReadIds.includes(notifId);
+
+            synthesized.push({
+              id: notifId,
+              type,
+              title,
+              message,
+              timestamp: b.updated_at || b.created_at,
+              timeLabel: formatRelativeTime(b.updated_at || b.created_at),
+              read: isRead,
+              bookingId: b.id,
+              roomName: b.room_name,
+              actionUrl: "/my-bookings",
+            });
+          }
+        } catch {
+          // ignore my-bookings error
+        }
+
+        // 2. If user is Admin, also fetch latest pending requests to review
+        if (isAdmin) {
+          try {
+            const adminRes = await apiClient.get<
+              ApiEnvelope<BookingListResponse>
+            >("/bookings?status=pending&limit=15");
+            const adminBookings = adminRes.data?.data?.bookings || [];
+
+            for (const ab of adminBookings) {
+              const notifId = `admin-pending-${ab.id}`;
+              const isRead = storedReadIds.includes(notifId);
+
+              synthesized.push({
+                id: notifId,
+                type: "booking_created",
+                title: "Permohonan Baru Menunggu Review",
+                message: `${ab.applicant_name} (${ab.applicant_role}) mengajukan peminjaman ${ab.room_name} (${ab.booking_date}, ${ab.start_time}-${ab.end_time} WIB).`,
+                timestamp: ab.created_at,
+                timeLabel: formatRelativeTime(ab.created_at),
+                read: isRead,
+                bookingId: ab.id,
+                roomName: ab.room_name,
+                actionUrl: "/admin",
+              });
+            }
+          } catch {
+            // ignore admin bookings error
+          }
+        }
+
+        if (isMounted && synthesized.length > 0) {
+          setNotifications((prev) => {
+            // Merge synthesized with existing real-time notifications
+            const combinedMap = new Map<string, AppNotification>();
+            for (const item of synthesized) {
+              combinedMap.set(item.id, item);
+            }
+            for (const item of prev) {
+              // Real-time notifications take precedence or preserve state
+              combinedMap.set(item.id, item);
+            }
+
+            const merged = Array.from(combinedMap.values())
+              .sort(
+                (a, b) =>
+                  new Date(b.timestamp).getTime() -
+                  new Date(a.timestamp).getTime(),
+              )
+              .slice(0, 40);
+
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+            } catch {
+              // ignore
+            }
+            return merged;
+          });
+        }
+      } catch {
+        // ignore sync error
+      }
+    }
+
+    syncBookingsNotifications();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id, isAdmin]);
 
   // WebSocket connection management
   useEffect(() => {
@@ -280,8 +475,6 @@ export function NotificationProvider({
         window.location.hostname === "localhost" ||
         window.location.hostname === "127.0.0.1";
 
-      // If local dev environment, connect to local backend port 8080.
-      // In production/staging (campus domain or VPS IP), connect directly via window.location.host.
       const hostWithPort = isLocalhost
         ? `${window.location.hostname}:8080`
         : window.location.host;
@@ -308,20 +501,22 @@ export function NotificationProvider({
             const { event: evtName, data } = payload;
 
             if (evtName === "booking:created") {
-              addNotification({
+              addNotificationRef.current({
                 type: "booking_created",
-                title: "Pemesanan Ruangan Baru",
+                title: isAdmin
+                  ? "Permohonan Ruangan Baru"
+                  : "Permohonan Diajukan",
                 message:
                   data.message ||
-                  `Pemesanan baru untuk ${data.room_name} oleh ${data.applicant_name}`,
+                  `Pemesanan untuk ${data.room_name} oleh ${data.applicant_name}`,
                 timestamp: new Date().toISOString(),
                 read: false,
                 bookingId: data.id,
                 roomName: data.room_name,
-                actionUrl: "/admin",
+                actionUrl: isAdmin ? "/admin" : "/my-bookings",
               });
             } else if (evtName === "booking:approved") {
-              addNotification({
+              addNotificationRef.current({
                 type: "booking_approved",
                 title: "Pemesanan Disetujui!",
                 message:
@@ -334,7 +529,7 @@ export function NotificationProvider({
                 actionUrl: "/my-bookings",
               });
             } else if (evtName === "booking:rejected") {
-              addNotification({
+              addNotificationRef.current({
                 type: "booking_rejected",
                 title: "Pemesanan Ditolak",
                 message:
@@ -347,7 +542,7 @@ export function NotificationProvider({
                 actionUrl: "/my-bookings",
               });
             } else if (evtName === "booking:checked_in") {
-              addNotification({
+              addNotificationRef.current({
                 type: "booking_checked_in",
                 title: "Check-in Presensi Berhasil",
                 message:
@@ -360,15 +555,21 @@ export function NotificationProvider({
                 actionUrl: isAdmin ? "/admin" : "/my-bookings",
               });
             } else if (evtName === "booking:updated") {
-              // Admin live status sync
-              addNotification({
-                type: "booking_updated",
+              addNotificationRef.current({
+                type:
+                  data.status === "approved"
+                    ? "booking_approved"
+                    : data.status === "rejected"
+                      ? "booking_rejected"
+                      : "booking_updated",
                 title: "Pembaruan Status Reservasi",
-                message: `Reservasi ${data.id} diperbarui: status ${data.status}`,
+                message:
+                  data.message ||
+                  `Reservasi ${data.room_name || data.id} diperbarui: ${data.status}`,
                 timestamp: new Date().toISOString(),
                 read: false,
                 bookingId: data.id,
-                actionUrl: "/admin",
+                actionUrl: isAdmin ? "/admin" : "/my-bookings",
               });
             }
           } catch {
@@ -379,7 +580,6 @@ export function NotificationProvider({
         ws.onclose = () => {
           setIsConnected(false);
           wsRef.current = null;
-          // Exponential reconnect
           if (!isUnmounted) {
             reconnectTimeoutRef.current = setTimeout(connectWebSocket, 4000);
           }
@@ -407,7 +607,7 @@ export function NotificationProvider({
         wsRef.current.close();
       }
     };
-  }, [addNotification, isAdmin, user?.id]);
+  }, [user?.id, isAdmin]);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 

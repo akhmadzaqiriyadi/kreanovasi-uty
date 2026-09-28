@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { bookingConfig } from "@/config/booking";
 import { studyPrograms } from "@/config/uty-faculties";
 import { useAuth } from "@/context/auth-context";
+import { useNotification } from "@/context/notification-context";
 import { useRooms } from "@/context/rooms-context";
 import {
   useCreateBookingMutation,
@@ -77,6 +78,7 @@ export function useNewBookingForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, isLoggedIn, isAuthLoading } = useAuth();
+  const { addNotification } = useNotification();
   const createBookingMutation = useCreateBookingMutation();
 
   const roomParam = searchParams.get("room") || "";
@@ -408,6 +410,17 @@ export function useNewBookingForm() {
           status: "pending",
         });
 
+        addNotification({
+          type: "booking_created",
+          title: "Permohonan Peminjaman Diajukan",
+          message: `ID: ${summary.bookingId} untuk ${roomName} (${values.date}, ${summary.timeSlot}). Menunggu verifikasi admin.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          bookingId: summary.bookingId,
+          roomName: roomName,
+          actionUrl: "/my-bookings",
+        });
+
         setSubmissionSuccess(summary);
         toast.success("Permohonan Peminjaman Berhasil Diajukan!", {
           description: `ID: ${summary.bookingId} untuk ruangan ${roomName}. Menunggu verifikasi admin.`,
@@ -428,7 +441,14 @@ export function useNewBookingForm() {
         setIsSubmitting(false);
       }
     },
-    [isLoggedIn, activeRoomsList, createBookingMutation, addBooking, router],
+    [
+      isLoggedIn,
+      activeRoomsList,
+      createBookingMutation,
+      addBooking,
+      addNotification,
+      router,
+    ],
   );
 
   return {
