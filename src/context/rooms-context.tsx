@@ -10,6 +10,9 @@ import {
   useState,
 } from "react";
 import { type RoomItem, roomsConfig } from "@/config/rooms";
+import type { BackendRoom } from "@/hooks/use-booking-queries";
+import apiClient from "@/lib/api-client";
+import type { ApiEnvelope } from "@/types/auth";
 
 export interface BookingItem {
   id: string;
@@ -125,6 +128,7 @@ interface RoomsContextType {
   rooms: RoomItem[];
   availableRooms: RoomItem[];
   isLoading: boolean;
+  refreshRooms: () => Promise<void>;
   addRoom: (
     room: Omit<RoomItem, "id" | "slug"> & { id?: string; slug?: string },
   ) => RoomItem;
@@ -152,6 +156,56 @@ interface RoomsContextType {
   deleteBooking: (id: string) => void;
 }
 
+function mapBackendRoomToItem(br: BackendRoom): RoomItem {
+  let facilitiesList: string[] = [];
+  if (Array.isArray(br.facilities)) {
+    facilitiesList = br.facilities;
+  } else if (typeof br.facilities === "string") {
+    try {
+      const parsed = JSON.parse(br.facilities);
+      if (Array.isArray(parsed)) {
+        facilitiesList = parsed;
+      } else {
+        facilitiesList = br.facilities.split(",").map((s) => s.trim());
+      }
+    } catch {
+      facilitiesList = br.facilities.split(",").map((s) => s.trim());
+    }
+  }
+
+  const state =
+    br.status === "available"
+      ? "available"
+      : br.status === "maintenance"
+        ? "maintenance"
+        : "in-use";
+
+  const label =
+    br.status === "available"
+      ? "Tersedia Sekarang"
+      : br.status === "maintenance"
+        ? "Pemeliharaan Rutin"
+        : "Sedang Digunakan";
+
+  return {
+    id: br.id,
+    slug: br.slug || br.id,
+    name: br.name,
+    type: br.category || "Fasilitas Kampus",
+    description: br.description || "",
+    capacity: `${br.capacity} Orang`,
+    location: br.location || "Gedung UCH UTY",
+    coverImage: br.image_url || "/images/coworking-space.jpg",
+    facilities: facilitiesList.length > 0 ? facilitiesList : ["Wi-Fi", "AC"],
+    status: {
+      state,
+      label,
+      timeSlotInfo: br.operational_hours || "08:00 - 17:00 WIB",
+    },
+    featured: true,
+  };
+}
+
 const RoomsContext = createContext<RoomsContextType | undefined>(undefined);
 
 export function RoomsProvider({ children }: { children: React.ReactNode }) {
@@ -159,7 +213,31 @@ export function RoomsProvider({ children }: { children: React.ReactNode }) {
   const [bookings, setBookings] = useState<BookingItem[]>(DEFAULT_BOOKINGS);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load from localStorage on client mount
+  // Fetch live rooms from backend API with localStorage fallback
+  const refreshRooms = useCallback(async () => {
+    try {
+      const res = await apiClient.get<ApiEnvelope<BackendRoom[]>>("/rooms");
+      if (
+        res.data?.data &&
+        Array.isArray(res.data.data) &&
+        res.data.data.length > 0
+      ) {
+        const mapped = res.data.data.map(mapBackendRoomToItem);
+        setRooms(mapped);
+        try {
+          localStorage.setItem(STORAGE_ROOMS_KEY, JSON.stringify(mapped));
+        } catch {
+          // ignore localStorage error
+        }
+      }
+    } catch (err) {
+      console.warn("Menggunakan data ruangan lokal / cache:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Load from localStorage & sync from backend on client mount
   useEffect(() => {
     try {
       const storedRooms = localStorage.getItem(STORAGE_ROOMS_KEY);
@@ -179,10 +257,11 @@ export function RoomsProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {
       console.error("Gagal membaca cache ruangan/booking:", err);
-    } finally {
-      setIsLoading(false);
     }
-  }, []);
+
+    // Always fetch live rooms from backend
+    refreshRooms();
+  }, [refreshRooms]);
 
   // Save rooms to localStorage
   const saveRooms = useCallback((newRooms: RoomItem[]) => {
@@ -355,6 +434,7 @@ export function RoomsProvider({ children }: { children: React.ReactNode }) {
         rooms,
         availableRooms,
         isLoading,
+        refreshRooms,
         addRoom,
         updateRoom,
         deleteRoom,

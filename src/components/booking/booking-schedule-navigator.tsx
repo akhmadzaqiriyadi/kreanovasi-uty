@@ -11,11 +11,13 @@ import {
   ChevronLeft,
   ChevronRight,
   Clock,
+  Loader2,
   User,
   Users,
 } from "lucide-react";
 import type React from "react";
 import { roomsConfig } from "@/config/rooms";
+import { useRooms } from "@/context/rooms-context";
 import type { useBookingSchedule } from "@/hooks/use-booking-schedule";
 import { cn } from "@/lib/utils";
 
@@ -40,9 +42,11 @@ export function BookingScheduleNavigator({
     selectToday,
     isTodaySelected,
     getRoomAvailability,
+    isLoading,
   } = scheduleController;
 
-  const rooms = roomsConfig.rooms;
+  const { rooms: contextRooms } = useRooms();
+  const rooms = contextRooms.length > 0 ? contextRooms : roomsConfig.rooms;
   const isSelectedToday = isTodaySelected;
 
   return (
@@ -189,12 +193,15 @@ export function BookingScheduleNavigator({
               <div className="text-xs font-semibold text-muted-foreground">
                 Ketersediaan Ruangan untuk:
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-foreground">
+              <h3 className="text-base sm:text-lg font-bold text-foreground flex items-center">
                 {format(selectedDate, "EEEE, d MMMM yyyy", { locale: id })}
                 {isSelectedToday && (
                   <span className="ml-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                     (Hari Ini)
                   </span>
+                )}
+                {isLoading && (
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin text-muted-foreground" />
                 )}
               </h3>
             </div>
@@ -299,8 +306,17 @@ export function BookingScheduleNavigator({
                                 <Clock className="w-3.5 h-3.5 text-amber-500" />
                                 {booking.startTime} — {booking.endTime} WIB
                               </span>
-                              <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300">
-                                Disetujui
+                              <span
+                                className={cn(
+                                  "text-[10px] font-semibold px-2 py-0.5 rounded-md",
+                                  booking.status === "pending"
+                                    ? "bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300"
+                                    : "bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300",
+                                )}
+                              >
+                                {booking.status === "pending"
+                                  ? "Menunggu Persetujuan"
+                                  : "Disetujui"}
                               </span>
                             </div>
 

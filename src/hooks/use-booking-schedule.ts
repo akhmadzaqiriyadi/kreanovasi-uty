@@ -6,6 +6,7 @@ import {
   generateInitialSchedule,
   type ScheduleItem,
 } from "@/config/booking-schedule";
+import { useAllOccupiedSlotsQuery } from "@/hooks/use-booking-queries";
 
 export type RoomAvailabilityState =
   | "available_full"
@@ -34,6 +35,34 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
     () => format(selectedDate, "yyyy-MM-dd"),
     [selectedDate],
   );
+
+  // Fetch real occupied slots from PostgreSQL backend for the selected date
+  const { data: serverBookings, isLoading: isSlotsLoading } =
+    useAllOccupiedSlotsQuery(formattedSelectedDate);
+
+  const liveScheduleItems = useMemo<ScheduleItem[]>(() => {
+    if (serverBookings && Array.isArray(serverBookings)) {
+      return serverBookings.map((b) => ({
+        id: b.id,
+        roomId: b.room_id,
+        roomName: b.room_name,
+        date: b.booking_date,
+        startTime: b.start_time,
+        endTime: b.end_time,
+        applicant: b.applicant_name,
+        purpose: b.purpose,
+        organization:
+          b.prodi ||
+          (b.applicant_role === "dosen"
+            ? "Dosen UTY"
+            : b.applicant_role === "umum"
+              ? "Mitra / Umum"
+              : "Mahasiswa UTY"),
+        status: b.status === "pending" ? "pending" : "approved",
+      }));
+    }
+    return [];
+  }, [serverBookings]);
 
   const weekDays = useMemo(
     () => Array.from({ length: 7 }, (_, i) => addDays(currentWeek, i)),
@@ -68,11 +97,17 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
   const getBookingsForDateAndRoom = useCallback(
     (roomId: string, targetDate: Date = selectedDate): ScheduleItem[] => {
       const dateStr = format(targetDate, "yyyy-MM-dd");
+      // If querying currently selected date and server returned data
+      if (dateStr === formattedSelectedDate && liveScheduleItems.length > 0) {
+        return liveScheduleItems
+          .filter((b) => b.roomId === roomId)
+          .sort((a, b) => a.startTime.localeCompare(b.startTime));
+      }
       return bookings
         .filter((b) => b.roomId === roomId && b.date === dateStr)
         .sort((a, b) => a.startTime.localeCompare(b.startTime));
     },
-    [bookings, selectedDate],
+    [bookings, formattedSelectedDate, liveScheduleItems, selectedDate],
   );
 
   const getRoomAvailability = useCallback(
@@ -153,5 +188,6 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
     getRoomAvailability,
     addBooking,
     isSameDay,
+    isLoading: isSlotsLoading,
   };
 }
