@@ -313,71 +313,89 @@ export function BookingNewFormPage() {
                   </div>
 
                   {/* TOGGLE: Gunakan data profil akun login */}
-                  <div className="flex items-center gap-2.5 bg-white dark:bg-zinc-800 py-1.5 px-3 rounded-xl border border-border/80 shadow-2xs self-start sm:self-auto">
+                  <div className="flex items-center justify-between sm:justify-start gap-2.5 bg-white dark:bg-zinc-800 py-1.5 px-3 rounded-xl border border-border/80 shadow-2xs w-full sm:w-auto">
+                    <Label
+                      htmlFor="profile-toggle"
+                      className="text-xs font-semibold text-foreground/80 cursor-pointer select-none order-1 sm:order-2"
+                    >
+                      Gunakan profil login saya
+                    </Label>
                     <Switch
                       id="profile-toggle"
                       checked={useLoggedInProfile}
                       onCheckedChange={handleToggleProfile}
+                      className="order-2 sm:order-1"
                     />
-                    <Label
-                      htmlFor="profile-toggle"
-                      className="text-xs font-semibold text-foreground/80 cursor-pointer select-none"
-                    >
-                      Gunakan profil login saya
-                    </Label>
                   </div>
                 </div>
 
                 {/* Switcher Kategori Pemohon: Mahasiswa vs Dosen vs Non-Civitas */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-                  <div className="flex flex-col xs:flex-row xs:items-center gap-2">
-                    <span className="text-xs font-semibold text-muted-foreground shrink-0">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-1">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+                    {/* Baris Label & Status khusus Mobile */}
+                    <div className="flex items-center justify-between gap-2 sm:hidden">
+                      <span className="text-xs font-semibold text-muted-foreground shrink-0">
+                        Kategori Pemohon:
+                      </span>
+                      <span className="text-[11px] font-medium text-muted-foreground truncate">
+                        Status:{" "}
+                        <strong className="text-foreground">
+                          {activeProfile.affiliation}
+                        </strong>
+                      </span>
+                    </div>
+
+                    {/* Label untuk Layar Desktop */}
+                    <span className="hidden sm:inline text-xs font-semibold text-muted-foreground shrink-0">
                       Kategori Pemohon:
                     </span>
-                    <div className="grid grid-cols-3 sm:inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-zinc-800 border border-border/60">
+
+                    {/* Pilihan Role Segmented Buttons */}
+                    <div className="grid grid-cols-3 sm:flex p-1 rounded-xl bg-slate-200/80 dark:bg-zinc-800 border border-border/60 w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={() => handleRoleChange("mahasiswa")}
                         className={cn(
-                          "flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          "flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0 select-none",
                           applicantRole === "mahasiswa"
                             ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
                         <GraduationCap className="w-3.5 h-3.5 shrink-0" />
-                        <span>Mahasiswa</span>
+                        <span className="truncate">Mahasiswa</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleRoleChange("dosen")}
                         className={cn(
-                          "flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          "flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0 select-none",
                           applicantRole === "dosen"
                             ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
                         <Briefcase className="w-3.5 h-3.5 shrink-0" />
-                        <span>Dosen</span>
+                        <span className="truncate">Dosen</span>
                       </button>
                       <button
                         type="button"
                         onClick={() => handleRoleChange("umum")}
                         className={cn(
-                          "flex items-center justify-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer",
+                          "flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer min-w-0 select-none",
                           applicantRole === "umum"
                             ? "bg-white dark:bg-zinc-900 text-primary dark:text-blue-400 shadow-xs"
                             : "text-muted-foreground hover:text-foreground",
                         )}
                       >
                         <Building2 className="w-3.5 h-3.5 shrink-0" />
-                        <span>Non-Civitas</span>
+                        <span className="truncate">Non-Civitas</span>
                       </button>
                     </div>
                   </div>
 
-                  <span className="text-[11px] font-medium text-muted-foreground">
+                  {/* Status untuk Layar Desktop */}
+                  <span className="hidden sm:inline text-[11px] font-medium text-muted-foreground shrink-0">
                     Status:{" "}
                     <strong className="text-foreground">
                       {activeProfile.affiliation}
@@ -389,48 +407,60 @@ export function BookingNewFormPage() {
                   /* Tampilan Profil Login Otomatis */
                   <div className="space-y-3">
                     <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                      <ShieldCheck className="w-4 h-4" />
-                      <span>
+                      <ShieldCheck className="w-4 h-4 shrink-0" />
+                      <span className="leading-snug">
                         Data profil akun ({activeProfile.roleLabel})
                         terverifikasi terisi otomatis
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                      <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
-                        <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
+                      <div className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60 min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5 truncate">
                           Nama {activeProfile.roleLabel}
                         </span>
-                        <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
+                        <span
+                          className="text-xs sm:text-sm font-bold text-foreground truncate block"
+                          title={activeProfile.name}
+                        >
                           {activeProfile.name}
                         </span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
-                        <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+                      <div className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60 min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5 truncate">
                           {activeProfile.idLabel}
                         </span>
-                        <span className="text-xs sm:text-sm font-bold text-foreground truncate block font-mono">
+                        <span
+                          className="text-xs sm:text-sm font-bold text-foreground truncate block font-mono"
+                          title={activeProfile.idNumber}
+                        >
                           {activeProfile.idNumber}
                         </span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
-                        <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+                      <div className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60 min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5 truncate">
                           {applicantRole === "umum"
                             ? "Asal Instansi"
                             : "Program Studi"}
                         </span>
-                        <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
+                        <span
+                          className="text-xs sm:text-sm font-bold text-foreground truncate block"
+                          title={activeProfile.prodi}
+                        >
                           {activeProfile.prodi}
                         </span>
                       </div>
 
-                      <div className="p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60">
-                        <span className="text-[11px] font-semibold text-muted-foreground block mb-0.5">
+                      <div className="p-2.5 sm:p-3 rounded-xl bg-white dark:bg-zinc-800 border border-border/60 min-w-0">
+                        <span className="text-[10px] sm:text-[11px] font-semibold text-muted-foreground block mb-0.5 truncate">
                           Email Terdaftar
                         </span>
-                        <span className="text-xs sm:text-sm font-bold text-foreground truncate block">
+                        <span
+                          className="text-xs sm:text-sm font-bold text-foreground truncate block"
+                          title={activeProfile.email}
+                        >
                           {activeProfile.email}
                         </span>
                       </div>
@@ -739,9 +769,9 @@ export function BookingNewFormPage() {
                     Rentang Waktu Pelaksanaan{" "}
                     <span className="text-rose-500">*</span>
                   </Label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                     {/* Jam Mulai */}
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
                         Jam Mulai
                       </span>
@@ -787,7 +817,7 @@ export function BookingNewFormPage() {
                     </div>
 
                     {/* Jam Selesai */}
-                    <div>
+                    <div className="min-w-0">
                       <span className="text-[11px] font-semibold text-muted-foreground block mb-1">
                         Jam Selesai
                       </span>

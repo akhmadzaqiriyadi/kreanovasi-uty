@@ -3,7 +3,7 @@
 import { DoorOpen, FileDown, Loader2, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,14 @@ import {
   DialogDescription,
   DialogTitle,
 } from "@/components/ui/dialog";
-import type { BackendRoom } from "@/hooks/use-booking-queries";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { type BackendRoom, useRoomsQuery } from "@/hooks/use-booking-queries";
 import { downloadRoomKioskPosterPdf } from "@/lib/pdf-generator";
 
 interface RoomKioskQrModalProps {
@@ -28,11 +35,24 @@ export function RoomKioskQrModal({
   onOpenChange,
 }: RoomKioskQrModalProps) {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const { data: serverRooms = [] } = useRoomsQuery();
+  const [selectedRoomId, setSelectedRoomId] = useState<string>(
+    room?.id || "coworking-space-hall",
+  );
 
-  const currentRoom = room || {
-    id: "coworking-space-hall",
-    name: "Coworking Space & Event Hall",
-  };
+  useEffect(() => {
+    if (room?.id) {
+      setSelectedRoomId(room.id);
+    }
+  }, [room?.id]);
+
+  const currentRoom =
+    serverRooms.find((r) => r.id === selectedRoomId) ||
+    room ||
+    serverRooms[0] || {
+      id: "coworking-space-hall",
+      name: "Coworking Space & Event Hall",
+    };
 
   const qrValue = `UCH-ROOM:${currentRoom.id}`;
 
@@ -97,7 +117,35 @@ export function RoomKioskQrModal({
         </div>
 
         {/* QR Body */}
-        <div className="p-4 sm:p-5 space-y-3.5 sm:space-y-4 bg-background text-center overflow-y-auto flex-1">
+        <div className="p-4 sm:p-5 space-y-3 sm:space-y-4 bg-background text-center overflow-y-auto flex-1">
+          {/* Room Selector */}
+          {serverRooms.length > 0 && (
+            <div className="text-left space-y-1">
+              <span className="text-[10px] sm:text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
+                Pilih Ruangan yang Ditampilkan:
+              </span>
+              <Select
+                value={currentRoom.id}
+                onValueChange={(val) => setSelectedRoomId(val)}
+              >
+                <SelectTrigger className="w-full h-10 rounded-xl bg-slate-50 dark:bg-zinc-800 border-border text-xs sm:text-sm font-bold">
+                  <SelectValue placeholder="Pilih Ruangan" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl">
+                  {serverRooms.map((r) => (
+                    <SelectItem
+                      key={r.id}
+                      value={r.id}
+                      className="text-xs sm:text-sm font-semibold cursor-pointer"
+                    >
+                      {r.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+
           <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-zinc-800/80 border-2 border-dashed border-primary/30 flex flex-col items-center justify-center space-y-3 sm:space-y-4 shadow-sm">
             <div className="p-3 sm:p-4 bg-white rounded-2xl shadow-md border border-slate-100 dark:border-zinc-700 flex items-center justify-center">
               <QRCodeSVG

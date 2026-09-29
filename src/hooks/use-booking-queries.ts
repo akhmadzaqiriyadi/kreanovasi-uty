@@ -370,10 +370,13 @@ export function useAdminCheckInMutation() {
       queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
       toast.success(
         `Check-in berhasil! Reservasi ${booking?.id} (${booking?.applicant_name}) kini telah tercatat presensi.`,
+        { id: "checkin-status-toast" },
       );
     },
     onError: (err: unknown) => {
-      toast.error(getErrorMessage(err, "Gagal memproses check-in"));
+      toast.error(getErrorMessage(err, "Gagal memproses check-in"), {
+        id: "checkin-status-toast",
+      });
     },
   });
 }
@@ -397,10 +400,13 @@ export function useSelfCheckInMutation() {
       queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
       toast.success(
         `Check-in mandiri berhasil! Selamat beraktivitas di ${booking?.room_name}.`,
+        { id: "checkin-status-toast" },
       );
     },
     onError: (err: unknown) => {
-      toast.error(getErrorMessage(err, "Gagal melakukan self check-in"));
+      toast.error(getErrorMessage(err, "Gagal melakukan self check-in"), {
+        id: "checkin-status-toast",
+      });
     },
   });
 }

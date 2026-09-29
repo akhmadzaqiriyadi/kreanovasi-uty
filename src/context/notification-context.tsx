@@ -341,16 +341,25 @@ export function NotificationProvider({
 
   const addNotification = useCallback(
     (item: Omit<AppNotification, "id" | "timeLabel">) => {
+      // 1. Guard: Unauthenticated guests must never receive or store notifications
+      if (!user) return;
+
+      // 2. Deterministic ID to avoid duplication with database sync
+      const deterministicId = item.bookingId
+        ? `notif-booking-${item.bookingId}-${item.type}`
+        : `notif-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+
       const newNotif: AppNotification = {
         ...item,
-        id: `notif-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+        id: deterministicId,
         timeLabel: "Baru saja",
       };
 
       setNotifications((prev) => {
-        // Filter out same booking + type duplicate
+        // Filter out same ID or same booking + type duplicate
         const filtered = prev.filter(
           (p) =>
+            p.id !== deterministicId &&
             !(
               p.bookingId &&
               p.bookingId === item.bookingId &&
@@ -372,12 +381,14 @@ export function NotificationProvider({
       // Play soft chime sound
       playNotificationSound();
 
-      // Show in-app Sonner toast
+      // Show in-app Sonner toast with deterministic ID to prevent stacking / double popups
+      const toastId = `toast-${deterministicId}`;
       if (
         item.type === "booking_approved" ||
         item.type === "booking_checked_in"
       ) {
         toast.success(item.title, {
+          id: toastId,
           description: item.message,
           action: item.actionUrl
             ? {
@@ -390,10 +401,12 @@ export function NotificationProvider({
         });
       } else if (item.type === "booking_rejected") {
         toast.error(item.title, {
+          id: toastId,
           description: item.message,
         });
       } else {
         toast.info(item.title, {
+          id: toastId,
           description: item.message,
           action: item.actionUrl
             ? {
@@ -551,8 +564,10 @@ export function NotificationProvider({
               message = `Permohonan reservasi ${b.room_name} (${b.booking_date}) sedang ditinjau pengelola UCH.`;
             }
 
-            const notifId = `db-booking-${b.id}-${b.status}`;
-            const isRead = storedReadIds.includes(notifId);
+            const notifId = `notif-booking-${b.id}-${type}`;
+            const isRead =
+              storedReadIds.includes(notifId) ||
+              storedReadIds.includes(`db-booking-${b.id}-${b.status}`);
 
             synthesized.push({
               id: notifId,
@@ -649,14 +664,24 @@ export function NotificationProvider({
     };
   }, [user?.id, isAdmin]);
 
-  // WebSocket connection management
+  // WebSocket connection management: ONLY active when user is authenticated
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Guard: Guests/logged-out visitors do not connect to WebSocket
+    if (!user) {
+      if (wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+      setIsConnected(false);
+      return;
+    }
 
     let isUnmounted = false;
 
     const connectWebSocket = () => {
-      if (isUnmounted) return;
+      if (isUnmounted || !user) return;
 
       const token = getLocalAccessToken();
       const wsProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -686,10 +711,21 @@ export function NotificationProvider({
 
         ws.onmessage = (event) => {
           try {
+            if (!user) return;
             const payload = JSON.parse(event.data);
             const { event: evtName, data } = payload;
+            if (!data) return;
+
+            // Security guard: prevent leaking notifications of other users
+            if (data.user_id && data.user_id !== user.id && !isAdmin) {
+              return;
+            }
 
             if (evtName === "booking:created") {
+              // Non-admin users only receive notification for their own newly created booking
+              if (!isAdmin && data.user_id && data.user_id !== user.id) {
+                return;
+              }
               addNotificationRef.current({
                 type: "booking_created",
                 title: isAdmin
@@ -705,6 +741,9 @@ export function NotificationProvider({
                 actionUrl: isAdmin ? "/admin" : "/my-bookings",
               });
             } else if (evtName === "booking:approved") {
+              if (!isAdmin && data.user_id && data.user_id !== user.id) {
+                return;
+              }
               addNotificationRef.current({
                 type: "booking_approved",
                 title: "Pemesanan Disetujui!",
@@ -718,6 +757,9 @@ export function NotificationProvider({
                 actionUrl: "/my-bookings",
               });
             } else if (evtName === "booking:rejected") {
+              if (!isAdmin && data.user_id && data.user_id !== user.id) {
+                return;
+              }
               addNotificationRef.current({
                 type: "booking_rejected",
                 title: "Pemesanan Ditolak",
@@ -731,6 +773,9 @@ export function NotificationProvider({
                 actionUrl: "/my-bookings",
               });
             } else if (evtName === "booking:checked_in") {
+              if (!isAdmin && data.user_id && data.user_id !== user.id) {
+                return;
+              }
               addNotificationRef.current({
                 type: "booking_checked_in",
                 title: "Check-in Presensi Berhasil",
@@ -744,6 +789,9 @@ export function NotificationProvider({
                 actionUrl: isAdmin ? "/admin" : "/my-bookings",
               });
             } else if (evtName === "booking:updated") {
+              if (!isAdmin && data.user_id && data.user_id !== user.id) {
+                return;
+              }
               addNotificationRef.current({
                 type:
                   data.status === "approved"

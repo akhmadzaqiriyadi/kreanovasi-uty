@@ -52,6 +52,11 @@ export function QrScannerModal({
   );
 
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
+  const isProcessingRef = useRef(false);
+  const lastScanAttemptRef = useRef<{ text: string; time: number }>({
+    text: "",
+    time: 0,
+  });
   const readerElementId = `qr-video-reader-${mode}`;
 
   const adminCheckIn = useAdminCheckInMutation();
@@ -87,7 +92,28 @@ export function QrScannerModal({
 
   const handleProcessScan = async (scannedText: string) => {
     const cleanText = scannedText.trim();
-    if (!cleanText || isPending) return;
+    if (!cleanText || isProcessingRef.current || isPending) return;
+
+    // Cooldown check: prevent scanning the same text within 3.5 seconds
+    const now = Date.now();
+    if (
+      lastScanAttemptRef.current.text === cleanText &&
+      now - lastScanAttemptRef.current.time < 3500
+    ) {
+      return;
+    }
+
+    lastScanAttemptRef.current = { text: cleanText, time: now };
+    isProcessingRef.current = true;
+
+    // Pause html5-qrcode video scanning during request processing
+    try {
+      if (html5QrCodeRef.current?.isScanning) {
+        html5QrCodeRef.current.pause(true);
+      }
+    } catch {
+      // ignore pause error
+    }
 
     try {
       if (mode === "admin") {
@@ -98,9 +124,9 @@ export function QrScannerModal({
         // Mode user: check if it's a room QR or booking code
         const isRoom =
           cleanText.startsWith("UCH-ROOM:") ||
-          cleanText.includes("coworking") ||
-          cleanText.includes("lab") ||
-          cleanText.includes("room");
+          cleanText === "coworking-space-hall" ||
+          cleanText === "fastlab-iot-ai" ||
+          cleanText === "meeting-room-executive";
 
         const payload = isRoom
           ? { room_id: cleanText.replace("UCH-ROOM:", "") }
@@ -111,7 +137,21 @@ export function QrScannerModal({
         setVerifiedBooking(res || null);
       }
     } catch {
-      // Error handled by mutation onError toast
+      // Resume scanner after a short delay so user can try again without duplicate toast
+      setTimeout(() => {
+        try {
+          if (html5QrCodeRef.current && !verifiedBooking) {
+            html5QrCodeRef.current.resume();
+          }
+        } catch {
+          // ignore resume error
+        }
+      }, 1500);
+    } finally {
+      // Release processing lock after 2 seconds
+      setTimeout(() => {
+        isProcessingRef.current = false;
+      }, 2000);
     }
   };
 
