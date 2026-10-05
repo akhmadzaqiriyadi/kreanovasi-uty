@@ -131,9 +131,9 @@ export function useNewBookingForm() {
     defaultValues: {
       role: initialRole,
       room: roomParam,
-      name: user?.name || mockProfiles[initialRole].name,
-      npm: user?.idNumber || mockProfiles[initialRole].idNumber,
-      prodi: user?.affiliation || mockProfiles[initialRole].prodi,
+      name: user?.name || "",
+      npm: user?.idNumber || "",
+      prodi: user?.affiliation || "",
       purpose: "",
       audience: 5,
       date: dateParam,
@@ -158,19 +158,16 @@ export function useNewBookingForm() {
       form.setValue("role", newRole, { shouldValidate: true });
 
       if (useLoggedInProfile) {
-        if (user && user.role === newRole) {
+        if (user) {
           form.setValue("name", user.name || "", { shouldValidate: true });
           form.setValue("npm", user.idNumber || "", { shouldValidate: true });
           form.setValue("prodi", user.affiliation || "", {
             shouldValidate: true,
           });
         } else {
-          const targetProfile = mockProfiles[newRole];
-          form.setValue("name", targetProfile.name, { shouldValidate: true });
-          form.setValue("npm", targetProfile.idNumber, {
-            shouldValidate: true,
-          });
-          form.setValue("prodi", targetProfile.prodi, { shouldValidate: true });
+          form.setValue("name", "", { shouldValidate: true });
+          form.setValue("npm", "", { shouldValidate: true });
+          form.setValue("prodi", "", { shouldValidate: true });
         }
       }
     },
@@ -281,10 +278,9 @@ export function useNewBookingForm() {
             shouldValidate: true,
           });
         } else {
-          const profile = mockProfiles[applicantRole];
-          form.setValue("name", profile.name, { shouldValidate: true });
-          form.setValue("npm", profile.idNumber, { shouldValidate: true });
-          form.setValue("prodi", profile.prodi, { shouldValidate: true });
+          form.setValue("name", "", { shouldValidate: true });
+          form.setValue("npm", "", { shouldValidate: true });
+          form.setValue("prodi", "", { shouldValidate: true });
         }
       } else {
         form.setValue("name", "");
@@ -292,7 +288,7 @@ export function useNewBookingForm() {
         form.setValue("prodi", "");
       }
     },
-    [applicantRole, form, user],
+    [form, user],
   );
 
   // Handle Calendar date selection
@@ -464,21 +460,38 @@ export function useNewBookingForm() {
                 : applicantRole === "umum"
                   ? "Non-Civitas / Mitra"
                   : "Mahasiswa",
-            name: user.name || mockProfiles[applicantRole].name,
-            idNumber:
-              user.idNumber || user.npm || mockProfiles[applicantRole].idNumber,
+            name: user.name || "",
+            idNumber: user.idNumber || user.npm || "",
             idLabel:
               applicantRole === "dosen"
                 ? "NIDN / NIK Dosen"
                 : applicantRole === "umum"
                   ? "NIK KTP Pemohon"
                   : "NPM Mahasiswa",
-            prodi: user.affiliation || mockProfiles[applicantRole].prodi,
-            email: user.email || mockProfiles[applicantRole].email,
-            affiliation:
-              user.affiliation || mockProfiles[applicantRole].affiliation,
+            prodi: user.affiliation || "",
+            email: user.email || "",
+            affiliation: user.affiliation || "Civitas UTY",
           }
-        : mockProfiles[applicantRole],
+        : {
+            role: applicantRole,
+            roleLabel:
+              applicantRole === "dosen"
+                ? "Dosen / Pengajar"
+                : applicantRole === "umum"
+                  ? "Non-Civitas / Mitra"
+                  : "Mahasiswa",
+            name: user?.name || "",
+            idNumber: user?.idNumber || user?.npm || "",
+            idLabel:
+              applicantRole === "dosen"
+                ? "NIDN / NIK Dosen"
+                : applicantRole === "umum"
+                  ? "NIK KTP Pemohon"
+                  : "NPM Mahasiswa",
+            prodi: user?.affiliation || "",
+            email: user?.email || "",
+            affiliation: user?.affiliation || "Civitas UTY",
+          },
     handleRoleChange,
     mockProfiles,
     rooms: activeRoomsList,

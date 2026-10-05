@@ -46,8 +46,7 @@ export function RoomKioskQrModal({
     }
   }, [room?.id]);
 
-  const currentRoom =
-    serverRooms.find((r) => r.id === selectedRoomId) ||
+  const currentRoom = serverRooms.find((r) => r.id === selectedRoomId) ||
     room ||
     serverRooms[0] || {
       id: "coworking-space-hall",

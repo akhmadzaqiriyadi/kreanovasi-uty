@@ -2,10 +2,7 @@
 
 import { addDays, format, isSameDay, startOfWeek } from "date-fns";
 import { useCallback, useMemo, useState } from "react";
-import {
-  generateInitialSchedule,
-  type ScheduleItem,
-} from "@/config/booking-schedule";
+import type { ScheduleItem } from "@/config/booking-schedule";
 import { useAllOccupiedSlotsQuery } from "@/hooks/use-booking-queries";
 
 export type RoomAvailabilityState =
@@ -27,9 +24,6 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
     startOfWeek(initialDate, { weekStartsOn: 1 }),
   );
   const [selectedDate, setSelectedDate] = useState<Date>(initialDate);
-  const [bookings, setBookings] = useState<ScheduleItem[]>(() =>
-    generateInitialSchedule(initialDate),
-  );
 
   const formattedSelectedDate = useMemo(
     () => format(selectedDate, "yyyy-MM-dd"),
@@ -95,19 +89,12 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
   );
 
   const getBookingsForDateAndRoom = useCallback(
-    (roomId: string, targetDate: Date = selectedDate): ScheduleItem[] => {
-      const dateStr = format(targetDate, "yyyy-MM-dd");
-      // If querying currently selected date and server returned data
-      if (dateStr === formattedSelectedDate && liveScheduleItems.length > 0) {
-        return liveScheduleItems
-          .filter((b) => b.roomId === roomId)
-          .sort((a, b) => a.startTime.localeCompare(b.startTime));
-      }
-      return bookings
-        .filter((b) => b.roomId === roomId && b.date === dateStr)
+    (roomId: string): ScheduleItem[] => {
+      return liveScheduleItems
+        .filter((b) => b.roomId === roomId)
         .sort((a, b) => a.startTime.localeCompare(b.startTime));
     },
-    [bookings, formattedSelectedDate, liveScheduleItems, selectedDate],
+    [liveScheduleItems],
   );
 
   const getRoomAvailability = useCallback(
@@ -125,7 +112,7 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
         };
       }
 
-      const roomBookings = getBookingsForDateAndRoom(roomId, targetDate);
+      const roomBookings = getBookingsForDateAndRoom(roomId);
 
       if (roomBookings.length === 0) {
         return {
@@ -161,32 +148,17 @@ export function useBookingSchedule(initialDate: Date = new Date()) {
     [getBookingsForDateAndRoom, selectedDate],
   );
 
-  const addBooking = useCallback(
-    (newBooking: Omit<ScheduleItem, "id" | "status">) => {
-      const createdItem: ScheduleItem = {
-        ...newBooking,
-        id: `sch-${Date.now()}`,
-        status: "approved",
-      };
-      setBookings((prev) => [createdItem, ...prev]);
-      return createdItem;
-    },
-    [],
-  );
-
   return {
     currentWeek,
     selectedDate,
     formattedSelectedDate,
     weekDays,
-    bookings,
     navigateWeek,
     selectDate,
     selectToday,
     isTodaySelected,
     getBookingsForDateAndRoom,
     getRoomAvailability,
-    addBooking,
     isSameDay,
     isLoading: isSlotsLoading,
   };

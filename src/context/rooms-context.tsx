@@ -65,64 +65,10 @@ export const DUMMY_ROOM_IMAGES = [
   },
 ];
 
-const DEFAULT_BOOKINGS: BookingItem[] = [
-  {
-    id: "UCH-2026-001",
-    roomId: "think-tank-meeting-room",
-    roomName: "Think-Tank Meeting Room",
-    applicantName: "Dr. Bambang Sutrisno, M.Kom.",
-    applicantRole: "dosen",
-    idNumber: "0514088201",
-    prodi: "Informatika",
-    purpose: "Rapat koordinasi tim riset proposal PKM AI dan robotika.",
-    audience: 8,
-    date: new Date().toISOString().split("T")[0],
-    startTime: "13:00",
-    endTime: "15:00",
-    status: "approved",
-    notes: "Disetujui. Harap gunakan kartu akses di lobi.",
-    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
-  },
-  {
-    id: "UCH-2026-002",
-    roomId: "fastlab-prototyping-iot",
-    roomName: "FastLab Prototyping & IoT Lab",
-    applicantName: "Akhmad Zaqi Riyadi",
-    applicantRole: "mahasiswa",
-    idNumber: "5210411234",
-    prodi: "Informatika",
-    purpose:
-      "Perakitan prototipe IoT smart agriculture dan pengujian sensor LoRa.",
-    audience: 6,
-    date: new Date().toISOString().split("T")[0],
-    startTime: "14:00",
-    endTime: "16:00",
-    status: "pending",
-    notes: "Menunggu verifikasi ketersediaan asisten lab.",
-    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
-  },
-  {
-    id: "UCH-2026-003",
-    roomId: "coworking-space-hall",
-    roomName: "Co-Working Space & Ideation Hall",
-    applicantName: "Hendri Pratama",
-    applicantRole: "umum",
-    idNumber: "3404011205940003",
-    prodi: "Inkubator Startup Jogja",
-    purpose:
-      "Sesi sharing session startup inkubator dengan mahasiswa semester akhir.",
-    audience: 25,
-    date: new Date(Date.now() + 86400000).toISOString().split("T")[0],
-    startTime: "10:00",
-    endTime: "12:00",
-    status: "approved",
-    notes: "Disetujui untuk kegiatan kemitraan kampus.",
-    createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
-  },
-];
+const DEFAULT_BOOKINGS: BookingItem[] = [];
 
-const STORAGE_ROOMS_KEY = "uch_rooms_data_v1";
-const STORAGE_BOOKINGS_KEY = "uch_bookings_data_v1";
+const STORAGE_ROOMS_KEY = "uch_rooms_data_v2";
+const STORAGE_BOOKINGS_KEY = "uch_bookings_data_v2";
 
 interface RoomsContextType {
   rooms: RoomItem[];
@@ -240,6 +186,9 @@ export function RoomsProvider({ children }: { children: React.ReactNode }) {
   // Load from localStorage & sync from backend on client mount
   useEffect(() => {
     try {
+      localStorage.removeItem("uch_rooms_data_v1");
+      localStorage.removeItem("uch_bookings_data_v1");
+
       const storedRooms = localStorage.getItem(STORAGE_ROOMS_KEY);
       if (storedRooms) {
         const parsed = JSON.parse(storedRooms);

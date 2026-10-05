@@ -279,6 +279,7 @@ export function useCreateBookingMutation() {
       queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["rooms"] });
     },
   });
 }
@@ -305,6 +306,7 @@ export function useUpdateBookingStatusMutation() {
       queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["rooms"] });
       toast.success(
         `Status reservasi ${booking?.id} berhasil diubah menjadi "${booking?.status}"!`,
       );
@@ -328,6 +330,7 @@ export function useCancelBookingMutation() {
       queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["audit-logs"] });
+      queryClient.invalidateQueries({ queryKey: ["rooms"] });
       toast.success("Permohonan reservasi berhasil dibatalkan");
     },
     onError: (err: unknown) => {
@@ -346,6 +349,7 @@ export function useDeleteBookingMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["my-bookings"] });
       queryClient.invalidateQueries({ queryKey: ["all-bookings"] });
+      queryClient.invalidateQueries({ queryKey: ["rooms"] });
       toast.success("Data reservasi berhasil dihapus");
     },
     onError: (err: unknown) => {

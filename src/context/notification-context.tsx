@@ -176,7 +176,6 @@ export function NotificationProvider({
           })
           .catch(() => {});
       }
-
     }
   }, []);
 
@@ -249,8 +248,9 @@ export function NotificationProvider({
       if (!subscription) {
         subscription = await reg.pushManager.subscribe({
           userVisibleOnly: true,
-          applicationServerKey:
-            urlBase64ToUint8Array(vapidKey) as unknown as BufferSource,
+          applicationServerKey: urlBase64ToUint8Array(
+            vapidKey,
+          ) as unknown as BufferSource,
         });
       }
 
