@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -52,6 +52,7 @@ import { cn } from "@/lib/utils";
 
 export function MyEventsPage() {
   const { user, isLoggedIn, isAuthLoading, openLoginModal } = useAuth();
+  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "all" | "approved" | "pending" | "attended"
   >("all");
@@ -65,6 +66,10 @@ export function MyEventsPage() {
   const [revisionNotes, setRevisionNotes] = useState("");
   const [revisionProofUrl, setRevisionProofUrl] = useState("");
   const [isUploadingRevision, setIsUploadingRevision] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { data, isLoading, refetch, isRefetching } =
     useMyEventRegistrationsQuery({ limit: 50 });
@@ -135,7 +140,7 @@ export function MyEventsPage() {
     setRevisionProofUrl("");
   };
 
-  if (isAuthLoading) {
+  if (!mounted || isAuthLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
         <Loader2 className="h-7 w-7 animate-spin text-primary" />

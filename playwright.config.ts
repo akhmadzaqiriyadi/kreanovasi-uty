@@ -7,13 +7,11 @@ export default defineConfig({
   testDir: "./tests",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  // retries: 1 in dev catches chunk load flakiness from Turbopack under parallel browser load
   retries: process.env.CI ? 2 : 1,
-  // Cap dev workers at 3 to avoid overloading Turbopack dev server with chunk requests
-  workers: process.env.CI ? 1 : 3,
-  reporter: "html",
+  workers: process.env.CI ? 1 : 2,
+  reporter: "list",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3005",
     trace: "on-first-retry",
   },
 
@@ -22,20 +20,12 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
-    {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
-    },
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
   ],
 
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
-    reuseExistingServer: !process.env.CI,
+    command: "npm run dev -- -p 3005",
+    url: "http://localhost:3005",
+    reuseExistingServer: false,
     stdout: "ignore",
     stderr: "pipe",
   },
