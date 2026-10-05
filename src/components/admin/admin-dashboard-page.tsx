@@ -13,12 +13,14 @@ import {
   LogIn,
   Server,
   ShieldCheck,
+  Ticket,
   Users,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { AdminAuditLogs } from "@/components/admin/admin-audit-logs";
 import { AdminBookingsManager } from "@/components/admin/admin-bookings-manager";
+import { AdminEventsManager } from "@/components/admin/admin-events-manager";
 import { AdminOverview } from "@/components/admin/admin-overview";
 import { AdminRolesMatrix } from "@/components/admin/admin-roles-matrix";
 import { AdminRoomsManager } from "@/components/admin/admin-rooms-manager";
@@ -193,7 +195,7 @@ export function AdminDashboardPage() {
         onValueChange={setActiveTab}
         className="space-y-4 sm:space-y-6 w-full max-w-full min-w-0"
       >
-        <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-full max-w-full h-auto p-1 sm:p-1.5 gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs">
+        <TabsList className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 w-full max-w-full h-auto p-1 sm:p-1.5 gap-1 sm:gap-1.5 rounded-xl sm:rounded-2xl bg-slate-100/90 dark:bg-zinc-800/80 border border-border/60 backdrop-blur-md shadow-xs">
           <TabsTrigger
             value="overview"
             className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
@@ -216,6 +218,14 @@ export function AdminDashboardPage() {
           >
             <CalendarCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
             <span className="truncate">Reservasi</span>
+          </TabsTrigger>
+
+          <TabsTrigger
+            value="events"
+            className="rounded-lg sm:rounded-xl py-2 sm:py-2.5 px-1 sm:px-2 text-[10px] sm:text-xs font-bold data-[state=active]:bg-white dark:data-[state=active]:bg-zinc-900 data-[state=active]:shadow-xs flex items-center justify-center gap-1 sm:gap-1.5 transition-all cursor-pointer truncate"
+          >
+            <Ticket className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary shrink-0" />
+            <span className="truncate">Agenda</span>
           </TabsTrigger>
 
           <TabsTrigger
@@ -265,6 +275,14 @@ export function AdminDashboardPage() {
           className="outline-hidden focus:outline-hidden"
         >
           <AdminBookingsManager />
+        </TabsContent>
+
+        {/* Tab 4: Events & Agenda Management */}
+        <TabsContent
+          value="events"
+          className="outline-hidden focus:outline-hidden"
+        >
+          <AdminEventsManager />
         </TabsContent>
 
         {/* Tab 4: Users Management */}

@@ -327,15 +327,23 @@ export function useReviseRegistrationMutation(registrationId: string) {
 // ----------------------------------------------------
 
 export function useAdminEventRegistrationsQuery(
-  eventId: string,
-  params?: { status?: string; search?: string; page?: number; limit?: number },
+  eventId?: string,
+  params?: {
+    event_id?: string;
+    status?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  },
 ) {
   return useQuery({
     queryKey: ["admin-event-registrations", eventId, params],
     queryFn: async () => {
-      if (!eventId) return null;
+      const url = eventId
+        ? `/events/${eventId}/registrations`
+        : "/events/registrations";
       const res = await apiClient.get<ApiEnvelope<RegistrationListResponse>>(
-        `/events/${eventId}/registrations`,
+        url,
         { params },
       );
       return (
@@ -345,12 +353,11 @@ export function useAdminEventRegistrationsQuery(
         }
       );
     },
-    enabled: Boolean(eventId),
     staleTime: 10 * 1000,
   });
 }
 
-export function useUpdateRegistrationStatusMutation(eventId: string) {
+export function useUpdateRegistrationStatusMutation(eventId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -372,8 +379,13 @@ export function useUpdateRegistrationStatusMutation(eventId: string) {
     onSuccess: () => {
       toast.success("Status peserta berhasil diperbarui");
       queryClient.invalidateQueries({
-        queryKey: ["admin-event-registrations", eventId],
+        queryKey: ["admin-event-registrations"],
       });
+      if (eventId) {
+        queryClient.invalidateQueries({
+          queryKey: ["admin-event-registrations", eventId],
+        });
+      }
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },
     onError: (err) => {
