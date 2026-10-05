@@ -972,7 +972,7 @@ function EventCheckInScannerModal({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [activeTab, setActiveTab] = useState<"camera" | "manual">("camera");
+  const [activeTab, setActiveTab] = useState<"camera" | "manual">("manual");
   const [manualCode, setManualCode] = useState("");
   const [lastCheckedIn, setLastCheckedIn] =
     useState<BackendEventRegistration | null>(null);
@@ -1002,47 +1002,59 @@ function EventCheckInScannerModal({
   };
 
   useEffect(() => {
+    let isCancelled = false;
+
     if (!open || activeTab !== "camera") {
       if (html5QrCodeRef.current) {
-        html5QrCodeRef.current
+        const scanner = html5QrCodeRef.current;
+        html5QrCodeRef.current = null;
+        scanner
           .stop()
           .catch(() => {})
-          .then(() => {
-            html5QrCodeRef.current?.clear();
-            html5QrCodeRef.current = null;
-          });
+          .then(() => scanner.clear());
       }
       return;
     }
 
     const scannerElementId = "event-checkin-scanner-box";
-    const qrScanner = new Html5Qrcode(scannerElementId);
-    html5QrCodeRef.current = qrScanner;
+    const timer = setTimeout(() => {
+      if (isCancelled) return;
+      const el = document.getElementById(scannerElementId);
+      if (!el) return;
 
-    qrScanner
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 220, height: 220 } },
-        (decodedText) => {
-          handleProcessCode(decodedText);
-        },
-        () => {},
-      )
-      .catch((err) => {
-        setCameraError(
-          "Tidak dapat mengakses kamera. Pastikan izin kamera aktif atau gunakan input manual kode tiket.",
-        );
-      });
+      try {
+        const qrScanner = new Html5Qrcode(scannerElementId);
+        html5QrCodeRef.current = qrScanner;
+
+        qrScanner
+          .start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            (decodedText) => {
+              handleProcessCode(decodedText);
+            },
+            () => {},
+          )
+          .catch(() => {
+            setCameraError(
+              "Tidak dapat mengakses kamera. Pastikan izin kamera aktif atau gunakan input manual kode tiket.",
+            );
+          });
+      } catch {
+        // Element not ready or camera error
+      }
+    }, 150);
 
     return () => {
+      isCancelled = true;
+      clearTimeout(timer);
       if (html5QrCodeRef.current) {
-        html5QrCodeRef.current
+        const scanner = html5QrCodeRef.current;
+        html5QrCodeRef.current = null;
+        scanner
           .stop()
           .catch(() => {})
-          .then(() => {
-            html5QrCodeRef.current?.clear();
-            html5QrCodeRef.current = null;
-          });
+          .then(() => scanner.clear());
       }
     };
   }, [open, activeTab]);
