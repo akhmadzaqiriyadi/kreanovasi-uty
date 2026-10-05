@@ -67,6 +67,27 @@ export interface EventItem {
   registrationDeadline?: string;
   fee?: string;
   contactPerson?: EventContactPerson;
+  seriesId?: string;
+  seriesName?: string;
+  isFree?: boolean;
+  price?: number;
+  paymentInfo?: {
+    bank_name?: string;
+    account_number?: string;
+    account_holder?: string;
+    qris_image_url?: string;
+    instructions?: string;
+  };
+  requiresApproval?: boolean;
+  customFieldsSchema?: Array<{
+    key: string;
+    label: string;
+    type: "text" | "number" | "textarea" | "select" | "file";
+    required: boolean;
+    placeholder?: string;
+    options?: string[];
+    accept?: string;
+  }>;
 }
 
 export interface EventsConfig {
@@ -734,4 +755,112 @@ export function getRelatedEvents(currentSlug: string, limit = 3): EventItem[] {
 export function getEventCategories(): string[] {
   const categories = new Set(allEvents.map((event) => event.category.name));
   return Array.from(categories);
+}
+
+/**
+ * Mapper helper to convert BackendEvent payload to frontend EventItem
+ */
+export function mapBackendEventToEventItem(be: {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  long_description?: string;
+  series_id?: string | null;
+  series_name?: string | null;
+  category_name: string;
+  category_variant?: "primary" | "secondary" | "accent";
+  event_date: string;
+  date_day: string;
+  date_month: string;
+  date_year: string;
+  date_full_text: string;
+  time: string;
+  location_name: string;
+  location_room?: string | null;
+  location_address?: string | null;
+  location_type: "offline" | "online" | "hybrid";
+  cover_image: string;
+  quota_total: number;
+  quota_filled: number;
+  quota_status: "open" | "closing-soon" | "full";
+  quota_status_label: string;
+  registration_url?: string | null;
+  featured: boolean;
+  is_free?: boolean;
+  price?: number;
+  payment_info?: {
+    bank_name?: string;
+    account_number?: string;
+    account_holder?: string;
+    qris_image_url?: string;
+    instructions?: string;
+  };
+  requires_approval?: boolean;
+  custom_fields_schema?: Array<{
+    key: string;
+    label: string;
+    type: "text" | "number" | "textarea" | "select" | "file";
+    required: boolean;
+    placeholder?: string;
+    options?: string[];
+    accept?: string;
+  }>;
+  speakers?: EventSpeaker[];
+  rundown?: EventRundownItem[];
+  benefits?: string[];
+  prerequisites?: string[];
+  target_audience?: string | null;
+  registration_deadline?: string | null;
+  fee?: string;
+  contact_person?: EventContactPerson | null;
+}): EventItem {
+  return {
+    id: be.id,
+    slug: be.slug,
+    title: be.title,
+    description: be.description,
+    longDescription: be.long_description,
+    seriesId: be.series_id || undefined,
+    seriesName: be.series_name || undefined,
+    date: {
+      day: be.date_day,
+      month: be.date_month,
+      year: be.date_year,
+      fullText: be.date_full_text,
+    },
+    time: be.time,
+    location: {
+      name: be.location_name,
+      room: be.location_room || undefined,
+      address: be.location_address || undefined,
+      type: be.location_type,
+    },
+    category: {
+      name: be.category_name,
+      variant: be.category_variant || "primary",
+    },
+    coverImage: be.cover_image,
+    quota: {
+      total: be.quota_total,
+      filled: be.quota_filled,
+      status: be.quota_status,
+      statusLabel: be.quota_status_label,
+    },
+    registrationUrl: be.registration_url || undefined,
+    featured: be.featured,
+    speakers: be.speakers || [],
+    rundown: be.rundown || [],
+    benefits: be.benefits || [],
+    prerequisites: be.prerequisites || [],
+    targetAudience: be.target_audience || undefined,
+    registrationDeadline: be.registration_deadline || undefined,
+    fee: be.fee,
+    contactPerson: be.contact_person || undefined,
+    isFree: be.is_free,
+    price: be.price,
+    paymentInfo: be.payment_info,
+    requiresApproval: be.requires_approval,
+    customFieldsSchema: be.custom_fields_schema || [],
+  };
 }

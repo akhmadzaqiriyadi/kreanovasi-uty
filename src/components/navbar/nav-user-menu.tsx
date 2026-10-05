@@ -7,6 +7,7 @@ import {
   LogOut,
   Settings,
   ShieldCheck,
+  Ticket,
   User,
 } from "lucide-react";
 import Link from "next/link";
@@ -165,6 +166,17 @@ export function NavUserMenu() {
             >
               <History className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
               <span>Booking Saya / Riwayat</span>
+            </Link>
+          </DropdownMenuItem>
+
+          {/* Tiket & Event Saya */}
+          <DropdownMenuItem asChild>
+            <Link
+              href="/my-events"
+              className="rounded-xl px-3 py-2 text-xs font-medium cursor-pointer hover:bg-slate-100 dark:hover:bg-zinc-800 transition-colors flex items-center"
+            >
+              <Ticket className="w-4 h-4 mr-2.5 text-primary dark:text-blue-400" />
+              <span>Tiket & Event Saya</span>
             </Link>
           </DropdownMenuItem>
 

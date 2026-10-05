@@ -61,6 +61,7 @@ export interface UserProfile {
   idNumber: string;
   idLabel: string;
   affiliation: string;
+  phone?: string;
   npm?: string;
   prodi?: string;
   avatarUrl: string;
