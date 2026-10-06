@@ -45,7 +45,7 @@ const registrationFormSchema = z.object({
   institution: z.string().min(2, "Program studi / instansi wajib diisi"),
   email: z.string().email("Format email tidak valid"),
   phone: z.string().min(6, "Nomor WhatsApp minimal 6 digit"),
-  notes: z.string().optional().default(""),
+  notes: z.string(),
 });
 
 type RegistrationFormValues = z.infer<typeof registrationFormSchema>;

@@ -1211,17 +1211,17 @@ const createEventSchema = z.object({
   title: z.string().min(3, "Judul agenda minimal 3 karakter"),
   slug: z.string().min(3, "Slug agenda minimal 3 karakter"),
   category_name: z.string().min(1, "Kategori wajib diisi"),
-  description: z.string().optional().default(""),
-  date_day: z.string().default("15"),
-  date_month: z.string().default("OKT"),
-  date_year: z.string().default("2026"),
+  description: z.string(),
+  date_day: z.string(),
+  date_month: z.string(),
+  date_year: z.string(),
   date_full_text: z.string().min(1, "Tanggal agenda wajib diisi"),
   time: z.string().min(1, "Waktu sesi wajib diisi"),
   location_name: z.string().min(1, "Lokasi agenda wajib diisi"),
-  quota_total: z.coerce.number().min(1, "Total kuota minimal 1 peserta"),
-  fee: z.string().default("Gratis"),
-  is_free: z.boolean().default(true),
-  requires_approval: z.boolean().default(false),
+  quota_total: z.number().min(1, "Total kuota minimal 1 peserta"),
+  fee: z.string(),
+  is_free: z.boolean(),
+  requires_approval: z.boolean(),
 });
 
 type CreateEventFormValues = z.infer<typeof createEventSchema>;
@@ -1332,7 +1332,7 @@ function CreateEventModal({
               <Input
                 type="number"
                 required
-                {...register("quota_total")}
+                {...register("quota_total", { valueAsNumber: true })}
                 className="h-10 text-xs rounded-xl"
               />
               {errors.quota_total && (
