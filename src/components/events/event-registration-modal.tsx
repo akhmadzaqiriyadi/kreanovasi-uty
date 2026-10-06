@@ -1,5 +1,6 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   CheckCircle2,
   CreditCard,
@@ -13,7 +14,9 @@ import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -36,6 +39,17 @@ interface EventRegistrationModalProps {
   onOpenChange: (open: boolean) => void;
 }
 
+const registrationFormSchema = z.object({
+  fullName: z.string().min(2, "Nama lengkap minimal 2 karakter"),
+  identityNumber: z.string().min(3, "NIM / NIDN / NIK wajib diisi"),
+  institution: z.string().min(2, "Program studi / instansi wajib diisi"),
+  email: z.string().email("Format email tidak valid"),
+  phone: z.string().min(6, "Nomor WhatsApp minimal 6 digit"),
+  notes: z.string().optional().default(""),
+});
+
+type RegistrationFormValues = z.infer<typeof registrationFormSchema>;
+
 export function EventRegistrationModal({
   event,
   isOpen,
@@ -49,14 +63,22 @@ export function EventRegistrationModal({
   const [registrationStatus, setRegistrationStatus] = useState("approved");
   const [isUploadingProof, setIsUploadingProof] = useState(false);
 
-  // Form states
-  const [formData, setFormData] = useState({
-    fullName: "",
-    identityNumber: "",
-    institution: "",
-    email: "",
-    phone: "",
-    notes: "",
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors },
+  } = useForm<RegistrationFormValues>({
+    resolver: zodResolver(registrationFormSchema),
+    defaultValues: {
+      fullName: "",
+      identityNumber: "",
+      institution: "",
+      email: "",
+      phone: "",
+      notes: "",
+    },
   });
 
   // Dynamic answers: key -> value
@@ -68,30 +90,21 @@ export function EventRegistrationModal({
 
   // Autofill from user profile on open/login
   useEffect(() => {
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        fullName: prev.fullName || user.name || "",
-        email: prev.email || user.email || "",
-        phone: prev.phone || user.phone || "",
-        identityNumber: prev.identityNumber || user.npm || user.idNumber || "",
+    if (user && isOpen) {
+      reset({
+        fullName: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
+        identityNumber: user.npm || user.idNumber || "",
         institution:
-          prev.institution ||
           user.affiliation ||
           (user.prodi
             ? `${user.prodi} - UTY`
             : "Universitas Teknologi Yogyakarta"),
-      }));
+        notes: "",
+      });
     }
-  }, [user]);
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
+  }, [user, isOpen, reset]);
 
   const handleCustomAnswerChange = (key: string, value: string) => {
     setCustomAnswers((prev) => ({ ...prev, [key]: value }));
@@ -139,9 +152,7 @@ export function EventRegistrationModal({
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const onSubmit = async (values: RegistrationFormValues) => {
     if (!isLoggedIn) {
       openLoginModal();
       return;
@@ -165,12 +176,12 @@ export function EventRegistrationModal({
 
     try {
       const res = await registerMutation.mutateAsync({
-        full_name: formData.fullName,
-        identity_number: formData.identityNumber,
-        institution: formData.institution,
-        email: formData.email,
-        phone: formData.phone,
-        notes: formData.notes,
+        full_name: values.fullName,
+        identity_number: values.identityNumber,
+        institution: values.institution,
+        email: values.email,
+        phone: values.phone,
+        notes: values.notes,
         answers: customAnswers,
         uploaded_files: uploadedFiles,
         payment_proof_url: paymentProofUrl || undefined,
@@ -193,6 +204,7 @@ export function EventRegistrationModal({
     setCustomAnswers({});
     setUploadedFiles([]);
     setPaymentProofUrl("");
+    reset();
     onOpenChange(false);
   };
 
@@ -255,7 +267,7 @@ export function EventRegistrationModal({
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
               {/* Profile autofill indicator */}
               <div className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/40 border border-border/50 text-[11px] text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -272,13 +284,16 @@ export function EventRegistrationModal({
                 </Label>
                 <Input
                   id="fullName"
-                  name="fullName"
                   required
-                  value={formData.fullName}
-                  onChange={handleChange}
+                  {...register("fullName")}
                   placeholder="Contoh: Muhammad Farhan Pratama"
                   className="h-10 text-xs rounded-xl"
                 />
+                {errors.fullName && (
+                  <p className="text-[11px] text-destructive">
+                    {errors.fullName.message}
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -291,13 +306,16 @@ export function EventRegistrationModal({
                   </Label>
                   <Input
                     id="identityNumber"
-                    name="identityNumber"
                     required
-                    value={formData.identityNumber}
-                    onChange={handleChange}
+                    {...register("identityNumber")}
                     placeholder="Contoh: 5210411001"
                     className="h-10 text-xs rounded-xl"
                   />
+                  {errors.identityNumber && (
+                    <p className="text-[11px] text-destructive">
+                      {errors.identityNumber.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <Label
@@ -308,13 +326,16 @@ export function EventRegistrationModal({
                   </Label>
                   <Input
                     id="institution"
-                    name="institution"
                     required
-                    value={formData.institution}
-                    onChange={handleChange}
+                    {...register("institution")}
                     placeholder="Contoh: Informatika UTY"
                     className="h-10 text-xs rounded-xl"
                   />
+                  {errors.institution && (
+                    <p className="text-[11px] text-destructive">
+                      {errors.institution.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -325,14 +346,17 @@ export function EventRegistrationModal({
                   </Label>
                   <Input
                     id="email"
-                    name="email"
                     type="email"
                     required
-                    value={formData.email}
-                    onChange={handleChange}
+                    {...register("email")}
                     placeholder="nama@students.uty.ac.id"
                     className="h-10 text-xs rounded-xl"
                   />
+                  {errors.email && (
+                    <p className="text-[11px] text-destructive">
+                      {errors.email.message}
+                    </p>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="phone" className="text-xs font-semibold">
@@ -340,14 +364,17 @@ export function EventRegistrationModal({
                   </Label>
                   <Input
                     id="phone"
-                    name="phone"
                     type="tel"
                     required
-                    value={formData.phone}
-                    onChange={handleChange}
+                    {...register("phone")}
                     placeholder="081234567890"
                     className="h-10 text-xs rounded-xl"
                   />
+                  {errors.phone && (
+                    <p className="text-[11px] text-destructive">
+                      {errors.phone.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -528,10 +555,8 @@ export function EventRegistrationModal({
                 </Label>
                 <Textarea
                   id="notes"
-                  name="notes"
                   rows={2}
-                  value={formData.notes}
-                  onChange={handleChange}
+                  {...register("notes")}
                   placeholder="Pertanyaan untuk pemateri atau catatan kebutuhan khusus..."
                   className="text-xs rounded-xl resize-none"
                 />
@@ -625,7 +650,7 @@ export function EventRegistrationModal({
 
               <div className="text-[11px] text-muted-foreground border-t border-border/50 pt-2 space-y-0.5">
                 <p className="font-semibold text-foreground">
-                  {formData.fullName}
+                  {getValues("fullName") || user?.name}
                 </p>
                 <p>{event.title}</p>
                 <p className="text-[10px]">

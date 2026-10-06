@@ -1,5 +1,6 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Html5Qrcode } from "html5-qrcode";
 import {
   Award,
@@ -21,9 +22,10 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import type React from "react";
 import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -985,10 +987,19 @@ function EventCheckInScannerModal({
   onOpenChange: (open: boolean) => void;
 }) {
   const [activeTab, setActiveTab] = useState<"camera" | "manual">("manual");
-  const [manualCode, setManualCode] = useState("");
   const [lastCheckedIn, setLastCheckedIn] =
     useState<BackendEventRegistration | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
+
+  const {
+    register: registerCheckIn,
+    handleSubmit: handleCheckInSubmit,
+    reset: resetCheckIn,
+    watch: watchCheckIn,
+  } = useForm<{ manualCode: string }>({
+    defaultValues: { manualCode: "" },
+  });
+  const currentManualCode = watchCheckIn("manualCode");
 
   const checkInMutation = useEventCheckInMutation();
   const html5QrCodeRef = useRef<Html5Qrcode | null>(null);
@@ -1130,11 +1141,10 @@ function EventCheckInScannerModal({
           </div>
         ) : (
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleProcessCode(manualCode);
-              setManualCode("");
-            }}
+            onSubmit={handleCheckInSubmit((data) => {
+              handleProcessCode(data.manualCode);
+              resetCheckIn();
+            })}
             className="space-y-3 py-2"
           >
             <div className="space-y-1.5">
@@ -1142,8 +1152,7 @@ function EventCheckInScannerModal({
                 Kode Tiket Peserta (Contoh: UCH-EVT-CTALK-2026)
               </Label>
               <Input
-                value={manualCode}
-                onChange={(e) => setManualCode(e.target.value.toUpperCase())}
+                {...registerCheckIn("manualCode", { required: true })}
                 placeholder="UCH-EVT-..."
                 className="h-10 text-xs font-mono font-bold tracking-wider rounded-xl uppercase"
                 required
@@ -1151,7 +1160,7 @@ function EventCheckInScannerModal({
             </div>
             <Button
               type="submit"
-              disabled={checkInMutation.isPending || !manualCode.trim()}
+              disabled={checkInMutation.isPending || !currentManualCode?.trim()}
               className="w-full rounded-xl text-xs font-bold h-10"
             >
               {checkInMutation.isPending
@@ -1195,8 +1204,27 @@ function EventCheckInScannerModal({
 }
 
 // ----------------------------------------------------
-// SUBCOMPONENT: CREATE EVENT MODAL
+// SUBCOMPONENT: CREATE EVENT MODAL WITH REACT-HOOK-FORM
 // ----------------------------------------------------
+
+const createEventSchema = z.object({
+  title: z.string().min(3, "Judul agenda minimal 3 karakter"),
+  slug: z.string().min(3, "Slug agenda minimal 3 karakter"),
+  category_name: z.string().min(1, "Kategori wajib diisi"),
+  description: z.string().optional().default(""),
+  date_day: z.string().default("15"),
+  date_month: z.string().default("OKT"),
+  date_year: z.string().default("2026"),
+  date_full_text: z.string().min(1, "Tanggal agenda wajib diisi"),
+  time: z.string().min(1, "Waktu sesi wajib diisi"),
+  location_name: z.string().min(1, "Lokasi agenda wajib diisi"),
+  quota_total: z.coerce.number().min(1, "Total kuota minimal 1 peserta"),
+  fee: z.string().default("Gratis"),
+  is_free: z.boolean().default(true),
+  requires_approval: z.boolean().default(false),
+});
+
+type CreateEventFormValues = z.infer<typeof createEventSchema>;
 
 function CreateEventModal({
   open,
@@ -1206,29 +1234,39 @@ function CreateEventModal({
   onOpenChange: (open: boolean) => void;
 }) {
   const createMutation = useCreateEventMutation();
-  const [formData, setFormData] = useState({
-    title: "",
-    slug: "",
-    category_name: "Workshop & Seminar",
-    description: "",
-    date_day: "15",
-    date_month: "OKT",
-    date_year: "2026",
-    date_full_text: "Kamis, 15 Oktober 2026",
-    time: "09:00 - 13:00 WIB",
-    location_name: "Laboratorium FastLab UCH",
-    quota_total: 50,
-    fee: "Gratis",
-    is_free: true,
-    requires_approval: false,
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<CreateEventFormValues>({
+    resolver: zodResolver(createEventSchema),
+    defaultValues: {
+      title: "",
+      slug: "",
+      category_name: "Workshop & Seminar",
+      description: "",
+      date_day: "15",
+      date_month: "OKT",
+      date_year: "2026",
+      date_full_text: "Kamis, 15 Oktober 2026",
+      time: "09:00 - 13:00 WIB",
+      location_name: "Laboratorium FastLab UCH",
+      quota_total: 50,
+      fee: "Gratis",
+      is_free: true,
+      requires_approval: false,
+    },
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: CreateEventFormValues) => {
     await createMutation.mutateAsync({
-      ...formData,
-      quota_total: Number(formData.quota_total),
+      ...values,
+      quota_total: Number(values.quota_total),
     });
+    reset();
     onOpenChange(false);
   };
 
@@ -1248,50 +1286,60 @@ function CreateEventModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-3.5 py-2 text-xs">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-3.5 py-2 text-xs"
+        >
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold">Judul Agenda *</Label>
             <Input
               required
-              value={formData.title}
-              onChange={(e) => {
-                const title = e.target.value;
-                const slug = title
-                  .toLowerCase()
-                  .replace(/[^a-z0-9]+/g, "-")
-                  .replace(/(^-|-$)+/g, "");
-                setFormData((p) => ({ ...p, title, slug }));
-              }}
+              {...register("title", {
+                onChange: (e) => {
+                  const title = e.target.value;
+                  const slug = title
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/(^-|-$)+/g, "");
+                  setValue("slug", slug, { shouldValidate: true });
+                },
+              })}
               placeholder="Contoh: AI & IoT FastLab Bootcamp 2026"
               className="h-10 text-xs rounded-xl"
             />
+            {errors.title && (
+              <p className="text-[11px] text-destructive">
+                {errors.title.message}
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Kategori</Label>
               <Input
-                value={formData.category_name}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, category_name: e.target.value }))
-                }
+                {...register("category_name")}
                 className="h-10 text-xs rounded-xl"
               />
+              {errors.category_name && (
+                <p className="text-[11px] text-destructive">
+                  {errors.category_name.message}
+                </p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Total Kuota *</Label>
               <Input
                 type="number"
                 required
-                value={formData.quota_total}
-                onChange={(e) =>
-                  setFormData((p) => ({
-                    ...p,
-                    quota_total: parseInt(e.target.value, 10) || 0,
-                  }))
-                }
+                {...register("quota_total")}
                 className="h-10 text-xs rounded-xl"
               />
+              {errors.quota_total && (
+                <p className="text-[11px] text-destructive">
+                  {errors.quota_total.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -1299,27 +1347,28 @@ function CreateEventModal({
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Tanggal Agenda *</Label>
               <Input
-                value={formData.date_full_text}
-                onChange={(e) =>
-                  setFormData((p) => ({
-                    ...p,
-                    date_full_text: e.target.value,
-                  }))
-                }
+                {...register("date_full_text")}
                 placeholder="Kamis, 15 Oktober 2026"
                 className="h-10 text-xs rounded-xl"
               />
+              {errors.date_full_text && (
+                <p className="text-[11px] text-destructive">
+                  {errors.date_full_text.message}
+                </p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs font-semibold">Waktu Sesi *</Label>
               <Input
-                value={formData.time}
-                onChange={(e) =>
-                  setFormData((p) => ({ ...p, time: e.target.value }))
-                }
+                {...register("time")}
                 placeholder="09:00 - 13:00 WIB"
                 className="h-10 text-xs rounded-xl"
               />
+              {errors.time && (
+                <p className="text-[11px] text-destructive">
+                  {errors.time.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -1328,22 +1377,21 @@ function CreateEventModal({
               Lokasi Pelaksanaan *
             </Label>
             <Input
-              value={formData.location_name}
-              onChange={(e) =>
-                setFormData((p) => ({ ...p, location_name: e.target.value }))
-              }
+              {...register("location_name")}
               placeholder="Ruang FastLab UCH Lt. 2"
               className="h-10 text-xs rounded-xl"
             />
+            {errors.location_name && (
+              <p className="text-[11px] text-destructive">
+                {errors.location_name.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-1.5">
             <Label className="text-xs font-semibold">Deskripsi Singkat</Label>
             <Textarea
-              value={formData.description}
-              onChange={(e) =>
-                setFormData((p) => ({ ...p, description: e.target.value }))
-              }
+              {...register("description")}
               rows={2}
               placeholder="Jelaskan gambaran umum agenda..."
               className="text-xs rounded-xl resize-none"
