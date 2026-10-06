@@ -1,12 +1,16 @@
 "use client";
 
-import { Calendar, CalendarOff, CheckCircle2, History, Loader2, Sparkles } from "lucide-react";
+import {
+  Calendar,
+  CalendarOff,
+  CheckCircle2,
+  History,
+  Loader2,
+  Sparkles,
+} from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  type EventItem,
-  mapBackendEventToEventItem,
-} from "@/config/events";
+import { type EventItem, mapBackendEventToEventItem } from "@/config/events";
 import { useEventsQuery } from "@/hooks/use-event-queries";
 import { cn } from "@/lib/utils";
 import { EventCard } from "./event-card";
@@ -21,7 +25,9 @@ export function EventsCatalogContent({
   events: initialEvents = [],
   categories: initialCategories = [],
 }: EventsCatalogContentProps) {
-  const [timelineTab, setTimelineTab] = useState<"upcoming" | "past" | "all">("upcoming");
+  const [timelineTab, setTimelineTab] = useState<"upcoming" | "past" | "all">(
+    "upcoming",
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
@@ -40,10 +46,7 @@ export function EventsCatalogContent({
 
   // Extract dynamic categories from active event list
   const activeCategories = Array.from(
-    new Set([
-      ...initialCategories,
-      ...liveEvents.map((e) => e.category.name),
-    ]),
+    new Set([...initialCategories, ...liveEvents.map((e) => e.category.name)]),
   );
 
   const filteredEvents = liveEvents.filter((event) => {
@@ -116,7 +119,11 @@ export function EventsCatalogContent({
         </div>
 
         <div className="text-xs text-muted-foreground self-end sm:self-auto font-medium">
-          Menampilkan <span className="font-bold text-foreground">{filteredEvents.length}</span> agenda
+          Menampilkan{" "}
+          <span className="font-bold text-foreground">
+            {filteredEvents.length}
+          </span>{" "}
+          agenda
         </div>
       </div>
 
@@ -205,7 +212,9 @@ export function EventsCatalogContent({
           </h2>
 
           <p className="text-xs sm:text-sm text-white/80 leading-relaxed max-w-xl mx-auto">
-            UTY Creative Hub terbuka bagi komunitas mahasiswa, dosen, serta mitra industri teknologi yang ingin berkolaborasi menyelenggarakan agenda inovatif.
+            UTY Creative Hub terbuka bagi komunitas mahasiswa, dosen, serta
+            mitra industri teknologi yang ingin berkolaborasi menyelenggarakan
+            agenda inovatif.
           </p>
         </div>
 
@@ -215,9 +224,7 @@ export function EventsCatalogContent({
             size="lg"
             className="rounded-xl bg-white text-primary hover:bg-white/90 font-bold shadow-md text-xs sm:text-sm h-11 px-6"
           >
-            <a href="mailto:creativehub@uty.ac.id">
-              Ajukan Proposal Acara
-            </a>
+            <a href="mailto:creativehub@uty.ac.id">Ajukan Proposal Acara</a>
           </Button>
 
           <Button

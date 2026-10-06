@@ -3,13 +3,11 @@
 import {
   AlertTriangle,
   Award,
-  Calendar,
   Check,
   CheckCircle,
   CheckCircle2,
   Clock,
   Download,
-  FileText,
   LogIn,
   Mail,
   MapPin,
@@ -18,12 +16,10 @@ import {
   Share2,
   Users,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -46,7 +42,9 @@ interface EventDetailContentProps {
   event: EventItem;
 }
 
-export function EventDetailContent({ event: initialEvent }: EventDetailContentProps) {
+export function EventDetailContent({
+  event: initialEvent,
+}: EventDetailContentProps) {
   const { isLoggedIn, openLoginModal } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
@@ -156,10 +154,10 @@ export function EventDetailContent({ event: initialEvent }: EventDetailContentPr
                 {myRegistration.status === "attended"
                   ? "Anda Telah Hadir di Acara Ini 🎉"
                   : myRegistration.status === "approved"
-                  ? "Anda Telah Terdaftar (E-Tiket Aktif)"
-                  : myRegistration.status === "needs_revision"
-                  ? "Pendaftaran Memerlukan Revisi Berkas"
-                  : "Pendaftaran Sedang Diverifikasi Panitia"}
+                    ? "Anda Telah Terdaftar (E-Tiket Aktif)"
+                    : myRegistration.status === "needs_revision"
+                      ? "Pendaftaran Memerlukan Revisi Berkas"
+                      : "Pendaftaran Sedang Diverifikasi Panitia"}
               </p>
               <p className="text-xs text-muted-foreground">
                 Kode Tiket:{" "}
@@ -225,7 +223,8 @@ export function EventDetailContent({ event: initialEvent }: EventDetailContentPr
                   Susunan Rundown Acara
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Jadwal rangkaian kegiatan terperinci selama berlangsungnya sesi.
+                  Jadwal rangkaian kegiatan terperinci selama berlangsungnya
+                  sesi.
                 </p>
               </div>
 
@@ -276,7 +275,8 @@ export function EventDetailContent({ event: initialEvent }: EventDetailContentPr
                   Narasumber & Mentor Ahli
                 </h2>
                 <p className="text-xs sm:text-sm text-muted-foreground">
-                  Para pakar, praktisi industri, dan akademisi yang akan membimbing Anda.
+                  Para pakar, praktisi industri, dan akademisi yang akan
+                  membimbing Anda.
                 </p>
               </div>
 
@@ -578,10 +578,12 @@ export function EventDetailContent({ event: initialEvent }: EventDetailContentPr
                   <strong>Instansi:</strong> {myRegistration.institution}
                 </p>
                 <p>
-                  <strong>Tanggal & Jam:</strong> {event.date.fullText} • {event.time}
+                  <strong>Tanggal & Jam:</strong> {event.date.fullText} •{" "}
+                  {event.time}
                 </p>
                 <p>
-                  <strong>Lokasi:</strong> {event.location.name} ({event.location.room || "Ruang Hub"})
+                  <strong>Lokasi:</strong> {event.location.name} (
+                  {event.location.room || "Ruang Hub"})
                 </p>
               </div>
             </div>

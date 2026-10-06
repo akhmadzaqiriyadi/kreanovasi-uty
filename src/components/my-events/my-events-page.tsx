@@ -2,15 +2,10 @@
 
 import {
   AlertCircle,
-  AlertTriangle,
   ArrowRight,
   Award,
   Calendar,
-  CheckCircle2,
   Clock,
-  Download,
-  FileText,
-  History,
   Loader2,
   LogIn,
   MapPin,
@@ -51,7 +46,7 @@ import apiClient from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 export function MyEventsPage() {
-  const { user, isLoggedIn, isAuthLoading, openLoginModal } = useAuth();
+  const { isLoggedIn, isAuthLoading, openLoginModal } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState<
     "all" | "approved" | "pending" | "attended"
@@ -144,7 +139,9 @@ export function MyEventsPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
         <Loader2 className="h-7 w-7 animate-spin text-primary" />
-        <p className="text-xs text-muted-foreground">Memeriksa status akun...</p>
+        <p className="text-xs text-muted-foreground">
+          Memeriksa status akun...
+        </p>
       </div>
     );
   }
@@ -160,7 +157,8 @@ export function MyEventsPage() {
             Akses Tiket Saya
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            Silakan masuk dengan akun UTY Creative Hub Anda untuk melihat riwayat pendaftaran agenda dan e-tiket barcode.
+            Silakan masuk dengan akun UTY Creative Hub Anda untuk melihat
+            riwayat pendaftaran agenda dan e-tiket barcode.
           </p>
         </div>
         <Button
@@ -188,7 +186,8 @@ export function MyEventsPage() {
             Tiket & Agenda Saya
           </h1>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Akses e-tiket resmi, barcode check-in kehadiran, dan sertifikat agenda yang Anda ikuti.
+            Akses e-tiket resmi, barcode check-in kehadiran, dan sertifikat
+            agenda yang Anda ikuti.
           </p>
         </div>
 
@@ -298,7 +297,9 @@ export function MyEventsPage() {
       {isLoading ? (
         <div className="py-16 text-center space-y-3">
           <Loader2 className="h-7 w-7 animate-spin text-primary mx-auto" />
-          <p className="text-xs text-muted-foreground">Memuat daftar tiket Anda...</p>
+          <p className="text-xs text-muted-foreground">
+            Memuat daftar tiket Anda...
+          </p>
         </div>
       ) : filteredRegistrations.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
@@ -338,19 +339,23 @@ export function MyEventsPage() {
                         {isApproved
                           ? "Tiket Aktif"
                           : isAttended
-                          ? "Telah Hadir"
-                          : isNeedsRevision
-                          ? "Perlu Revisi"
-                          : isPending
-                          ? "Menunggu Review"
-                          : reg.status}
+                            ? "Telah Hadir"
+                            : isNeedsRevision
+                              ? "Perlu Revisi"
+                              : isPending
+                                ? "Menunggu Review"
+                                : reg.status}
                       </Badge>
                     </div>
                     <CardTitle className="text-base sm:text-lg font-bold text-foreground line-clamp-1 pt-1">
                       {reg.event_title}
                     </CardTitle>
                     <CardDescription className="text-xs">
-                      Atas Nama: <strong className="text-foreground">{reg.full_name}</strong> ({reg.institution})
+                      Atas Nama:{" "}
+                      <strong className="text-foreground">
+                        {reg.full_name}
+                      </strong>{" "}
+                      ({reg.institution})
                     </CardDescription>
                   </CardHeader>
 
@@ -365,7 +370,9 @@ export function MyEventsPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
-                      <span className="truncate">{reg.event_location || "Kampus 1 UTY"}</span>
+                      <span className="truncate">
+                        {reg.event_location || "Kampus 1 UTY"}
+                      </span>
                     </div>
 
                     {/* Admin notes if any */}
@@ -450,10 +457,15 @@ export function MyEventsPage() {
               Belum Ada Tiket Agenda
             </h3>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Anda belum memiliki pendaftaran agenda yang aktif pada kategori ini.
+              Anda belum memiliki pendaftaran agenda yang aktif pada kategori
+              ini.
             </p>
           </div>
-          <Button asChild size="sm" className="rounded-xl text-xs font-semibold">
+          <Button
+            asChild
+            size="sm"
+            className="rounded-xl text-xs font-semibold"
+          >
             <Link href="/events">Jelajahi Agenda Mendatang</Link>
           </Button>
         </div>
@@ -508,7 +520,8 @@ export function MyEventsPage() {
                   <strong>Tanggal:</strong> {selectedTicket.event_date || "-"}
                 </p>
                 <p>
-                  <strong>Lokasi:</strong> {selectedTicket.event_location || "Kampus 1 UTY"}
+                  <strong>Lokasi:</strong>{" "}
+                  {selectedTicket.event_location || "Kampus 1 UTY"}
                 </p>
               </div>
             </div>
@@ -539,7 +552,8 @@ export function MyEventsPage() {
                 {revisionTicket.event_title}
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground">
-                Silakan upload ulang bukti bayar atau sertakan catatan revisi sesuai arahan panitia.
+                Silakan upload ulang bukti bayar atau sertakan catatan revisi
+                sesuai arahan panitia.
               </DialogDescription>
             </DialogHeader>
 

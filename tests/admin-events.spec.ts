@@ -67,7 +67,8 @@ test.describe("Admin & Committee Event Management E2E Tests", () => {
               {
                 id: "reg-002",
                 registration_code: "UCH-EVT-FASTLAB-2026",
-                event_id: "workshop-fastlab-prototyping-iot-dan-ai-dengan-esp32",
+                event_id:
+                  "workshop-fastlab-prototyping-iot-dan-ai-dengan-esp32",
                 event_title: "Workshop FastLab: Prototyping Smart IoT & AI",
                 full_name: "Citra Lestari",
                 identity_number: "5210411888",
@@ -269,9 +270,7 @@ test.describe("Admin & Committee Event Management E2E Tests", () => {
     await expect(page.getByText("Minta Revisi Berkas")).toBeVisible();
 
     // Type revision notes
-    const textarea = page.getByPlaceholder(
-      /Bukti transfer tidak jelas/i,
-    );
+    const textarea = page.getByPlaceholder(/Bukti transfer tidak jelas/i);
     await textarea.fill("Foto bukti transfer buram, mohon upload ulang.");
 
     // Submit
@@ -310,9 +309,7 @@ test.describe("Admin & Committee Event Management E2E Tests", () => {
       timeout: 5000,
     });
     await expect(
-      page
-        .getByLabel("Scan Tiket Barcode Peserta")
-        .getByText("Budi Santoso"),
+      page.getByLabel("Scan Tiket Barcode Peserta").getByText("Budi Santoso"),
     ).toBeVisible();
   });
 
@@ -334,9 +331,7 @@ test.describe("Admin & Committee Event Management E2E Tests", () => {
       .fill("Next-Gen Web & AI Hackathon 2026");
 
     // Submit
-    await page
-      .getByRole("button", { name: "Publikasikan Agenda" })
-      .click();
+    await page.getByRole("button", { name: "Publikasikan Agenda" }).click();
 
     // Toast success
     await expect(

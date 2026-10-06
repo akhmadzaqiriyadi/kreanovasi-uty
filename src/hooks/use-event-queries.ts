@@ -187,9 +187,12 @@ export function useEventsQuery(params?: EventsQueryParams) {
   return useQuery({
     queryKey: ["events", params],
     queryFn: async () => {
-      const res = await apiClient.get<ApiEnvelope<EventListResponse>>("/events", {
-        params,
-      });
+      const res = await apiClient.get<ApiEnvelope<EventListResponse>>(
+        "/events",
+        {
+          params,
+        },
+      );
       return (
         res.data?.data || {
           events: [],
@@ -249,9 +252,10 @@ export function useMyEventRegistrationsQuery(params?: {
   return useQuery({
     queryKey: ["my-event-registrations", params],
     queryFn: async () => {
-      const res = await apiClient.get<
-        ApiEnvelope<RegistrationListResponse>
-      >("/my-event-registrations", { params });
+      const res = await apiClient.get<ApiEnvelope<RegistrationListResponse>>(
+        "/my-event-registrations",
+        { params },
+      );
       return (
         res.data?.data || {
           registrations: [],
@@ -408,7 +412,9 @@ export function useEventCheckInMutation() {
     },
     onSuccess: (data) => {
       toast.success(data.message || "Check-in peserta berhasil");
-      queryClient.invalidateQueries({ queryKey: ["admin-event-registrations"] });
+      queryClient.invalidateQueries({
+        queryKey: ["admin-event-registrations"],
+      });
       queryClient.invalidateQueries({ queryKey: ["events"] });
     },
     onError: (err) => {

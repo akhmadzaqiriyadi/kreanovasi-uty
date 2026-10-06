@@ -2,11 +2,8 @@
 
 import { Html5Qrcode } from "html5-qrcode";
 import {
-  AlertCircle,
-  AlertTriangle,
   Award,
   Calendar,
-  CalendarCheck,
   Check,
   CheckCircle2,
   Clock,
@@ -14,25 +11,18 @@ import {
   ExternalLink,
   Eye,
   FileCheck,
-  FileText,
-  Filter,
-  Image as ImageIcon,
-  Keyboard,
   Loader2,
   Plus,
   QrCode,
   RefreshCw,
   Search,
-  Sparkles,
   Ticket,
-  Trash2,
-  User,
   Users,
-  X,
-  XCircle,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -74,7 +64,6 @@ import {
   useEventsQuery,
   useUpdateRegistrationStatusMutation,
 } from "@/hooks/use-event-queries";
-import apiClient from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 export function AdminEventsManager() {
@@ -99,7 +88,7 @@ export function AdminEventsManager() {
   const [adminNotes, setAdminNotes] = useState("");
 
   // Queries & Mutations
-  const { data: eventsData, isLoading: isEventsLoading } = useEventsQuery({
+  const { data: eventsData } = useEventsQuery({
     limit: 100,
   });
   const liveEvents: BackendEvent[] = eventsData?.events || [];
@@ -149,7 +138,7 @@ export function AdminEventsManager() {
 
   const updateStatusMutation =
     useUpdateRegistrationStatusMutation(selectedEventId);
-  const deleteEventMutation = useDeleteEventMutation();
+  const _deleteEventMutation = useDeleteEventMutation();
 
   const registrations = registrationsData?.registrations || [];
   const pagination = registrationsData?.pagination || {
@@ -164,7 +153,7 @@ export function AdminEventsManager() {
   const pendingCount = registrations.filter(
     (r) => r.status === "pending_review",
   ).length;
-  const revisionCount = registrations.filter(
+  const _revisionCount = registrations.filter(
     (r) => r.status === "needs_revision",
   ).length;
   const approvedCount = registrations.filter(
@@ -214,7 +203,8 @@ export function AdminEventsManager() {
             Panel Kendali Panitia Event UCH
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground">
-            Verifikasi bukti bayar, kontrol kuota pendaftaran, dan kelola check-in barcode kehadiran di lokasi.
+            Verifikasi bukti bayar, kontrol kuota pendaftaran, dan kelola
+            check-in barcode kehadiran di lokasi.
           </p>
         </div>
 
@@ -513,14 +503,14 @@ export function AdminEventsManager() {
                                 {isApproved
                                   ? "Aktif"
                                   : isAttended
-                                  ? "Hadir"
-                                  : isPending
-                                  ? "Review"
-                                  : isNeedsRevision
-                                  ? "Revisi"
-                                  : isRejected
-                                  ? "Ditolak"
-                                  : reg.status}
+                                    ? "Hadir"
+                                    : isPending
+                                      ? "Review"
+                                      : isNeedsRevision
+                                        ? "Revisi"
+                                        : isRejected
+                                          ? "Ditolak"
+                                          : reg.status}
                               </Badge>
                             </td>
 
@@ -616,7 +606,8 @@ export function AdminEventsManager() {
                   Tidak Ada Pendaftar Ditemukan
                 </h3>
                 <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                  Belum ada peserta yang mendaftar atau tidak sesuai kriteria filter pencarian.
+                  Belum ada peserta yang mendaftar atau tidak sesuai kriteria
+                  filter pencarian.
                 </p>
               </div>
             </div>
@@ -627,7 +618,7 @@ export function AdminEventsManager() {
         <TabsContent value="events" className="space-y-5">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {combinedEventOptions.map((evt) => {
-              const isPast =
+              const _isPast =
                 evt.date_year &&
                 parseInt(evt.date_year, 10) < 2026 &&
                 parseInt(evt.date_month, 10) < 10;
@@ -639,10 +630,11 @@ export function AdminEventsManager() {
                 >
                   <div>
                     <div className="relative h-40 w-full bg-muted/40 overflow-hidden">
-                      <img
+                      <Image
                         src={evt.cover_image || "/images/room1.jpeg"}
                         alt={evt.title}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                       />
                       <Badge className="absolute top-3 left-3 rounded-lg text-[10px] font-bold">
                         {evt.category_name}
@@ -661,7 +653,10 @@ export function AdminEventsManager() {
                       </CardTitle>
                       <CardDescription className="text-xs flex items-center gap-1.5 text-muted-foreground">
                         <Calendar className="w-3.5 h-3.5 text-primary shrink-0" />
-                        <span>{evt.date_full_text || `${evt.date_day} ${evt.date_month} ${evt.date_year}`}</span>
+                        <span>
+                          {evt.date_full_text ||
+                            `${evt.date_day} ${evt.date_month} ${evt.date_year}`}
+                        </span>
                       </CardDescription>
                     </CardHeader>
 
@@ -742,7 +737,8 @@ export function AdminEventsManager() {
                 {selectedReg.full_name}
               </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground font-mono">
-                Kode: {selectedReg.registration_code} • {selectedReg.event_title}
+                Kode: {selectedReg.registration_code} •{" "}
+                {selectedReg.event_title}
               </DialogDescription>
             </DialogHeader>
 
@@ -754,7 +750,9 @@ export function AdminEventsManager() {
                     <span className="text-muted-foreground block text-[10px]">
                       Institusi / Prodi:
                     </span>
-                    <strong className="text-foreground">{selectedReg.institution}</strong>
+                    <strong className="text-foreground">
+                      {selectedReg.institution}
+                    </strong>
                   </div>
                   <div>
                     <span className="text-muted-foreground block text-[10px]">
@@ -768,13 +766,17 @@ export function AdminEventsManager() {
                     <span className="text-muted-foreground block text-[10px]">
                       Email:
                     </span>
-                    <strong className="text-foreground">{selectedReg.email}</strong>
+                    <strong className="text-foreground">
+                      {selectedReg.email}
+                    </strong>
                   </div>
                   <div>
                     <span className="text-muted-foreground block text-[10px]">
                       WhatsApp:
                     </span>
-                    <strong className="text-foreground">{selectedReg.phone}</strong>
+                    <strong className="text-foreground">
+                      {selectedReg.phone}
+                    </strong>
                   </div>
                 </div>
               </div>
@@ -788,7 +790,10 @@ export function AdminEventsManager() {
                     </span>
                     <div className="rounded-2xl border border-border/70 p-3 space-y-2 bg-card/60">
                       {Object.entries(selectedReg.answers).map(([key, val]) => (
-                        <div key={key} className="border-b border-border/40 pb-1.5 last:border-none last:pb-0">
+                        <div
+                          key={key}
+                          className="border-b border-border/40 pb-1.5 last:border-none last:pb-0"
+                        >
                           <span className="text-[10px] text-muted-foreground font-semibold uppercase block">
                             {key.replace(/_/g, " ")}:
                           </span>
@@ -808,10 +813,13 @@ export function AdminEventsManager() {
                     Bukti Pembayaran / Transfer:
                   </span>
                   <div className="rounded-2xl border border-border/70 overflow-hidden bg-muted/20 p-2 text-center">
-                    <img
+                    <Image
                       src={selectedReg.payment_proof_url}
                       alt="Bukti Transfer"
-                      className="max-h-60 mx-auto rounded-xl object-contain border border-border/50"
+                      width={400}
+                      height={300}
+                      unoptimized
+                      className="max-h-60 w-auto mx-auto rounded-xl object-contain border border-border/50"
                     />
                     <a
                       href={selectedReg.payment_proof_url}
@@ -827,7 +835,9 @@ export function AdminEventsManager() {
               ) : (
                 <div className="p-3 rounded-2xl bg-muted/30 border border-border/50 text-[11px] text-muted-foreground flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span>Agenda Gratis / Tidak memerlukan bukti transfer bayar.</span>
+                  <span>
+                    Agenda Gratis / Tidak memerlukan bukti transfer bayar.
+                  </span>
                 </div>
               )}
 
@@ -870,15 +880,16 @@ export function AdminEventsManager() {
                 className={cn(
                   "text-[10px] font-bold uppercase tracking-wider",
                   verifyActionModal.type === "approve" && "text-emerald-600",
-                  verifyActionModal.type === "needs_revision" && "text-amber-600",
+                  verifyActionModal.type === "needs_revision" &&
+                    "text-amber-600",
                   verifyActionModal.type === "reject" && "text-red-600",
                 )}
               >
                 {verifyActionModal.type === "approve"
                   ? "Setujui & Terbitkan Tiket"
                   : verifyActionModal.type === "needs_revision"
-                  ? "Minta Revisi Berkas"
-                  : "Tolak Pendaftaran"}
+                    ? "Minta Revisi Berkas"
+                    : "Tolak Pendaftaran"}
               </span>
               <DialogTitle className="text-lg font-bold">
                 {verifyActionModal.registration.full_name}
@@ -926,14 +937,15 @@ export function AdminEventsManager() {
                     verifyActionModal.type === "approve"
                       ? "approved"
                       : verifyActionModal.type === "needs_revision"
-                      ? "needs_revision"
-                      : "rejected",
+                        ? "needs_revision"
+                        : "rejected",
                     adminNotes,
                   )
                 }
                 disabled={
                   updateStatusMutation.isPending ||
-                  (verifyActionModal.type === "needs_revision" && !adminNotes.trim())
+                  (verifyActionModal.type === "needs_revision" &&
+                    !adminNotes.trim())
                 }
                 className={cn(
                   "rounded-xl text-xs font-bold",
@@ -1071,7 +1083,8 @@ function EventCheckInScannerModal({
             Scan Tiket Barcode Peserta
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Arahkan kamera ke QR tiket peserta atau masukkan kode tiket secara manual.
+            Arahkan kamera ke QR tiket peserta atau masukkan kode tiket secara
+            manual.
           </DialogDescription>
         </DialogHeader>
 
@@ -1141,7 +1154,9 @@ function EventCheckInScannerModal({
               disabled={checkInMutation.isPending || !manualCode.trim()}
               className="w-full rounded-xl text-xs font-bold h-10"
             >
-              {checkInMutation.isPending ? "Memverifikasi..." : "Verifikasi Tiket"}
+              {checkInMutation.isPending
+                ? "Memverifikasi..."
+                : "Verifikasi Tiket"}
             </Button>
           </form>
         )}
@@ -1154,7 +1169,8 @@ function EventCheckInScannerModal({
               <span>Kehadiran Terkonfirmasi!</span>
             </div>
             <p className="text-foreground">
-              <strong>{lastCheckedIn.full_name}</strong> ({lastCheckedIn.institution})
+              <strong>{lastCheckedIn.full_name}</strong> (
+              {lastCheckedIn.institution})
             </p>
             <p className="text-muted-foreground text-[11px]">
               Kode: {lastCheckedIn.registration_code}
@@ -1227,7 +1243,8 @@ function CreateEventModal({
             Publikasikan Event UCH
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Lengkapi formulir untuk mempublikasikan agenda baru di portal UTY Creative Hub.
+            Lengkapi formulir untuk mempublikasikan agenda baru di portal UTY
+            Creative Hub.
           </DialogDescription>
         </DialogHeader>
 
@@ -1307,7 +1324,9 @@ function CreateEventModal({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold">Lokasi Pelaksanaan *</Label>
+            <Label className="text-xs font-semibold">
+              Lokasi Pelaksanaan *
+            </Label>
             <Input
               value={formData.location_name}
               onChange={(e) =>
@@ -1347,7 +1366,9 @@ function CreateEventModal({
               size="sm"
               className="rounded-xl text-xs font-bold px-5"
             >
-              {createMutation.isPending ? "Menyimpan..." : "Publikasikan Agenda"}
+              {createMutation.isPending
+                ? "Menyimpan..."
+                : "Publikasikan Agenda"}
             </Button>
           </div>
         </form>

@@ -1,19 +1,14 @@
 "use client";
 
 import {
-  AlertCircle,
-  Building2,
   CheckCircle2,
-  Clock,
   CreditCard,
   FileText,
   Loader2,
   LogIn,
   QrCode,
   Send,
-  Upload,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import type React from "react";
@@ -65,7 +60,9 @@ export function EventRegistrationModal({
   });
 
   // Dynamic answers: key -> value
-  const [customAnswers, setCustomAnswers] = useState<Record<string, string>>({});
+  const [customAnswers, setCustomAnswers] = useState<Record<string, string>>(
+    {},
+  );
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const [paymentProofUrl, setPaymentProofUrl] = useState<string>("");
 
@@ -81,13 +78,17 @@ export function EventRegistrationModal({
         institution:
           prev.institution ||
           user.affiliation ||
-          (user.prodi ? `${user.prodi} - UTY` : "Universitas Teknologi Yogyakarta"),
+          (user.prodi
+            ? `${user.prodi} - UTY`
+            : "Universitas Teknologi Yogyakarta"),
       }));
     }
   }, [user]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -209,7 +210,8 @@ export function EventRegistrationModal({
                 Login Diperlukan
               </h3>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                Untuk menjaga keabsahan data peserta dan menerbitkan e-tiket resmi, Anda wajib masuk menggunakan akun UTY Creative Hub.
+                Untuk menjaga keabsahan data peserta dan menerbitkan e-tiket
+                resmi, Anda wajib masuk menggunakan akun UTY Creative Hub.
               </p>
             </div>
 
@@ -257,7 +259,10 @@ export function EventRegistrationModal({
               {/* Profile autofill indicator */}
               <div className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/40 border border-border/50 text-[11px] text-muted-foreground">
                 <CheckCircle2 className="h-3.5 w-3.5 text-primary shrink-0" />
-                <span>Identitas terhubung dengan akun: <strong className="text-foreground">{user?.email}</strong></span>
+                <span>
+                  Identitas terhubung dengan akun:{" "}
+                  <strong className="text-foreground">{user?.email}</strong>
+                </span>
               </div>
 
               {/* Basic Details */}
@@ -278,7 +283,10 @@ export function EventRegistrationModal({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label htmlFor="identityNumber" className="text-xs font-semibold">
+                  <Label
+                    htmlFor="identityNumber"
+                    className="text-xs font-semibold"
+                  >
                     NIM / NIDN / NIK *
                   </Label>
                   <Input
@@ -292,7 +300,10 @@ export function EventRegistrationModal({
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="institution" className="text-xs font-semibold">
+                  <Label
+                    htmlFor="institution"
+                    className="text-xs font-semibold"
+                  >
                     Program Studi / Instansi *
                   </Label>
                   <Input
@@ -341,75 +352,98 @@ export function EventRegistrationModal({
               </div>
 
               {/* Dynamic Custom Fields Section */}
-              {event.customFieldsSchema && event.customFieldsSchema.length > 0 && (
-                <div className="space-y-3 pt-2 border-t border-border/60">
-                  <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                    <FileText className="h-3.5 w-3.5 text-primary" />
-                    <span>Persyaratan Khusus Agenda</span>
-                  </span>
+              {event.customFieldsSchema &&
+                event.customFieldsSchema.length > 0 && (
+                  <div className="space-y-3 pt-2 border-t border-border/60">
+                    <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                      <FileText className="h-3.5 w-3.5 text-primary" />
+                      <span>Persyaratan Khusus Agenda</span>
+                    </span>
 
-                  {event.customFieldsSchema.map((field) => (
-                    <div key={field.key} className="space-y-1.5">
-                      <Label htmlFor={field.key} className="text-xs font-semibold">
-                        {field.label} {field.required && "*"}
-                      </Label>
-
-                      {field.type === "select" ? (
-                        <select
-                          id={field.key}
-                          required={field.required}
-                          value={customAnswers[field.key] || ""}
-                          onChange={(e) => handleCustomAnswerChange(field.key, e.target.value)}
-                          className="w-full h-10 px-3 text-xs rounded-xl border border-input bg-background text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
+                    {event.customFieldsSchema.map((field) => (
+                      <div key={field.key} className="space-y-1.5">
+                        <Label
+                          htmlFor={field.key}
+                          className="text-xs font-semibold"
                         >
-                          <option value="">-- Pilih opsi --</option>
-                          {field.options?.map((opt) => (
-                            <option key={opt} value={opt}>
-                              {opt}
-                            </option>
-                          ))}
-                        </select>
-                      ) : field.type === "textarea" ? (
-                        <Textarea
-                          id={field.key}
-                          required={field.required}
-                          rows={2}
-                          value={customAnswers[field.key] || ""}
-                          onChange={(e) => handleCustomAnswerChange(field.key, e.target.value)}
-                          placeholder={field.placeholder || ""}
-                          className="text-xs rounded-xl resize-none"
-                        />
-                      ) : field.type === "file" ? (
-                        <div className="space-y-1.5">
+                          {field.label} {field.required && "*"}
+                        </Label>
+
+                        {field.type === "select" ? (
+                          <select
+                            id={field.key}
+                            required={field.required}
+                            value={customAnswers[field.key] || ""}
+                            onChange={(e) =>
+                              handleCustomAnswerChange(
+                                field.key,
+                                e.target.value,
+                              )
+                            }
+                            className="w-full h-10 px-3 text-xs rounded-xl border border-input bg-background text-foreground focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring"
+                          >
+                            <option value="">-- Pilih opsi --</option>
+                            {field.options?.map((opt) => (
+                              <option key={opt} value={opt}>
+                                {opt}
+                              </option>
+                            ))}
+                          </select>
+                        ) : field.type === "textarea" ? (
+                          <Textarea
+                            id={field.key}
+                            required={field.required}
+                            rows={2}
+                            value={customAnswers[field.key] || ""}
+                            onChange={(e) =>
+                              handleCustomAnswerChange(
+                                field.key,
+                                e.target.value,
+                              )
+                            }
+                            placeholder={field.placeholder || ""}
+                            className="text-xs rounded-xl resize-none"
+                          />
+                        ) : field.type === "file" ? (
+                          <div className="space-y-1.5">
+                            <Input
+                              id={field.key}
+                              type="file"
+                              accept={field.accept || ".pdf,.png,.jpg"}
+                              required={
+                                field.required && !customAnswers[field.key]
+                              }
+                              onChange={(e) =>
+                                handleFileUpload(e, field.key, false)
+                              }
+                              className="h-10 text-xs rounded-xl file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[11px] file:bg-primary/10 file:text-primary"
+                            />
+                            {customAnswers[field.key] && (
+                              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                ✓ File berhasil diunggah
+                              </p>
+                            )}
+                          </div>
+                        ) : (
                           <Input
                             id={field.key}
-                            type="file"
-                            accept={field.accept || ".pdf,.png,.jpg"}
-                            required={field.required && !customAnswers[field.key]}
-                            onChange={(e) => handleFileUpload(e, field.key, false)}
-                            className="h-10 text-xs rounded-xl file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-[11px] file:bg-primary/10 file:text-primary"
+                            type={field.type === "number" ? "number" : "text"}
+                            required={field.required}
+                            value={customAnswers[field.key] || ""}
+                            onChange={(e) =>
+                              handleCustomAnswerChange(
+                                field.key,
+                                e.target.value,
+                              )
+                            }
+                            placeholder={field.placeholder || ""}
+                            className="h-10 text-xs rounded-xl"
                           />
-                          {customAnswers[field.key] && (
-                            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                              ✓ File berhasil diunggah
-                            </p>
-                          )}
-                        </div>
-                      ) : (
-                        <Input
-                          id={field.key}
-                          type={field.type === "number" ? "number" : "text"}
-                          required={field.required}
-                          value={customAnswers[field.key] || ""}
-                          onChange={(e) => handleCustomAnswerChange(field.key, e.target.value)}
-                          placeholder={field.placeholder || ""}
-                          className="h-10 text-xs rounded-xl"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
 
               {/* Payment Info Section (If Event is Paid) */}
               {event.isFree === false && (
@@ -421,16 +455,22 @@ export function EventRegistrationModal({
 
                   <div className="rounded-2xl p-4 bg-muted/50 border border-border/60 space-y-2 text-xs">
                     <div className="flex items-center justify-between font-semibold">
-                      <span className="text-muted-foreground">Biaya Pendaftaran:</span>
+                      <span className="text-muted-foreground">
+                        Biaya Pendaftaran:
+                      </span>
                       <span className="text-base text-primary font-bold">
-                        {event.fee || (event.price ? `Rp ${event.price.toLocaleString("id-ID")}` : "Berbayar")}
+                        {event.fee ||
+                          (event.price
+                            ? `Rp ${event.price.toLocaleString("id-ID")}`
+                            : "Berbayar")}
                       </span>
                     </div>
 
                     {event.paymentInfo?.bank_name && (
                       <div className="space-y-1 pt-1 border-t border-border/40 text-[11px]">
                         <p>
-                          <strong>Bank Tujuan:</strong> {event.paymentInfo.bank_name}
+                          <strong>Bank Tujuan:</strong>{" "}
+                          {event.paymentInfo.bank_name}
                         </p>
                         <p>
                           <strong>Nomor Rekening:</strong>{" "}
@@ -439,7 +479,8 @@ export function EventRegistrationModal({
                           </span>
                         </p>
                         <p>
-                          <strong>Atas Nama:</strong> {event.paymentInfo.account_holder}
+                          <strong>Atas Nama:</strong>{" "}
+                          {event.paymentInfo.account_holder}
                         </p>
                         {event.paymentInfo.instructions && (
                           <p className="text-muted-foreground pt-1 italic">
@@ -451,7 +492,10 @@ export function EventRegistrationModal({
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="paymentProof" className="text-xs font-semibold">
+                    <Label
+                      htmlFor="paymentProof"
+                      className="text-xs font-semibold"
+                    >
                       Upload Bukti Transfer / Pembayaran *
                     </Label>
                     <Input
@@ -464,7 +508,8 @@ export function EventRegistrationModal({
                     />
                     {isUploadingProof && (
                       <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                        <Loader2 className="h-3 w-3 animate-spin" /> Mengunggah bukti bayar...
+                        <Loader2 className="h-3 w-3 animate-spin" /> Mengunggah
+                        bukti bayar...
                       </p>
                     )}
                     {paymentProofUrl && (
@@ -551,7 +596,11 @@ export function EventRegistrationModal({
             <div className="rounded-3xl bg-muted/40 p-5 border border-border/80 max-w-sm mx-auto text-center space-y-3 shadow-xs">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-primary/10 text-primary">
                 <QrCode className="h-3.5 w-3.5" />
-                <span>{registrationStatus === "approved" ? "E-TIKET AKTIF" : "MENUNGGU VERIFIKASI"}</span>
+                <span>
+                  {registrationStatus === "approved"
+                    ? "E-TIKET AKTIF"
+                    : "MENUNGGU VERIFIKASI"}
+                </span>
               </div>
 
               {registrationStatus === "approved" && (
@@ -575,9 +624,13 @@ export function EventRegistrationModal({
               </div>
 
               <div className="text-[11px] text-muted-foreground border-t border-border/50 pt-2 space-y-0.5">
-                <p className="font-semibold text-foreground">{formData.fullName}</p>
+                <p className="font-semibold text-foreground">
+                  {formData.fullName}
+                </p>
                 <p>{event.title}</p>
-                <p className="text-[10px]">{event.date.fullText} • {event.time}</p>
+                <p className="text-[10px]">
+                  {event.date.fullText} • {event.time}
+                </p>
               </div>
             </div>
 
@@ -588,9 +641,7 @@ export function EventRegistrationModal({
                 size="sm"
                 className="rounded-xl text-xs h-9 px-5"
               >
-                <Link href="/my-events">
-                  Buka Tiket Saya
-                </Link>
+                <Link href="/my-events">Buka Tiket Saya</Link>
               </Button>
               <Button
                 type="button"

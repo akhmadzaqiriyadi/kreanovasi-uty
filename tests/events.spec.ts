@@ -14,9 +14,15 @@ test.describe("Events & Agenda Pages E2E Tests", () => {
     ).toBeVisible();
 
     // Check timeline filter tabs exist
-    await expect(page.getByRole("button", { name: /Akan Datang/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Telah Berlalu/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Semua Agenda/i })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /Akan Datang/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /Telah Berlalu/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /Semua Agenda/i }),
+    ).toBeVisible();
 
     // Check search input exists
     await expect(page.locator("#search-events")).toBeVisible();
@@ -79,7 +85,9 @@ test.describe("Events & Agenda Pages E2E Tests", () => {
     ).toBeVisible();
   });
 
-  test("should show 'Acara Telah Selesai' for past events", async ({ page }) => {
+  test("should show 'Acara Telah Selesai' for past events", async ({
+    page,
+  }) => {
     await page.goto(
       "/events/workshop-fastlab-prototyping-iot-dan-ai-dengan-esp32",
     );
@@ -208,7 +216,9 @@ test.describe("Events & Agenda Pages E2E Tests", () => {
 
     // Check autofill
     await expect(page.locator("#fullName")).toHaveValue("Ahmad Fauzi");
-    await expect(page.locator("#email")).toHaveValue("fauzi@students.uty.ac.id");
+    await expect(page.locator("#email")).toHaveValue(
+      "fauzi@students.uty.ac.id",
+    );
 
     // Fill phone if empty
     await page.locator("#phone").fill("081234567890");
@@ -318,12 +328,16 @@ test.describe("Events & Agenda Pages E2E Tests", () => {
 
     // Check tabs
     await expect(page.getByRole("button", { name: /Semua/i })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Tiket Aktif/i })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: /Tiket Aktif/i }),
+    ).toBeVisible();
 
     // Check ticket item is rendered
     await expect(page.getByText("UCH-EVT-CTALK-2026")).toBeVisible();
     await expect(
-      page.getByText("Creative Talk: Membangun Design System untuk Skala Produk"),
+      page.getByText(
+        "Creative Talk: Membangun Design System untuk Skala Produk",
+      ),
     ).toBeVisible();
 
     // Click Barcode QR button
