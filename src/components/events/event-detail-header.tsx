@@ -79,8 +79,22 @@ export function EventDetailHeader({ event }: EventDetailHeaderProps) {
               {event.category.name}
             </Badge>
 
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-white/10 text-primary-foreground backdrop-blur-xs border border-white/15 uppercase tracking-wide">
-              {event.location.type} Event
+            {event.isFree === false ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-amber-500 text-white shadow-xs">
+                Berbayar
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-600 text-white shadow-xs">
+                Gratis
+              </span>
+            )}
+
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-white/10 text-primary-foreground backdrop-blur-xs border border-white/15 tracking-wide">
+              {event.location.type === "online"
+                ? "Daring (Online)"
+                : event.location.type === "hybrid"
+                  ? "Hybrid"
+                  : "Tatap Muka"}
             </span>
 
             {event.quota && (

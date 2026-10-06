@@ -45,6 +45,16 @@ const PRESET_COVERS = [
   { label: "Studio Desain", url: "/images/room3.jpg" },
 ];
 
+export const PRESET_CATEGORIES = [
+  "Demo Day & Pitching",
+  "Hands-on Workshop",
+  "Klinik & Mentoring",
+  "Seminar & Tech Talk",
+  "Masterclass & Bootcamp",
+  "Kompetisi & Hackathon",
+  "Webinar & Kuliah Umum",
+];
+
 const eventEditorSchema = z.object({
   title: z.string().min(3, "Judul agenda minimal 3 karakter"),
   slug: z.string().min(2, "Slug agenda minimal 2 karakter"),
@@ -56,6 +66,7 @@ const eventEditorSchema = z.object({
   date_month: z.string(),
   date_year: z.string(),
   time: z.string().min(1, "Waktu sesi wajib diisi"),
+  location_type: z.enum(["offline", "online", "hybrid"]),
   location_name: z.string().min(1, "Lokasi agenda wajib diisi"),
   location_room: z.string(),
   cover_image: z.string().min(1, "Cover image wajib diisi"),
@@ -110,7 +121,7 @@ export function EventEditorModal({
     defaultValues: {
       title: "",
       slug: "",
-      category_name: "Workshop & Seminar",
+      category_name: "Demo Day & Pitching",
       description: "",
       long_description: "",
       date_full_text: "Kamis, 15 Oktober 2026",
@@ -120,6 +131,7 @@ export function EventEditorModal({
       time: "09:00 - 13:00 WIB",
       location_name: "Laboratorium FastLab UCH Lt. 2",
       location_room: "Ruang Riset AI & IoT",
+      location_type: "offline",
       cover_image: "/images/coworking-space.jpg",
       quota_total: 50,
       fee: "Gratis",
@@ -137,7 +149,7 @@ export function EventEditorModal({
         reset({
           title: eventToEdit.title || "",
           slug: eventToEdit.slug || "",
-          category_name: eventToEdit.category_name || "Workshop & Seminar",
+          category_name: eventToEdit.category_name || "Demo Day & Pitching",
           description: eventToEdit.description || "",
           long_description: eventToEdit.long_description || "",
           date_full_text: eventToEdit.date_full_text || "",
@@ -147,6 +159,7 @@ export function EventEditorModal({
           time: eventToEdit.time || "09:00 - 13:00 WIB",
           location_name: eventToEdit.location_name || "",
           location_room: eventToEdit.location_room || "",
+          location_type: (eventToEdit.location_type as "offline" | "online" | "hybrid") || "offline",
           cover_image: eventToEdit.cover_image || "/images/coworking-space.jpg",
           quota_total: eventToEdit.quota_total || 50,
           fee: eventToEdit.fee || "Gratis",
@@ -163,7 +176,7 @@ export function EventEditorModal({
         reset({
           title: "",
           slug: "",
-          category_name: "Workshop & Seminar",
+          category_name: "Demo Day & Pitching",
           description: "",
           long_description: "",
           date_full_text: "Kamis, 15 Oktober 2026",
@@ -173,6 +186,7 @@ export function EventEditorModal({
           time: "09:00 - 13:00 WIB",
           location_name: "Laboratorium FastLab UCH Lt. 2",
           location_room: "Ruang Riset AI & IoT",
+          location_type: "offline",
           cover_image: "/images/coworking-space.jpg",
           quota_total: 50,
           fee: "Gratis",
@@ -451,42 +465,72 @@ export function EventEditorModal({
             </div>
           </div>
 
-          {/* Category & Status */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">Kategori *</Label>
-              <Input
-                {...register("category_name")}
-                placeholder="Workshop & Seminar, Hackathon, dll"
-                className="h-10 text-xs rounded-xl"
-              />
-              {errors.category_name && (
-                <p className="text-[11px] text-destructive">
-                  {errors.category_name.message}
-                </p>
-              )}
+          {/* Category Management & Presets */}
+          <div className="space-y-2 rounded-2xl bg-muted/20 p-3 sm:p-4 border border-border/60">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+              <Label className="text-xs font-semibold">Kategori Agenda *</Label>
+              <span className="text-[11px] text-muted-foreground">
+                Klik preset cepat atau ketik kategori kustom
+              </span>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">Status Agenda</Label>
-              <Select
-                value={watch("status") || "published"}
-                onValueChange={(val) =>
-                  setValue("status", val, { shouldValidate: true })
-                }
-              >
-                <SelectTrigger className="h-10 text-xs rounded-xl w-full">
-                  <SelectValue placeholder="Pilih status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="published">
-                    Diterbitkan (Publik)
-                  </SelectItem>
-                  <SelectItem value="draft">Draf (Internal)</SelectItem>
-                  <SelectItem value="completed">Selesai</SelectItem>
-                  <SelectItem value="cancelled">Dibatalkan</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Quick preset chips */}
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
+              {PRESET_CATEGORIES.map((cat) => {
+                const isSelected = watch("category_name") === cat;
+                return (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() =>
+                      setValue("category_name", cat, { shouldValidate: true })
+                    }
+                    className={`text-[11px] px-2.5 py-1 rounded-full border transition-all cursor-pointer font-medium ${
+                      isSelected
+                        ? "bg-primary text-primary-foreground border-primary shadow-xs"
+                        : "bg-background hover:bg-muted text-muted-foreground hover:text-foreground border-border"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <div className="space-y-1.5">
+                <Input
+                  {...register("category_name")}
+                  placeholder="Kategori spesifik / kustom..."
+                  className="h-10 text-xs rounded-xl"
+                />
+                {errors.category_name && (
+                  <p className="text-[11px] text-destructive">
+                    {errors.category_name.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Select
+                  value={watch("status") || "published"}
+                  onValueChange={(val) =>
+                    setValue("status", val, { shouldValidate: true })
+                  }
+                >
+                  <SelectTrigger className="h-10 text-xs rounded-xl w-full">
+                    <SelectValue placeholder="Pilih status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="published">
+                      Diterbitkan (Publik)
+                    </SelectItem>
+                    <SelectItem value="draft">Draf (Internal)</SelectItem>
+                    <SelectItem value="completed">Selesai</SelectItem>
+                    <SelectItem value="cancelled">Dibatalkan</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
@@ -528,27 +572,66 @@ export function EventEditorModal({
             </div>
           </div>
 
-          {/* Location */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">Lokasi / Gedung *</Label>
-              <Input
-                {...register("location_name")}
-                placeholder="Laboratorium FastLab UCH Lt. 2"
-                className="h-10 text-xs rounded-xl"
-              />
-              {errors.location_name && (
-                <p className="text-[11px] text-destructive">
-                  {errors.location_name.message}
-                </p>
-              )}
+          {/* Format Pelaksanaan & Lokasi */}
+          <div className="space-y-3 rounded-2xl bg-muted/20 p-3 sm:p-4 border border-border/60">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-xs font-semibold">Format Pelaksanaan *</Label>
+                <Select
+                  value={watch("location_type") || "offline"}
+                  onValueChange={(val: "offline" | "online" | "hybrid") =>
+                    setValue("location_type", val, { shouldValidate: true })
+                  }
+                >
+                  <SelectTrigger className="h-10 text-xs rounded-xl w-full">
+                    <SelectValue placeholder="Pilih format" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="offline">Tatap Muka (Offline)</SelectItem>
+                    <SelectItem value="online">Daring (Online)</SelectItem>
+                    <SelectItem value="hybrid">Hybrid (Tatap Muka & Daring)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5 sm:col-span-2">
+                <Label className="text-xs font-semibold">
+                  {watch("location_type") === "online"
+                    ? "Platform / Tautan Daring *"
+                    : "Lokasi / Gedung *"}
+                </Label>
+                <Input
+                  {...register("location_name")}
+                  placeholder={
+                    watch("location_type") === "online"
+                      ? "Zoom Meeting / Google Meet (Tautan dikirim via tiket/email)"
+                      : watch("location_type") === "hybrid"
+                      ? "Laboratorium FastLab UCH Lt. 2 & Zoom Meeting"
+                      : "Laboratorium FastLab UCH Lt. 2"
+                  }
+                  className="h-10 text-xs rounded-xl"
+                />
+                {errors.location_name && (
+                  <p className="text-[11px] text-destructive">
+                    {errors.location_name.message}
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">Ruangan Spesifik</Label>
+              <Label className="text-xs font-semibold">
+                {watch("location_type") === "online"
+                  ? "Informasi Tambahan / Passcode (Opsional)"
+                  : "Ruangan Spesifik (Opsional)"}
+              </Label>
               <Input
                 {...register("location_room")}
-                placeholder="Ruang Riset AI & IoT"
+                placeholder={
+                  watch("location_type") === "online"
+                    ? "Meeting ID: 890 1234 5678 / Pass: UCH2026"
+                    : "Ruang Riset AI & IoT / Auditorium Kampus 1"
+                }
                 className="h-10 text-xs rounded-xl"
               />
             </div>

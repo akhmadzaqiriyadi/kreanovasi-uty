@@ -81,8 +81,12 @@ export function EventCard({ event, className }: EventCardProps) {
                 {event.quota.statusLabel}
               </span>
             )}
-            <span className="text-[11px] font-bold uppercase tracking-wider text-white/90 drop-shadow-md">
-              {event.location.type} Event
+            <span className="text-[11px] font-bold tracking-wide text-white/95 drop-shadow-md bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-xs">
+              {event.location.type === "online"
+                ? "Daring (Online)"
+                : event.location.type === "hybrid"
+                  ? "Hybrid"
+                  : "Tatap Muka"}
             </span>
           </div>
         </div>

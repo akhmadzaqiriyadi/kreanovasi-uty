@@ -100,25 +100,25 @@ export function EventsFilterBar({
             </button>
           </div>
 
-          {/* Location Type Selector */}
-          <div className="grid grid-cols-3 items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border/50 w-full sm:w-auto">
+          {/* Location Type Selector: Semua / Tatap Muka / Daring / Hybrid */}
+          <div className="grid grid-cols-4 items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border/50 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => onTypeChange("all")}
               className={cn(
-                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                "px-2 sm:px-2.5 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
                 selectedType === "all"
                   ? "bg-background text-foreground shadow-xs font-bold"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              Semua Format
+              Semua
             </button>
             <button
               type="button"
               onClick={() => onTypeChange("offline")}
               className={cn(
-                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                "px-2 sm:px-2.5 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
                 selectedType === "offline"
                   ? "bg-background text-foreground shadow-xs font-bold"
                   : "text-muted-foreground hover:text-foreground",
@@ -128,9 +128,21 @@ export function EventsFilterBar({
             </button>
             <button
               type="button"
+              onClick={() => onTypeChange("online")}
+              className={cn(
+                "px-2 sm:px-2.5 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedType === "online"
+                  ? "bg-background text-foreground shadow-xs font-bold text-sky-600 dark:text-sky-400"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Daring
+            </button>
+            <button
+              type="button"
               onClick={() => onTypeChange("hybrid")}
               className={cn(
-                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                "px-2 sm:px-2.5 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
                 selectedType === "hybrid"
                   ? "bg-background text-foreground shadow-xs font-bold"
                   : "text-muted-foreground hover:text-foreground",
