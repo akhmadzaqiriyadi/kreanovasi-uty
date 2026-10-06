@@ -32,11 +32,14 @@ import {
   useCreateEventMutation,
   useUpdateEventMutation,
 } from "@/hooks/use-event-queries";
+import type { EventSpeaker } from "@/config/events";
 import apiClient from "@/lib/api-client";
 import { getSafeImageUrl } from "@/lib/image-utils";
 import { cn } from "@/lib/utils";
 import { EventDatePicker } from "./event-date-picker";
 import { EventRundownManager } from "./event-rundown-manager";
+import { EventSpeakersManager } from "./event-speakers-manager";
+import { EventPerksManager } from "./event-perks-manager";
 
 const PRESET_COVERS = [
   { label: "Coworking Space", url: "/images/coworking-space.jpg" },
@@ -105,6 +108,9 @@ export function EventEditorModal({
   const [autoSlug, setAutoSlug] = useState(!isEditing);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [rundownItems, setRundownItems] = useState<EventRundownItem[]>([]);
+  const [speakers, setSpeakers] = useState<EventSpeaker[]>([]);
+  const [benefits, setBenefits] = useState<string[]>([]);
+  const [prerequisites, setPrerequisites] = useState<string[]>([]);
 
   const createMutation = useCreateEventMutation();
   const updateMutation = useUpdateEventMutation(eventToEdit?.id || "");
@@ -142,7 +148,7 @@ export function EventEditorModal({
     },
   });
 
-  // Keep form and rundown in sync when modal opens or eventToEdit changes
+  // Keep form, rundown, speakers, and perks in sync when modal opens or eventToEdit changes
   useEffect(() => {
     if (open) {
       if (eventToEdit) {
@@ -172,6 +178,17 @@ export function EventEditorModal({
         setRundownItems(
           Array.isArray(eventToEdit.rundown) ? eventToEdit.rundown : [],
         );
+        setSpeakers(
+          Array.isArray(eventToEdit.speakers) ? eventToEdit.speakers : [],
+        );
+        setBenefits(
+          Array.isArray(eventToEdit.benefits) ? eventToEdit.benefits : [],
+        );
+        setPrerequisites(
+          Array.isArray(eventToEdit.prerequisites)
+            ? eventToEdit.prerequisites
+            : [],
+        );
       } else {
         reset({
           title: "",
@@ -197,6 +214,9 @@ export function EventEditorModal({
         });
         setAutoSlug(true);
         setRundownItems([]);
+        setSpeakers([]);
+        setBenefits([]);
+        setPrerequisites([]);
       }
     }
   }, [open, eventToEdit, reset]);
@@ -249,6 +269,9 @@ export function EventEditorModal({
       category_variant: "primary",
       status: (values.status as BackendEvent["status"]) || "published",
       rundown: rundownItems,
+      speakers,
+      benefits,
+      prerequisites,
     };
 
     if (isEditing) {
@@ -710,6 +733,20 @@ export function EventEditorModal({
           <EventRundownManager
             rundown={rundownItems}
             onChange={setRundownItems}
+          />
+
+          {/* Speakers & Mentors Manager */}
+          <EventSpeakersManager
+            speakers={speakers}
+            onChange={setSpeakers}
+          />
+
+          {/* Benefits & Prerequisites Manager */}
+          <EventPerksManager
+            benefits={benefits}
+            onBenefitsChange={setBenefits}
+            prerequisites={prerequisites}
+            onPrerequisitesChange={setPrerequisites}
           />
 
           {/* Short Description */}

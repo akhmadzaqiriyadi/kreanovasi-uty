@@ -440,10 +440,10 @@ export const allEvents: EventItem[] = [
     longDescription:
       "Program Pengkreatifan Mahasiswa (PKM) adalah momentum strategis bagi mahasiswa UTY untuk mengharumkan almamater di ajang PIMNAS. Klinik proposal ini memfasilitasi tim mahasiswa yang telah memiliki draf awal atau ide proposal untuk dibedah secara komprehensif oleh dewan reviewer universitas: dari perumusan latar belakang masalah, ketepatan skema, metode pelaksanaan, hingga kelayakan anggaran biaya (RAB).",
     date: {
-      day: "04",
+      day: "25",
       month: "OKT",
       year: "2026",
-      fullText: "Minggu, 04 Oktober 2026",
+      fullText: "Minggu, 25 Oktober 2026",
     },
     time: "13:00 - 17:00 WIB",
     location: {
@@ -466,7 +466,7 @@ export const allEvents: EventItem[] = [
     },
     featured: true,
     fee: "Gratis untuk Seluruh Tim Mahasiswa UTY",
-    registrationDeadline: "02 Oktober 2026, 20:00 WIB",
+    registrationDeadline: "24 Oktober 2026, 23:59 WIB",
     targetAudience:
       "Tim mahasiswa UTY lintas program studi yang sedang menyusun proposal PKM-RE, PKM-K, PKM-KC, PKM-PM, PKM-PI, atau PKM-VGK.",
     speakers: [
