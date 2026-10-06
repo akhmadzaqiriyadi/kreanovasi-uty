@@ -31,6 +31,7 @@ export function EventsCatalogContent({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedType, setSelectedType] = useState("all");
+  const [selectedFee, setSelectedFee] = useState<"all" | "free" | "paid">("all");
 
   // Fetch live events from backend
   const { data: apiData, isLoading } = useEventsQuery({
@@ -39,7 +40,7 @@ export function EventsCatalogContent({
     limit: 50,
   });
 
-  // Use live data if query has settled, else fall back to initialEvents on initial render
+  // Use live data if query has settled and returned results, else fall back to initialEvents on initial render
   const liveEvents: EventItem[] = apiData?.events
     ? apiData.events.map(mapBackendEventToEventItem)
     : initialEvents;
@@ -67,7 +68,15 @@ export function EventsCatalogContent({
     const matchesType =
       selectedType === "all" || event.location.type === selectedType;
 
-    return matchesSearch && matchesCategory && matchesType;
+    // Fee match (Gratis vs Berbayar)
+    const matchesFee =
+      selectedFee === "all" ||
+      (selectedFee === "free" &&
+        (event.isFree === true || (!event.price && event.isFree !== false))) ||
+      (selectedFee === "paid" &&
+        (event.isFree === false || (event.price && event.price > 0)));
+
+    return matchesSearch && matchesCategory && matchesType && matchesFee;
   });
 
   return (
@@ -135,6 +144,8 @@ export function EventsCatalogContent({
         onCategoryChange={setSelectedCategory}
         selectedType={selectedType}
         onTypeChange={setSelectedType}
+        selectedFee={selectedFee}
+        onFeeChange={setSelectedFee}
         categories={activeCategories}
         totalResults={filteredEvents.length}
       />

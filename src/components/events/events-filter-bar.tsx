@@ -12,6 +12,8 @@ interface EventsFilterBarProps {
   onCategoryChange: (cat: string) => void;
   selectedType: string;
   onTypeChange: (type: string) => void;
+  selectedFee: "all" | "free" | "paid";
+  onFeeChange: (fee: "all" | "free" | "paid") => void;
   categories: string[];
   totalResults: number;
 }
@@ -23,23 +25,27 @@ export function EventsFilterBar({
   onCategoryChange,
   selectedType,
   onTypeChange,
+  selectedFee,
+  onFeeChange,
   categories,
   totalResults,
 }: EventsFilterBarProps) {
   const isFiltered =
     Boolean(searchQuery) ||
     selectedCategory !== "all" ||
-    selectedType !== "all";
+    selectedType !== "all" ||
+    selectedFee !== "all";
 
   const handleReset = () => {
     onSearchChange("");
     onCategoryChange("all");
     onTypeChange("all");
+    onFeeChange("all");
   };
 
   return (
     <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs">
-      <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+      <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
         {/* Search input */}
         <div className="relative flex-1">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
@@ -53,44 +59,86 @@ export function EventsFilterBar({
           />
         </div>
 
-        {/* Location Type Selector */}
-        <div className="grid grid-cols-3 sm:flex items-center gap-1 sm:gap-1.5 p-1 bg-muted/60 rounded-xl border border-border/50 w-full sm:w-auto">
-          <button
-            type="button"
-            onClick={() => onTypeChange("all")}
-            className={cn(
-              "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
-              selectedType === "all"
-                ? "bg-background text-foreground shadow-xs font-bold"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            Semua Format
-          </button>
-          <button
-            type="button"
-            onClick={() => onTypeChange("offline")}
-            className={cn(
-              "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
-              selectedType === "offline"
-                ? "bg-background text-foreground shadow-xs font-bold"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            Tatap Muka
-          </button>
-          <button
-            type="button"
-            onClick={() => onTypeChange("hybrid")}
-            className={cn(
-              "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
-              selectedType === "hybrid"
-                ? "bg-background text-foreground shadow-xs font-bold"
-                : "text-muted-foreground hover:text-foreground",
-            )}
-          >
-            Hybrid
-          </button>
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+          {/* Fee Selector: Semua / Gratis / Berbayar */}
+          <div className="grid grid-cols-3 items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border/50 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => onFeeChange("all")}
+              className={cn(
+                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedFee === "all"
+                  ? "bg-background text-foreground shadow-xs font-bold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Semua Biaya
+            </button>
+            <button
+              type="button"
+              onClick={() => onFeeChange("free")}
+              className={cn(
+                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedFee === "free"
+                  ? "bg-background text-foreground shadow-xs font-bold text-emerald-600 dark:text-emerald-400"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Gratis
+            </button>
+            <button
+              type="button"
+              onClick={() => onFeeChange("paid")}
+              className={cn(
+                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedFee === "paid"
+                  ? "bg-background text-foreground shadow-xs font-bold text-amber-600 dark:text-amber-400"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Berbayar
+            </button>
+          </div>
+
+          {/* Location Type Selector */}
+          <div className="grid grid-cols-3 items-center gap-1 p-1 bg-muted/60 rounded-xl border border-border/50 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => onTypeChange("all")}
+              className={cn(
+                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedType === "all"
+                  ? "bg-background text-foreground shadow-xs font-bold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Semua Format
+            </button>
+            <button
+              type="button"
+              onClick={() => onTypeChange("offline")}
+              className={cn(
+                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedType === "offline"
+                  ? "bg-background text-foreground shadow-xs font-bold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Tatap Muka
+            </button>
+            <button
+              type="button"
+              onClick={() => onTypeChange("hybrid")}
+              className={cn(
+                "px-2 sm:px-3 py-1.5 text-center text-xs font-semibold rounded-lg transition-all truncate",
+                selectedType === "hybrid"
+                  ? "bg-background text-foreground shadow-xs font-bold"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              Hybrid
+            </button>
+          </div>
         </div>
       </div>
 

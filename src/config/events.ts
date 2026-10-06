@@ -115,10 +115,10 @@ export const allEvents: EventItem[] = [
     longDescription:
       "UCH Demo Day & Startup Pitch Fest 2026 adalah puncak program akselerasi inovasi mahasiswa Universitas Teknologi Yogyakarta. Para finalis dari berbagai fakultas akan mempresentasikan produk inovatif mereka—mulai dari platform AI, solusi energi terbarukan, hingga teknologi agrikultur presisi—di hadapan dewan juri yang terdiri dari investor ventura, pimpinan inkubator bisnis, dan mitra industri teknologi terkemuka di Indonesia.",
     date: {
-      day: "25",
-      month: "SEP",
+      day: "28",
+      month: "OKT",
       year: "2026",
-      fullText: "Jumat, 25 September 2026",
+      fullText: "Rabu, 28 Oktober 2026",
     },
     time: "08:30 - 16:00 WIB",
     location: {
@@ -140,8 +140,10 @@ export const allEvents: EventItem[] = [
       statusLabel: "Pendaftaran Dibuka",
     },
     featured: true,
+    isFree: true,
+    price: 0,
     fee: "Gratis (Terbuka untuk Umum & Sivitas UTY)",
-    registrationDeadline: "23 September 2026, 23:59 WIB",
+    registrationDeadline: "27 Oktober 2026, 23:59 WIB",
     targetAudience:
       "Mahasiswa UTY, founder startup muda, dosen pembimbing, serta pegiat industri teknologi dan investor ventura.",
     speakers: [
@@ -228,10 +230,10 @@ export const allEvents: EventItem[] = [
     longDescription:
       "Workshop intensif FastLab ini dirancang khusus untuk mahasiswa yang ingin mendalami pembuatan prototipe hardware cerdas. Peserta akan dibimbing langsung oleh mentor lab dalam merakit modul ESP32, mengintegrasikan berbagai modul sensor (lingkungan, jarak, dan kamera mikro), hingga menghubungkan data sensor ke platform dashboard berbasis IoT Cloud dengan inferensi model AI tepi (edge AI).",
     date: {
-      day: "30",
-      month: "SEP",
+      day: "12",
+      month: "NOV",
       year: "2026",
-      fullText: "Rabu, 30 September 2026",
+      fullText: "Kamis, 12 November 2026",
     },
     time: "09:00 - 13:00 WIB",
     location: {
@@ -248,13 +250,15 @@ export const allEvents: EventItem[] = [
     coverImage: "/images/room1.jpeg",
     quota: {
       total: 30,
-      filled: 26,
-      status: "closing-soon",
-      statusLabel: "Slot Terbatas",
+      filled: 18,
+      status: "open",
+      statusLabel: "Pendaftaran Dibuka",
     },
     featured: true,
+    isFree: true,
+    price: 0,
     fee: "Gratis (Termasuk Peminjaman Hardware Kit Selama Sesi)",
-    registrationDeadline: "28 September 2026, 17:00 WIB",
+    registrationDeadline: "10 November 2026, 17:00 WIB",
     targetAudience:
       "Mahasiswa Informatika, Teknik Elektro, Sistem Komputer, dan mahasiswa yang sedang mempersiapkan PKM-KC atau tugas akhir hardware.",
     speakers: [
@@ -303,9 +307,9 @@ export const allEvents: EventItem[] = [
       },
     ],
     benefits: [
-      "Kit praktikum ESP32 lengkap (board, breadboard, sensor kit) disediakan selama acara",
-      "Akses berkelanjutan ke workstation pengujian FastLab untuk proyek lanjutan",
-      "Source code starter pack dan modul panduan PDF praktikum",
+      "Kit praktikum ESP32 lengkap disediakan selama acara",
+      "Akses ke workstation pengujian FastLab untuk proyek lanjutan",
+      "Source code starter pack dan panduan modul praktikum",
       "E-Sertifikat keahlian praktis dari UTY Creative Hub",
       "Konsumsi ringan dan sertifikat pendukung SKPI",
     ],
@@ -319,6 +323,112 @@ export const allEvents: EventItem[] = [
       role: "Laboran FastLab UTY",
       phone: "+62 821-9876-5432",
       email: "fastlab@uty.ac.id",
+    },
+  },
+  {
+    id: "masterclass-ai-venture-building-2026",
+    slug: "masterclass-ai-venture-building-riset-menuju-valuasi-seri-a",
+    title: "Masterclass AI & Venture Building: Riset Menuju Valuasi Seri-A",
+    description:
+      "Masterclass intensif membedah validasi model AI, strategi komersialisasi riset universitas, dan struktur pitching ke investor venture capital.",
+    longDescription:
+      "Didesain khusus untuk mahasiswa dan civitas akademika yang ingin mengubah riset kecerdasan buatan menjadi startup bernilai komersial tinggi. Peserta akan dibimbing langsung oleh partner venture capital dan praktisi AI terkemuka tentang product-market fit, unit economics, hingga pembuatan data room investasi.",
+    date: {
+      day: "21",
+      month: "NOV",
+      year: "2026",
+      fullText: "Sabtu, 21 November 2026",
+    },
+    time: "09:00 - 16:30 WIB",
+    location: {
+      name: "Think-Tank Space Kampus 1 UTY",
+      room: "Ruang Kolaborasi Lt. 1",
+      address:
+        "Jl. Siliwangi (Ringroad Utara), Jombor, Sleman, D.I. Yogyakarta",
+      type: "hybrid",
+    },
+    category: {
+      name: "Masterclass & Bootcamp",
+      variant: "accent",
+    },
+    coverImage: "/images/porto1.jpeg",
+    quota: {
+      total: 50,
+      filled: 22,
+      status: "open",
+      statusLabel: "Pendaftaran Dibuka",
+    },
+    featured: true,
+    isFree: false,
+    price: 75000,
+    fee: "Rp 75.000 (Early Bird Mahasiswa & Umum)",
+    registrationDeadline: "19 November 2026, 23:59 WIB",
+    paymentInfo: {
+      bank_name: "Bank Mandiri",
+      account_number: "137-00-1928374-1",
+      account_holder: "UTY Creative Hub Kreanovasi",
+      qris_image_url: "/images/qris-dummy.png",
+      instructions:
+        "Transfer biaya pendaftaran Rp 75.000 ke rekening Bank Mandiri a.n UTY Creative Hub Kreanovasi atau via QRIS resmi UCH. Unggah bukti transfer pada formulir pendaftaran.",
+    },
+    targetAudience:
+      "Founder startup mahasiswa, peneliti AI/Data Science, pengembang piranti lunak, dan pegiat venture building.",
+    speakers: [
+      {
+        name: "Kevin Sanjaya, M.Sc.",
+        role: "Principal Venture Partner",
+        institution: "Horizon Ventures Southeast Asia",
+      },
+      {
+        name: "Dr. Amanda Saraswati",
+        role: "Head of Applied AI Research",
+        institution: "Karya Cipta AI Lab",
+      },
+    ],
+    rundown: [
+      {
+        time: "09:00 - 09:30",
+        activity: "Registrasi Peserta & Welcome Coffee",
+        details: "Check-in peserta dan pembagian materi masterclass kit.",
+      },
+      {
+        time: "09:30 - 12:00",
+        activity: "Sesi 1: Menemukan Product-Market Fit untuk Model AI",
+        speaker: "Dr. Amanda Saraswati",
+        details: "Mengevaluasi kesiapan teknologi dan pemetaan kebutuhan pasar.",
+      },
+      {
+        time: "12:00 - 13:00",
+        activity: "Networking Lunch & Diskusi Santai",
+        details: "Makan siang bersama pembicara dan sesama founder peserta.",
+      },
+      {
+        time: "13:00 - 15:30",
+        activity: "Sesi 2: Unit Economics, Valuasi & Pitching Deck Ventura",
+        speaker: "Kevin Sanjaya, M.Sc.",
+        details: "Studi kasus dekonstruksi pitch deck Seri-A dan simulasi term sheet.",
+      },
+      {
+        time: "15:30 - 16:30",
+        activity: "1-on-1 Office Hour & Mentoring Eksklusif",
+        details: "Konsultasi tatap muka langsung rencana pitch deck tim.",
+      },
+    ],
+    benefits: [
+      "Mentoring langsung 1-on-1 dengan Principal Venture Capital",
+      "Akses template pitch deck dan finansial model standar internasional",
+      "E-Sertifikat resmi bersertifikasi UTY Creative Hub",
+      "Makan siang prasmanan dan coffee break 2 sesi",
+    ],
+    prerequisites: [
+      "Membawa laptop pribadi untuk sesi bedah finansial model",
+      "Memiliki ide atau prototipe produk digital (opsional tapi disarankan)",
+    ],
+    contactPerson: {
+      name: "Rizky Pratama",
+      role: "Koordinator Program Inkubasi",
+      phone: "+62 812-3456-7890",
+      email: "creativehub@uty.ac.id",
     },
   },
   {
@@ -430,10 +540,10 @@ export const allEvents: EventItem[] = [
     longDescription:
       "Dalam pengembangan produk digital modern, kecepatan dan konsistensi antarmuka adalah faktor krusial. Melalui sesi Creative Talk ini, praktisi desain produk dan front-end engineer akan membedah bagaimana merancang token desain, komponen atomik, hingga dokumentasi terpadu yang membuat alur serah terima (handoff) antara desainer dan programmer berjalan mulus dan efisien.",
     date: {
-      day: "10",
-      month: "OKT",
+      day: "18",
+      month: "NOV",
       year: "2026",
-      fullText: "Sabtu, 10 Oktober 2026",
+      fullText: "Rabu, 18 November 2026",
     },
     time: "09:30 - 12:00 WIB",
     location: {
@@ -454,8 +564,10 @@ export const allEvents: EventItem[] = [
       status: "open",
       statusLabel: "Pendaftaran Dibuka",
     },
+    isFree: true,
+    price: 0,
     fee: "Gratis untuk Mahasiswa & Umum",
-    registrationDeadline: "08 Oktober 2026, 23:59 WIB",
+    registrationDeadline: "16 November 2026, 23:59 WIB",
     targetAudience:
       "Mahasiswa prodi Informatika, Sistem Informasi, Desain Komunikasi Visual, serta pegiat UI/UX dan frontend web.",
     speakers: [
@@ -524,10 +636,10 @@ export const allEvents: EventItem[] = [
     longDescription:
       "Banyak ide inovasi mahasiswa terhenti di tahap gagasan karena lamanya proses pengembangan teknis. Bootcamp Kreanovasi memandu peserta membangun prototipe fungsional (MVP) dalam tempo 2 hari menggunakan Next.js App Router, Tailwind CSS, dan BaaS Supabase. Peserta diajarkan membuat alur autentikasi, manajemen basis data, integrasi API, hingga deployment otomatis ke cloud publik.",
     date: {
-      day: "17",
-      month: "OKT",
+      day: "05",
+      month: "DES",
       year: "2026",
-      fullText: "Sabtu - Minggu, 17 - 18 Oktober 2026",
+      fullText: "Sabtu - Minggu, 5 - 6 Desember 2026",
     },
     time: "08:30 - 16:30 WIB",
     location: {
@@ -544,12 +656,22 @@ export const allEvents: EventItem[] = [
     coverImage: "/images/room2.jpeg",
     quota: {
       total: 35,
-      filled: 35,
-      status: "full",
-      statusLabel: "Kuota Penuh",
+      filled: 15,
+      status: "open",
+      statusLabel: "Pendaftaran Dibuka",
     },
-    fee: "Gratis (Didanai Program Hibah Inovasi Kampus)",
-    registrationDeadline: "14 Oktober 2026, 18:00 WIB",
+    isFree: false,
+    price: 50000,
+    fee: "Rp 50.000 (Commitment Fee - Refundable saat Hadir)",
+    registrationDeadline: "03 Desember 2026, 18:00 WIB",
+    paymentInfo: {
+      bank_name: "Bank BCA",
+      account_number: "846-5521-990",
+      account_holder: "UTY Creative Hub Kreanovasi",
+      qris_image_url: "/images/qris-dummy.png",
+      instructions:
+        "Transfer biaya kepesertaan Rp 50.000 ke rekening BCA a.n UTY Creative Hub Kreanovasi. Simpan dan upload bukti transfer pada formulir registrasi.",
+    },
     targetAudience:
       "Mahasiswa tingkat 2-4 yang sedang mengerjakan prototipe startup atau tugas akhir berbasis web aplikasi.",
     speakers: [

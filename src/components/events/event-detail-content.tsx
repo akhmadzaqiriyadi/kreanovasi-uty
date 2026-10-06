@@ -32,7 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import type { EventItem } from "@/config/events";
+import { type EventItem, mapBackendEventToEventItem } from "@/config/events";
 import { useAuth } from "@/context/auth-context";
 import {
   useEventDetailQuery,
@@ -53,43 +53,50 @@ export function EventDetailContent({
   const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
-  // Live event query for up-to-date quota and status
+  // Live event query for up-to-date quota, rundown, payment info, and status
   const { data: liveData } = useEventDetailQuery(initialEvent.slug);
   const { data: myRegistration } = useMyEventRegistrationQuery(
     initialEvent.slug,
     isLoggedIn,
   );
 
-  const event = liveData
+  const event: EventItem = liveData
     ? {
         ...initialEvent,
-        title: liveData.title || initialEvent.title,
-        description: liveData.description || initialEvent.description,
-        longDescription:
-          liveData.long_description || initialEvent.longDescription,
+        ...mapBackendEventToEventItem(liveData),
+        // Preserve any custom frontend values if liveData has blanks
         coverImage: liveData.cover_image || initialEvent.coverImage,
-        quota: {
-          total: liveData.quota_total,
-          filled: liveData.quota_filled,
-          status: liveData.quota_status,
-          statusLabel: liveData.quota_status_label,
-        },
-        fee: liveData.fee || initialEvent.fee,
-        isFree: liveData.is_free,
-        price: liveData.price,
-        requiresApproval: liveData.requires_approval,
       }
     : initialEvent;
 
-  // Check if event has passed
+  // Check if event has passed (only if marked completed or date is before today)
   const isPast = (() => {
     try {
-      const eventDate = new Date(
-        `${initialEvent.date.year}-${initialEvent.date.month === "SEP" ? "09" : initialEvent.date.month === "OKT" ? "10" : "11"}-${initialEvent.date.day}`,
-      );
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return eventDate < today;
+      if (liveData?.status === "completed") return true;
+      if (liveData?.event_date) {
+        const evDate = new Date(liveData.event_date);
+        evDate.setHours(23, 59, 59, 999);
+        return evDate < new Date();
+      }
+      const monthMap: Record<string, string> = {
+        JAN: "01",
+        FEB: "02",
+        MAR: "03",
+        APR: "04",
+        MEI: "05",
+        JUN: "06",
+        JUL: "07",
+        AGU: "08",
+        AGS: "08",
+        SEP: "09",
+        OKT: "10",
+        NOV: "11",
+        DES: "12",
+      };
+      const mStr = monthMap[event.date.month.toUpperCase()] || "10";
+      const dStr = event.date.day.padStart(2, "0");
+      const evDate = new Date(`${event.date.year}-${mStr}-${dStr}T23:59:59`);
+      return evDate < new Date();
     } catch {
       return false;
     }

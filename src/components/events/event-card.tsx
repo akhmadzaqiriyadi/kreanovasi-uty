@@ -34,8 +34,8 @@ export function EventCard({ event, className }: EventCardProps) {
           {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 pointer-events-none" />
 
-          {/* Floating Category Tag */}
-          <div className="absolute top-3.5 left-3.5 z-10">
+          {/* Floating Category & Fee Tags */}
+          <div className="absolute top-3.5 left-3.5 z-10 flex flex-wrap items-center gap-1.5">
             <span
               className={cn(
                 "inline-flex items-center px-3 py-1 rounded-full text-xs font-bold shadow-md backdrop-blur-md transition-colors",
@@ -46,6 +46,15 @@ export function EventCard({ event, className }: EventCardProps) {
             >
               {event.category.name}
             </span>
+            {event.isFree === false ? (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold shadow-md backdrop-blur-md bg-amber-500 text-white">
+                Berbayar
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold shadow-md backdrop-blur-md bg-emerald-600/90 text-white">
+                Gratis
+              </span>
+            )}
           </div>
 
           {/* Prominent Calendar Date Badge (Top Right) */}
@@ -123,11 +132,25 @@ export function EventCard({ event, className }: EventCardProps) {
 
       {/* Card Footer: Action */}
       <div className="px-5 sm:px-6 py-4 border-t border-border/60 flex items-center justify-between gap-3 z-10 mt-2">
-        <span className="text-xs font-semibold text-muted-foreground">
-          {event.quota
-            ? `${event.quota.filled}/${event.quota.total} Peserta`
-            : "Terbuka untuk Umum"}
-        </span>
+        <div className="flex flex-col">
+          <span
+            className={cn(
+              "text-xs font-bold leading-tight",
+              event.isFree === false
+                ? "text-amber-600 dark:text-amber-400"
+                : "text-emerald-600 dark:text-emerald-400",
+            )}
+          >
+            {event.isFree === false
+              ? `Rp ${(event.price || 0).toLocaleString("id-ID")}`
+              : "Gratis"}
+          </span>
+          <span className="text-[11px] text-muted-foreground mt-0.5">
+            {event.quota
+              ? `${event.quota.filled}/${event.quota.total} Peserta`
+              : "Terbuka untuk Umum"}
+          </span>
+        </div>
 
         <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 dark:bg-primary/25 text-primary dark:text-blue-200 group-hover:bg-primary group-hover:text-primary-foreground dark:group-hover:bg-primary dark:group-hover:text-primary-foreground transition-all duration-300 shrink-0 shadow-xs">
           <span>Detail Agenda</span>
