@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { EventsCatalogPage } from "@/components/events";
-import { getAllEvents, getEventCategories } from "@/config/events";
+import {
+  getAllEvents,
+  getEventCategories,
+  mapBackendEventToEventItem,
+} from "@/config/events";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -18,9 +22,33 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EventsPage() {
-  const events = getAllEvents();
-  const categories = getEventCategories();
+export const dynamic = "force-dynamic";
+
+export default async function EventsPage() {
+  let events = getAllEvents();
+  let categories = getEventCategories();
+
+  try {
+    const apiUrl = process.env.BACKEND_API_URL || "http://localhost:5000";
+    const res = await fetch(`${apiUrl}/api/v1/events?limit=100`, {
+      next: { revalidate: 30 },
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data?.events && json.data.events.length > 0) {
+        events = json.data.events.map(mapBackendEventToEventItem);
+        const dynamicCats = Array.from(
+          new Set(events.map((e) => e.category.name)),
+        );
+        if (dynamicCats.length > 0) {
+          categories = dynamicCats;
+        }
+      }
+    }
+  } catch {
+    // Graceful fallback to static events
+  }
 
   return <EventsCatalogPage events={events} categories={categories} />;
 }

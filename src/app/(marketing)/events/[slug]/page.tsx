@@ -9,6 +9,7 @@ import {
   getAllEvents,
   getEventBySlug,
   getRelatedEvents,
+  mapBackendEventToEventItem,
 } from "@/config/events";
 import { siteConfig } from "@/config/site";
 
@@ -17,6 +18,8 @@ interface EventDetailPageProps {
     slug: string;
   }>;
 }
+
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const events = getAllEvents();
@@ -29,7 +32,24 @@ export async function generateMetadata({
   params,
 }: EventDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  let event = getEventBySlug(slug);
+
+  if (!event) {
+    try {
+      const apiUrl = process.env.BACKEND_API_URL || "http://localhost:5000";
+      const res = await fetch(`${apiUrl}/api/v1/events/${slug}`, {
+        next: { revalidate: 30 },
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          event = mapBackendEventToEventItem(json.data);
+        }
+      }
+    } catch {
+      // fallback
+    }
+  }
 
   if (!event) {
     return {
@@ -63,7 +83,23 @@ export default async function EventDetailPage({
   params,
 }: EventDetailPageProps) {
   const { slug } = await params;
-  const event = getEventBySlug(slug);
+  let event = getEventBySlug(slug);
+
+  try {
+    const apiUrl = process.env.BACKEND_API_URL || "http://localhost:5000";
+    const res = await fetch(`${apiUrl}/api/v1/events/${slug}`, {
+      next: { revalidate: 30 },
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.data) {
+        event = mapBackendEventToEventItem(json.data);
+      }
+    }
+  } catch {
+    // fallback
+  }
 
   if (!event) {
     notFound();

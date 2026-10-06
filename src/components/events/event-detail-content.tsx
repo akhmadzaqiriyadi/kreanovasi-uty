@@ -16,6 +16,7 @@ import {
   Share2,
   Users,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import { useState } from "react";
@@ -36,6 +37,7 @@ import {
   useEventDetailQuery,
   useMyEventRegistrationQuery,
 } from "@/hooks/use-event-queries";
+import { getSafeImageUrl } from "@/lib/image-utils";
 import { EventRegistrationModal } from "./event-registration-modal";
 
 interface EventDetailContentProps {
@@ -59,13 +61,18 @@ export function EventDetailContent({
   const event = liveData
     ? {
         ...initialEvent,
+        title: liveData.title || initialEvent.title,
+        description: liveData.description || initialEvent.description,
+        longDescription:
+          liveData.long_description || initialEvent.longDescription,
+        coverImage: liveData.cover_image || initialEvent.coverImage,
         quota: {
           total: liveData.quota_total,
           filled: liveData.quota_filled,
           status: liveData.quota_status,
           statusLabel: liveData.quota_status_label,
         },
-        fee: liveData.fee,
+        fee: liveData.fee || initialEvent.fee,
         isFree: liveData.is_free,
         price: liveData.price,
         requiresApproval: liveData.requires_approval,
@@ -196,6 +203,20 @@ export function EventDetailContent({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
         {/* Left Detailed Content (8 cols) */}
         <div className="lg:col-span-8 space-y-10 sm:space-y-12">
+          {/* Hero Banner / Cover Image */}
+          {event.coverImage && (
+            <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden rounded-2xl border border-border/80 shadow-md bg-muted">
+              <Image
+                src={getSafeImageUrl(event.coverImage)}
+                alt={event.title}
+                fill
+                priority
+                className="object-cover transition-transform duration-500 hover:scale-[1.01]"
+                sizes="(max-width: 1024px) 100vw, 66vw"
+              />
+            </div>
+          )}
+
           {/* Section: Overview & Long Description */}
           <section aria-labelledby="about-event-heading" className="space-y-4">
             <h2
@@ -204,7 +225,7 @@ export function EventDetailContent({
             >
               Tentang Agenda
             </h2>
-            <div className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground text-sm sm:text-base leading-relaxed space-y-3">
+            <div className="prose prose-slate dark:prose-invert max-w-none text-muted-foreground text-sm sm:text-base leading-relaxed space-y-3 whitespace-pre-line">
               <p>{event.longDescription || event.description}</p>
             </div>
           </section>
@@ -351,6 +372,17 @@ export function EventDetailContent({
         {/* Sidebar Registration Column (4 cols) */}
         <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
           <Card className="rounded-2xl border-border/80 shadow-xs overflow-hidden">
+            {event.coverImage && (
+              <div className="relative aspect-[16/9] w-full overflow-hidden border-b border-border/60 bg-muted">
+                <Image
+                  src={getSafeImageUrl(event.coverImage)}
+                  alt={event.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 100vw, 33vw"
+                />
+              </div>
+            )}
             <CardHeader className="bg-muted/40 pb-4 border-b border-border/60">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Biaya Registrasi
