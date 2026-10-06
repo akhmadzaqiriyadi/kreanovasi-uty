@@ -398,13 +398,10 @@ export function EventDetailContent({
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 1024px) 100vw, 340px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-4">
-                <span className="text-white text-xs font-semibold flex items-center gap-1.5">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-4">
+                <span className="text-white text-xs font-semibold flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
                   <Maximize2 className="w-4 h-4 text-primary-foreground" />
                   <span>Perbesar Poster</span>
-                </span>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/20">
-                  3:4 Poster
                 </span>
               </div>
             </div>

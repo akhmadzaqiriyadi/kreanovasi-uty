@@ -76,9 +76,6 @@ export function EventCatalogCards({
                 >
                   {evt.fee || "Gratis"}
                 </Badge>
-                <div className="absolute bottom-2 right-2 px-1.5 py-0.5 rounded bg-black/60 text-[9px] font-bold text-white">
-                  3:4 Poster
-                </div>
               </div>
 
               <CardHeader className="p-4 pb-2 space-y-1">

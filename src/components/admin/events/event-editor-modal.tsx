@@ -290,7 +290,7 @@ export function EventEditorModal({
             <div className="flex items-center justify-between">
               <Label className="text-xs font-semibold flex items-center gap-1.5">
                 <ImageIcon className="w-3.5 h-3.5 text-primary" />
-                <span>Foto Sampul / Poster Resmi (Format 3:4) *</span>
+                <span>Foto Sampul / Poster Resmi *</span>
               </Label>
               <input
                 ref={fileInputRef}
@@ -322,19 +322,16 @@ export function EventEditorModal({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-              {/* Preview 3:4 Poster */}
+              {/* Preview Poster */}
               <div className="sm:col-span-4 flex justify-center">
                 {currentCover ? (
                   <div className="relative aspect-[3/4] w-28 sm:w-32 rounded-xl overflow-hidden border border-border/80 bg-muted shadow-sm">
                     <Image
                       src={getSafeImageUrl(currentCover)}
-                      alt="Preview Poster 3:4"
+                      alt="Preview Poster"
                       fill
                       className="object-cover"
                     />
-                    <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/60 text-[9px] font-bold text-white">
-                      3:4
-                    </div>
                   </div>
                 ) : (
                   <div className="aspect-[3/4] w-28 sm:w-32 rounded-xl border border-dashed border-border/80 bg-muted/40 flex items-center justify-center text-muted-foreground text-[10px]">
