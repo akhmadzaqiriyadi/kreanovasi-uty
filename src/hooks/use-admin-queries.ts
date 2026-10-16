@@ -465,3 +465,45 @@ export function useDeleteRoleMutation() {
     },
   });
 }
+
+export interface IoTVisitorStats {
+  total_visitors: number;
+  today_visitors: number;
+  last_visitor_at?: string;
+  last_device_id?: string;
+  location?: string;
+  status: string;
+}
+
+/**
+ * Query: Fetch live IoT visitor counter statistics from UCH ESP32 sensor
+ */
+export function useIoTVisitorStatsQuery() {
+  return useQuery({
+    queryKey: ["iot-visitor-stats"],
+    queryFn: async (): Promise<IoTVisitorStats> => {
+      try {
+        const response = await apiClient.get<ApiEnvelope<IoTVisitorStats>>(
+          "/iot/visitor/stats",
+        );
+        return (
+          response.data.data ?? {
+            total_visitors: 0,
+            today_visitors: 0,
+            status: "ONLINE",
+            location: "Pintu Masuk UCH Creative Hub",
+          }
+        );
+      } catch {
+        return {
+          total_visitors: 0,
+          today_visitors: 0,
+          status: "STANDBY",
+          location: "Pintu Masuk UCH Creative Hub",
+        };
+      }
+    },
+    refetchInterval: 3000,
+  });
+}
+

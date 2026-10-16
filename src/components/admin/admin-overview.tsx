@@ -8,9 +8,12 @@ import {
   Database,
   KeyRound,
   Layers,
+  Radio,
   Server,
   ShieldCheck,
+  UserCheck,
   Users,
+  Volume2,
   Zap,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -26,6 +29,7 @@ import {
   useAdminAuditLogsQuery,
   useAdminRolesQuery,
   useAdminUsersQuery,
+  useIoTVisitorStatsQuery,
   useSystemHealthQuery,
 } from "@/hooks/use-admin-queries";
 
@@ -40,6 +44,7 @@ export function AdminOverview() {
   );
   const { data: healthData, isLoading: isHealthLoading } =
     useSystemHealthQuery();
+  const { data: iotData } = useIoTVisitorStatsQuery();
 
   const totalUsers = usersData?.meta.total_items ?? 0;
   const totalRoles = rolesData?.length ?? 0;
@@ -50,6 +55,87 @@ export function AdminOverview() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {/* IoT Smart Hub Visitor Counter Live Banner */}
+      <Card className="border-border/60 bg-gradient-to-br from-white/80 via-white/70 to-emerald-500/5 dark:from-zinc-900/80 dark:via-zinc-900/60 dark:to-emerald-500/10 backdrop-blur-md shadow-xs hover:border-emerald-500/40 transition-all border-emerald-500/20">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+              <Radio className="w-4 h-4 animate-pulse" />
+            </div>
+            <div>
+              <CardTitle className="text-sm font-bold tracking-tight text-foreground flex items-center gap-2">
+                IoT Visitor Radar & Smart Welcome Hub
+                <Badge
+                  variant="outline"
+                  className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-bold px-2 py-0.5"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1 animate-ping" />
+                  LIVE ESP32 SENSOR
+                </Badge>
+              </CardTitle>
+              <CardDescription className="text-xs text-muted-foreground">
+                Sensor Gerak PIR & Sambutan Suara HD (16 kHz) — Pintu Masuk UCH
+              </CardDescription>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Badge
+              variant="secondary"
+              className="text-xs font-medium bg-slate-100 dark:bg-zinc-800 text-muted-foreground"
+            >
+              Wi-Fi: UTY-Network
+            </Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-500/20">
+              <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                <Users className="w-3.5 h-3.5 text-emerald-500" />
+                Total Pengunjung
+              </span>
+              <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
+                {iotData?.total_visitors ?? 0}
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-800/40 border border-border/40">
+              <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                <UserCheck className="w-3.5 h-3.5 text-primary" />
+                Hari Ini
+              </span>
+              <p className="text-2xl font-black text-foreground mt-1">
+                {iotData?.today_visitors ?? 0}
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-800/40 border border-border/40">
+              <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                <Volume2 className="w-3.5 h-3.5 text-amber-500" />
+                Audio Sambutan
+              </span>
+              <p className="text-sm font-bold text-foreground mt-2 flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                HD 16 kHz Aktif
+              </p>
+            </div>
+            <div className="p-3 rounded-xl bg-slate-50 dark:bg-zinc-800/40 border border-border/40">
+              <span className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5 text-muted-foreground" />
+                Kunjungan Terakhir
+              </span>
+              <p className="text-xs font-semibold text-foreground mt-2 truncate">
+                {iotData?.last_visitor_at && !iotData.last_visitor_at.startsWith("0001")
+                  ? new Date(iotData.last_visitor_at).toLocaleTimeString("id-ID", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    }) + " WIB"
+                  : "Menunggu..."}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Top Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Total Users */}
