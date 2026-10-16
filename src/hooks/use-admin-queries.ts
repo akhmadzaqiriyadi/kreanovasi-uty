@@ -503,7 +503,9 @@ export function useIoTVisitorStatsQuery() {
         };
       }
     },
-    refetchInterval: 3000,
+    staleTime: 5000,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
   });
 }
 
